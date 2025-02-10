@@ -2,8 +2,8 @@ package core.parameters;
 
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 
-public final class RobotParameters {
-    private RobotParameters() {}
+public final class HardwareParameters {
+    private HardwareParameters() {}
 
     public static final class Motors {
         public static final class HardwareMapNames {
@@ -65,9 +65,9 @@ public final class RobotParameters {
 
         // Which encoders are bound to which motors
         public static final class HardwareMapNames {
-            public static final String left = RobotParameters.Motors.HardwareMapNames.backRight;
-            public static final String right = RobotParameters.Motors.HardwareMapNames.frontLeft;
-            public static final String sideways = RobotParameters.Motors.HardwareMapNames.backLeft;
+            public static final String left = HardwareParameters.Motors.HardwareMapNames.backRight;
+            public static final String right = HardwareParameters.Motors.HardwareMapNames.frontLeft;
+            public static final String sideways = HardwareParameters.Motors.HardwareMapNames.backLeft;
         }
 
         // Which encoders are reversed
@@ -96,12 +96,12 @@ public final class RobotParameters {
 
         // Calculate the inches from the mm
         public static final class CenterOffset_in {
-            public static final double leftx = RobotParameters.Odometry.CenterOffset_mm.leftx / 25.4;
-            public static final double lefty = RobotParameters.Odometry.CenterOffset_mm.lefty  / 25.4;
-            public static final double rightx = RobotParameters.Odometry.CenterOffset_mm.rightx  / 25.4;
-            public static final double righty = RobotParameters.Odometry.CenterOffset_mm.righty  / 25.4;
-            public static final double sidex = RobotParameters.Odometry.CenterOffset_mm.sidex  / 25.4;
-            public static final double sidey = RobotParameters.Odometry.CenterOffset_mm.sidey  / 25.4;
+            public static final double leftx = HardwareParameters.Odometry.CenterOffset_mm.leftx / 25.4;
+            public static final double lefty = HardwareParameters.Odometry.CenterOffset_mm.lefty  / 25.4;
+            public static final double rightx = HardwareParameters.Odometry.CenterOffset_mm.rightx  / 25.4;
+            public static final double righty = HardwareParameters.Odometry.CenterOffset_mm.righty  / 25.4;
+            public static final double sidex = HardwareParameters.Odometry.CenterOffset_mm.sidex  / 25.4;
+            public static final double sidey = HardwareParameters.Odometry.CenterOffset_mm.sidey  / 25.4;
         }
     }
 }

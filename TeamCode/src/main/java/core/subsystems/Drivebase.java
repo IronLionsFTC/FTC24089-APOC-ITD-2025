@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import core.hardware.CachedEncoder;
 import core.hardware.CachedMotor;
 import core.math.Vector;
-import core.parameters.RobotParameters;
+import core.parameters.HardwareParameters;
 import core.parameters.pidfCoefficients;
 
 public class Drivebase extends SubsystemBase {
@@ -51,9 +51,9 @@ public class Drivebase extends SubsystemBase {
         public Odometry(HardwareMap hwmp) {
 
             // Initialise Encoders
-            this.left = new CachedEncoder(hwmp, RobotParameters.Odometry.HardwareMapNames.left);
-            this.right = new CachedEncoder(hwmp, RobotParameters.Odometry.HardwareMapNames.right);
-            this.sideways = new CachedEncoder(hwmp, RobotParameters.Odometry.HardwareMapNames.sideways);
+            this.left = new CachedEncoder(hwmp, HardwareParameters.Odometry.HardwareMapNames.left);
+            this.right = new CachedEncoder(hwmp, HardwareParameters.Odometry.HardwareMapNames.right);
+            this.sideways = new CachedEncoder(hwmp, HardwareParameters.Odometry.HardwareMapNames.sideways);
         }
 
         // Derive the yaw from the encoder positions
@@ -74,22 +74,22 @@ public class Drivebase extends SubsystemBase {
         this.driveScalar = 0;
 
         // Create Motors
-        this.frontRight = new CachedMotor(hwmp, RobotParameters.Motors.HardwareMapNames.frontRight);
-        this.frontLeft = new CachedMotor(hwmp, RobotParameters.Motors.HardwareMapNames.frontLeft);
-        this.backRight = new CachedMotor(hwmp, RobotParameters.Motors.HardwareMapNames.backRight);
-        this.backLeft = new CachedMotor(hwmp, RobotParameters.Motors.HardwareMapNames.backLeft);
+        this.frontRight = new CachedMotor(hwmp, HardwareParameters.Motors.HardwareMapNames.frontRight);
+        this.frontLeft = new CachedMotor(hwmp, HardwareParameters.Motors.HardwareMapNames.frontLeft);
+        this.backRight = new CachedMotor(hwmp, HardwareParameters.Motors.HardwareMapNames.backRight);
+        this.backLeft = new CachedMotor(hwmp, HardwareParameters.Motors.HardwareMapNames.backLeft);
 
         // Set reversed motors
-        this.frontRight.setReversed(RobotParameters.Motors.Reversed.frontRight);
-        this.frontLeft.setReversed(RobotParameters.Motors.Reversed.frontLeft);
-        this.backRight.setReversed(RobotParameters.Motors.Reversed.backRight);
-        this.backLeft.setReversed(RobotParameters.Motors.Reversed.backLeft);
+        this.frontRight.setReversed(HardwareParameters.Motors.Reversed.frontRight);
+        this.frontLeft.setReversed(HardwareParameters.Motors.Reversed.frontLeft);
+        this.backRight.setReversed(HardwareParameters.Motors.Reversed.backRight);
+        this.backLeft.setReversed(HardwareParameters.Motors.Reversed.backLeft);
 
         // Apply zero power braking
-        this.frontRight.setZeroPowerBehaviour(RobotParameters.Motors.ZeroPowerModes.drivetrain);
-        this.frontLeft.setZeroPowerBehaviour(RobotParameters.Motors.ZeroPowerModes.drivetrain);
-        this.backRight.setZeroPowerBehaviour(RobotParameters.Motors.ZeroPowerModes.drivetrain);
-        this.backLeft.setZeroPowerBehaviour(RobotParameters.Motors.ZeroPowerModes.drivetrain);
+        this.frontRight.setZeroPowerBehaviour(HardwareParameters.Motors.ZeroPowerModes.drivetrain);
+        this.frontLeft.setZeroPowerBehaviour(HardwareParameters.Motors.ZeroPowerModes.drivetrain);
+        this.backRight.setZeroPowerBehaviour(HardwareParameters.Motors.ZeroPowerModes.drivetrain);
+        this.backLeft.setZeroPowerBehaviour(HardwareParameters.Motors.ZeroPowerModes.drivetrain);
 
         // Odometry
         this.odometry = new Odometry(hwmp);
