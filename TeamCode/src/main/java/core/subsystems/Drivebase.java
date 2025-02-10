@@ -106,6 +106,7 @@ public class Drivebase extends SubsystemBase {
     @Override
     public void periodic() {
 
+        // If the pid coefficients are being tuned, update them constantly
         if (pidfCoefficients.Drivetrain.tuning) {
             this.yawCorrectionController.setPIDF(
                     pidfCoefficients.Drivetrain.p,
@@ -119,11 +120,8 @@ public class Drivebase extends SubsystemBase {
         this.yaw = this.odometry.calculateYaw();
 
         // PID (position, target)
-        if (this.lastYawActionWasManual) {
-            this.targetYaw = this.yaw;
-        }
-
-        this.yawCorrectionController.calculate(this.yaw, this.targetYaw);
+        if (this.lastYawActionWasManual) { this.targetYaw = this.yaw; }
+        double r = this.yawCorrectionController.calculate(this.yaw, this.targetYaw);
 
         this.frontLeft.setPower((driveVector.x - driveVector.y) * driveScalar + r);
         this.frontRight.setPower((-driveVector.x - driveVector.y) * driveScalar - r);
