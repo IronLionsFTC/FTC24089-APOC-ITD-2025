@@ -3,9 +3,9 @@ package core.hardware;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class MasterSlaveMotorPair {
-    private CachedMotor master;
-    private CachedMotor slave; // Slave MAY be NULL
-    private boolean hasSlave;
+    private final CachedMotor master;
+    private final CachedMotor slave; // Slave MAY be NULL
+    private final boolean hasSlave;
 
     // Expose a simple constructor, allowing for motors to be referenced as a pair without ownership
     public MasterSlaveMotorPair(CachedMotor master, CachedMotor slave) {
@@ -15,23 +15,26 @@ public class MasterSlaveMotorPair {
     }
 
     // Allow for construction of motors owned by the pair
-    public MasterSlaveMotorPair(HardwareMap hwmp, String master, String slave) {
+    public MasterSlaveMotorPair(HardwareMap hwmp, String master, boolean reverseMaster, String slave, boolean reverseSlave) {
         this.master = new CachedMotor(hwmp, master);
+        this.master.setReversed(reverseMaster);
         this.slave = new CachedMotor(hwmp, slave);
+        this.slave.setReversed(reverseSlave);
         this.hasSlave = true;
     }
 
-    // Slaveless master (single motor wrapped in pair for functions that assume a pair).
+    // Master without slave (single motor wrapped in pair for functions that assume a pair).
     // this is allowed by the master / slave architecture, because the slave exists only
-    // to supplement the power of the master, encoder positin is read from master
+    // to supplement the power of the master, encoder position is read from master
     public MasterSlaveMotorPair(CachedMotor master) {
         this.master = master;
         this.slave = null;
         this.hasSlave = false;
     }
 
-    public MasterSlaveMotorPair(HardwareMap hwmp, String master) {
+    public MasterSlaveMotorPair(HardwareMap hwmp, String master, boolean reverseMaster) {
         this.master = new CachedMotor(hwmp, master);
+        this.master.setReversed(reverseMaster);
         this.slave = null;
         this.hasSlave = false;
     }
