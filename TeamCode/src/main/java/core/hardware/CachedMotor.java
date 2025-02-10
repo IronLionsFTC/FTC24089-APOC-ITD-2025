@@ -16,12 +16,14 @@ public class CachedMotor {
         this.position = 0;
     }
 
-    public void setPower(double power) {
+    public boolean setPower(double power) {
         double error = Math.abs(power - this.power);
         if (error > 0.01 || power == 0) {
             this.power = power;
             this.motor.set(this.power);
+            return true;
         }
+        return false;
     }
 
     public double getPower() {
@@ -38,7 +40,7 @@ public class CachedMotor {
     }
 
     // Update position and return
-    public double queryPosition() {
+    public double getPosition() {
         this.position = this.motor.getCurrentPosition();
         return this.position;
     }
