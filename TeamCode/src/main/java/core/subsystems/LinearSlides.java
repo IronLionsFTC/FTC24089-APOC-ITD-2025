@@ -39,10 +39,10 @@ public class LinearSlides extends SubsystemBase {
 
     // Allow for different negative and positive feedforward values on construction
     public LinearSlides(MasterSlaveMotorPair motors,
-                        PIDController pidController,
-                        double positiveFeedForward,
-                        double negativeFeedForward,
-                        double maximumExtension) {
+            PIDController pidController,
+            double positiveFeedForward,
+            double negativeFeedForward,
+            double maximumExtension) {
         this.motors = motors;
         this.pidController = pidController;
         this.positiveFeedForward = positiveFeedForward;
@@ -57,6 +57,13 @@ public class LinearSlides extends SubsystemBase {
     // Inherit the periodic update function from the subsystem base, this sets the motor powers from the PID
     @Override
     public void periodic() {
+        double response = this.pidController.calculate(this.motors.getPosition(), this.target * this.maximumExtension);
+        double feedforward;
+        if (response > 0) { feedforward = positiveFeedForward; }
+        else { feedforward = -negativeFeedForward; }
 
+        if (response < this.cutPowerOnNegativeThreshold) {
+
+        }
     }
 }
