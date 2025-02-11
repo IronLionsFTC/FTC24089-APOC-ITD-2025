@@ -15,6 +15,7 @@ public class Intake extends SubsystemBase {
     // Subsystems of intake
     private LinearSlides slides;
     private Claw claw;
+    private DualAxisGimble gimble;
 
     // Internal Subsystem State
     public Subsystems.IntakeState state = Subsystems.IntakeState.RetractedClawOpen;
@@ -32,8 +33,11 @@ public class Intake extends SubsystemBase {
         );
         this.slides = new LinearSlides(this.slideMotors, this.slideController, pidfCoefficients.IntakeSlides.f, 150);
 
-        // Claw does not need to be scheduled as it is a servo abstraction and needs no update
+        // Claw and gimble do not need to be scheduled as they are servo abstractions and need no update
         this.claw = new Claw(hwmp, HardwareParameters.Motors.HardwareMapNames.intakeClawServo);
+        this.gimble = new DualAxisGimble(hwmp,
+                HardwareParameters.Motors.HardwareMapNames.intakeLiftServo,
+                HardwareParameters.Motors.HardwareMapNames.intakeYawServo);
 
         // Schedule SLIDES, as they must constantly update as they contain a PID controller
         // prevents developer error later by ensuring the subsystem is registered no matter what
@@ -52,13 +56,15 @@ public class Intake extends SubsystemBase {
                 break;
             case ExtendedClawUp:
                 this.state = Subsystems.IntakeState.ExtendedClawDown;
+                this.gimble.extendPitch();
                 break;
             case ExtendedClawDown:
                 this.state = Subsystems.IntakeState.ExtendedClawGrabbing;
+                this.claw.setState(Subsystems.ClawState.WeakGripClosed);
                 break;
             case ExtendedClawGrabbing:
-                this.claw.setState(Subsystems.ClawState.WeakGripClosed);
                 this.state = Subsystems.IntakeState.RetractedClawClosed;
+                this.gimble.resetPosition();
                 this.slides.setTarget(0);
                 break;
             default:
@@ -68,6 +74,7 @@ public class Intake extends SubsystemBase {
         }
     }
 
+    // Allow for claw to be opened without breaking state machine
     public void cancelGrab() {
         if (this.state == Subsystems.IntakeState.ExtendedClawGrabbing) {
             this.state = Subsystems.IntakeState.ExtendedClawDown;
