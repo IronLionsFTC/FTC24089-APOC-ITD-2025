@@ -2,6 +2,7 @@ package teleopmodes;
 
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import core.subsystems.Drivebase;
@@ -19,5 +20,12 @@ public class Teleop extends CommandOpMode {
         // IMPORTANT - Register SUBSYSTEMS that implement periodic
         CommandScheduler.getInstance().registerSubsystem(drivebaseSubsystem);
         CommandScheduler.getInstance().registerSubsystem(intakeSubsystem);
+
+        // Schedule the command based opmode
+        schedule(
+                new ParallelCommandGroup(
+
+                )
+        )
     }
 }

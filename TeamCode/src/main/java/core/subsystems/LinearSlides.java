@@ -78,6 +78,7 @@ public class LinearSlides extends SubsystemBase {
         motors.setPower(response);
     }
 
+    // Position in range 0 to 1
     public double getRelative() {
         return this.motors.getPosition() / this.maximumExtension;
     }

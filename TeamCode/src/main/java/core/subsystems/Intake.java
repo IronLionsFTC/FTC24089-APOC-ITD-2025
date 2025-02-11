@@ -85,4 +85,23 @@ public class Intake extends SubsystemBase {
     public double slideExtension() {
         return this.slides.getRelative();
     }
+
+    public boolean gimblePitchDone() {
+        return this.gimble.doneFolding();
+    }
+
+    // Return the new yaw, if necessary
+    public double rotateIntakeClaw(double speed) {
+        this.gimble.rotateYaw(speed);
+        return this.gimble.getYaw();
+    }
+
+    public void setIntakeClawRotation(double rotation) {
+        this.gimble.setYaw(rotation);
+    }
+
+    // Allow for possession of nested subclass without owning entire intake class
+    public DualAxisGimble takeGimbleSubsystem() {
+        return this.gimble;
+    }
 }

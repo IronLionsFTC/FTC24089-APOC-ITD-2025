@@ -8,9 +8,16 @@ import core.subsystems.Intake;
 public class ExtendIntake extends CommandBase {
 
     private final Intake intakeSubsystem;
+    private final double clawRotation;
 
-    public ExtendIntake(Intake intakeSubsystem) {
+    public ExtendIntake(Intake intakeSubsystem, Double clawRotation) {
         this.intakeSubsystem = intakeSubsystem;
+
+        if (clawRotation.isNaN() || clawRotation == null) {
+            this.clawRotation = 0;
+        } else {
+            this.clawRotation = clawRotation;
+        }
     }
 
     @Override
@@ -27,11 +34,20 @@ public class ExtendIntake extends CommandBase {
     }
 
     @Override
+    public void execute() {
+        // If the intake has begun moving, and is nearly at full extension, fold down the claw
+        if (intakeSubsystem.state == Subsystems.IntakeState.ExtendedClawUp && intakeSubsystem.slideExtension() > 0.4) {
+            intakeSubsystem.nextState();
+        }
+    }
+
+    @Override
     public boolean isFinished() {
-        if (intakeSubsystem.state != Subsystems.IntakeState.ExtendedClawUp) {
+        // If the subsystem is not in the correct states, immediately exit
+        if (intakeSubsystem.state != Subsystems.IntakeState.ExtendedClawUp && intakeSubsystem.state != Subsystems.IntakeState.ExtendedClawDown) {
             return true;
         }
-
-        return intakeSubsystem
+        // If the slides are 70% extended, finish command
+        return intakeSubsystem.slideExtension() > 0.7 && intakeSubsystem.gimblePitchDone();
     }
 }

@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import core.math.Utility;
 import core.parameters.PositionalBounds.ServoPositions.ClawPositions;
 import core.hardware.CachedServo;
+import core.parameters.Timings;
 
 public class DualAxisGimble extends SubsystemBase {
 
@@ -40,6 +41,20 @@ public class DualAxisGimble extends SubsystemBase {
     }
 
     public void setYaw(double yaw) {
-        this.yawServo.setPosition(ClawPositions.yawRest);
+        this.yawServo.setPosition(yaw);
+    }
+
+    public boolean doneFolding() {
+        if (this.pitchServo.secondsSinceMovement() > Timings.clawFoldDownTime && this.pitchServo.getPosition() == ClawPositions.pitchExtended) {
+            return true;
+        } else if (this.pitchServo.secondsSinceMovement() > Timings.clawFoldUpTime && this.pitchServo.getPosition() == ClawPositions.pitchRest) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public double getYaw() {
+        return this.yawServo.getPosition();
     }
 }
