@@ -9,4 +9,12 @@ public class Subsystems {
         Open,
         WideOpen
     }
+
+    public enum IntakeState {
+        RetractedClawOpen,
+        ExtendedClawUp,
+        ExtendedClawDown,
+        ExtendedClawGrabbing,
+        RetractedClawClosed
+    }
 }
