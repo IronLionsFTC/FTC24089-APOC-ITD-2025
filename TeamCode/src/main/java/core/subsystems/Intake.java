@@ -81,4 +81,8 @@ public class Intake extends SubsystemBase {
             this.claw.setState(Subsystems.ClawState.WideOpen);
         }
     }
+
+    public double slideExtension() {
+        return this.slides.getRelative();
+    }
 }

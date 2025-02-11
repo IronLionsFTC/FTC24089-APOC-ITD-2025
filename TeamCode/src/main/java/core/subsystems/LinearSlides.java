@@ -77,4 +77,8 @@ public class LinearSlides extends SubsystemBase {
         // Set the master-slave paradigm to use the power
         motors.setPower(response);
     }
+
+    public double getRelative() {
+        return this.motors.getPosition() / this.maximumExtension;
+    }
 }
