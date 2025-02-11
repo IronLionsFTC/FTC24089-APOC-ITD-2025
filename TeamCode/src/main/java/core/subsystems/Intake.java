@@ -8,12 +8,16 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import core.hardware.MasterSlaveMotorPair;
 import core.parameters.HardwareParameters;
 import core.parameters.pidfCoefficients;
+import core.state.Subsystems;
 
 public class Intake extends SubsystemBase {
 
     // Subsystems of intake
     private LinearSlides slides;
     private Claw claw;
+
+    // Internal Subsystem State
+    public Subsystems.IntakeState state = Subsystems.IntakeState.RetractedClawOpen;
 
     // Hardware Interface / Controllers
     private PIDController slideController;
@@ -27,7 +31,12 @@ public class Intake extends SubsystemBase {
                 pidfCoefficients.IntakeSlides.d
         );
         this.slides = new LinearSlides(this.slideMotors, this.slideController, pidfCoefficients.IntakeSlides.f, 150);
+
+        // Claw does not need to be scheduled as it is a servo abstraction and needs no update
         this.claw = new Claw(hwmp, HardwareParameters.Motors.HardwareMapNames.intakeClawServo);
+
+        // Schedule SLIDES, as they must constantly update as they contain a PID controller
+        // prevents developer error later by ensuring the subsystem is registered no matter what
         CommandScheduler.getInstance().registerSubsystem(this.slides);
     }
 
@@ -36,5 +45,33 @@ public class Intake extends SubsystemBase {
         // Logical flow is as follows:
         // Retracted -> Extended (claw up) -> Extended (claw down) -> Extended (grabbing) -> Transfer -> Retracted (back to start)
 
+        switch (this.state) {
+            case RetractedClawOpen:
+                this.state = Subsystems.IntakeState.ExtendedClawUp;
+                this.slides.setTarget(1);
+                break;
+            case ExtendedClawUp:
+                this.state = Subsystems.IntakeState.ExtendedClawDown;
+                break;
+            case ExtendedClawDown:
+                this.state = Subsystems.IntakeState.ExtendedClawGrabbing;
+                break;
+            case ExtendedClawGrabbing:
+                this.claw.setState(Subsystems.ClawState.WeakGripClosed);
+                this.state = Subsystems.IntakeState.RetractedClawClosed;
+                this.slides.setTarget(0);
+                break;
+            default:
+                this.state = Subsystems.IntakeState.RetractedClawOpen;
+                this.claw.setState(Subsystems.ClawState.WideOpen);
+                break;
+        }
+    }
+
+    public void cancelGrab() {
+        if (this.state == Subsystems.IntakeState.ExtendedClawGrabbing) {
+            this.state = Subsystems.IntakeState.ExtendedClawDown;
+            this.claw.setState(Subsystems.ClawState.WideOpen);
+        }
     }
 }
