@@ -12,8 +12,8 @@ import core.parameters.pidfCoefficients;
 public class Drivebase extends SubsystemBase {
 
     // Parameters to control the drivetrain
-    public Vector driveVector;
-    public double driveScalar;
+    private Vector driveVector;
+    private double driveScalar;
     private double yaw = 0;
 
     // This is the yaw value to HOLD until either:
@@ -71,7 +71,7 @@ public class Drivebase extends SubsystemBase {
 
     public Drivebase(HardwareMap hwmp) {
         this.driveVector = Vector.cartesian(0, 0);
-        this.driveScalar = 0;
+        this.driveScalar = 1;
 
         // Create Motors
         this.frontRight = new CachedMotor(hwmp, HardwareParameters.Motors.HardwareMapNames.frontRight);
@@ -127,5 +127,21 @@ public class Drivebase extends SubsystemBase {
         this.frontRight.setPower((-driveVector.x - driveVector.y) * driveScalar - r);
         this.backLeft.setPower((-driveVector.x - driveVector.y) * driveScalar + r);
         this.backRight.setPower((driveVector.x - driveVector.y) * driveScalar - r);
+    }
+
+    public void setDriveVector(Vector driveVector) {
+        this.driveVector = driveVector;
+    }
+
+    public void setDriveScalar(double driveScalar) {
+        this.driveScalar = driveScalar;
+    }
+
+    public void stopDrivebase() {
+        this.driveVector = Vector.cartesian(0, 0);
+    }
+
+    public void resetSpeed() {
+        this.driveScalar = 1;
     }
 }

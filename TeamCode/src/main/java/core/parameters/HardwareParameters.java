@@ -15,7 +15,7 @@ public final class HardwareParameters {
             public static final String backRight = "backRight";
 
             // Slide motors
-            public static final String rightIntakeSlide = "intakeSlide";
+            public static final String intakeSlide = "intakeSlide";
             public static final String leftOuttakeSlide = "leftOuttakeSlide";
             public static final String rightOuttakeSlide = "rightOuttakeSlide";
             public static final String latchServo = "latchServo";
