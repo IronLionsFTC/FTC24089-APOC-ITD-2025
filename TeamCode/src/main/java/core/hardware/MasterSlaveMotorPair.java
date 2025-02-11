@@ -49,6 +49,10 @@ public class MasterSlaveMotorPair {
         return this.master.getPosition();
     }
 
+    public void resetEncoder() {
+        this.master.resetEncoder();
+    }
+
     // Despite the fact that it contradicts the master slave paradigm, allow for the average position to be collected
     // This should not be used in PID(f) controllers as it allows for situations (encoder slip) where the motors may fight against
     // their physical bounds (ie for outtake, could create a slant at top).

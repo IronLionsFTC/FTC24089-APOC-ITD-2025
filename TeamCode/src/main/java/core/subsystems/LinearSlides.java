@@ -54,6 +54,10 @@ public class LinearSlides extends SubsystemBase {
         this.target = Utility.clamp(relative, 0, 1);
     }
 
+    public void zeroEncoder() {
+        motors.resetEncoder();
+    }
+
     // Inherit the periodic update function from the subsystem base, this sets the motor powers from the PID
     @Override
     public void periodic() {
@@ -62,8 +66,15 @@ public class LinearSlides extends SubsystemBase {
         if (response > 0) { feedforward = positiveFeedForward; }
         else { feedforward = -negativeFeedForward; }
 
+        // If the slides are at the return position, cut power
         if (response < this.cutPowerOnNegativeThreshold) {
-
+            response = 0;
+        } else {
+            // Apply calculated feedforward
+            response += feedforward;
         }
+
+        // Set the master-slave paradigm to use the power
+        motors.setPower(response);
     }
 }
