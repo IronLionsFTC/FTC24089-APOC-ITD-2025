@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import core.subsystems.Drivebase;
 import core.subsystems.Intake;
+import core.commands.CMD;
 
 @TeleOp(name = "Teleop", group = "Competition")
 public class Teleop extends CommandOpMode {
@@ -23,8 +24,10 @@ public class Teleop extends CommandOpMode {
 
         // Schedule the command based opmode
         schedule(
-                new ParallelCommandGroup(
+                CMD.sleepUntil(this::opModeIsActive),
 
+                new ParallelCommandGroup(
+                        CMD.setDriveVector(drivebaseSubsystem, 0, 0)
                 )
         )
     }
