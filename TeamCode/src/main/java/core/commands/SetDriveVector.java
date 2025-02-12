@@ -11,11 +11,12 @@ public class SetDriveVector extends CommandBase {
     private final Drivebase drivebaseSubsystem;
     private DoubleSupplier x;
     private DoubleSupplier y;
+    private DoubleSupplier r;
     private Vector driveVector;
 
-    public SetDriveVector(Drivebase drivebaseSubsystem, DoubleSupplier x, DoubleSupplier y) {
+    public SetDriveVector(Drivebase drivebaseSubsystem, DoubleSupplier x, DoubleSupplier y, DoubleSupplier r) {
         this.drivebaseSubsystem = drivebaseSubsystem;
-        this.x = x; this.y = y;
+        this.x = x; this.y = y; this.r = r;
     }
 
     private void calculateDriveVector() {
@@ -31,6 +32,7 @@ public class SetDriveVector extends CommandBase {
     public void execute() {
         this.calculateDriveVector();
         this.drivebaseSubsystem.setDriveVector(this.driveVector);
+        this.drivebaseSubsystem.setYawInput(this.r.getAsDouble());
     }
 
     @Override

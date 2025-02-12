@@ -1,6 +1,7 @@
 package core.commands;
 
 import com.arcrobotics.ftclib.command.Command;
+import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
 
@@ -16,13 +17,31 @@ public class CMD {
     public static Command sleep(long ms) { return new WaitCommand(ms); }
     public static Command sleepUntil(BooleanSupplier condition) { return new WaitUntilCommand(condition); }
 
+    // Instant Commands
+    public static InstantCommand rotateCCW(Drivebase drivebaseSubsystem) {
+        return new InstantCommand(drivebaseSubsystem::rotate45DegreesCCW);
+    }
+    public static InstantCommand rotateCW(Drivebase drivebaseSubsystem) {
+        return new InstantCommand(drivebaseSubsystem::rotate45DegreesCW);
+    }
+
     // Extends the intake, automatically folding down the claw and rotating to 0 or x degrees.
     public static ExtendIntake extendIntake(Intake intakeSubsystem) { return new ExtendIntake(intakeSubsystem, (double)0); }
     public static ExtendIntake extendIntake(Intake intakeSubsystem, double r) { return new ExtendIntake(intakeSubsystem, r); }
 
+    // Cycle intake state machine
+    public static InstantCommand teleopIntakeCycle(Intake intakeSubsystem) {
+        return new InstantCommand(intakeSubsystem::nextState);
+    }
+
+    // Override control (Y button) does different things to different subsystems depending on the state.
+    // General overview:
+    //
+    // Cancels grab (drops sample)
+
     // PERMANENTLY bind the drivebase subsystem to some double suppliers, usually joystick axis.
-    public static SetDriveVector setDriveVector(Drivebase drivebaseSubsystem, DoubleSupplier x, DoubleSupplier y) {
-        return new SetDriveVector(drivebaseSubsystem, x, y);
+    public static SetDriveVector setDriveVector(Drivebase drivebaseSubsystem, DoubleSupplier x, DoubleSupplier y, DoubleSupplier r) {
+        return new SetDriveVector(drivebaseSubsystem, x, y, r);
     }
 
     // PERMANENTLY bind the intake subsystem's gimble yaw rotation to some double suppliers

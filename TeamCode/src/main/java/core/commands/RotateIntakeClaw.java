@@ -4,18 +4,19 @@ import com.arcrobotics.ftclib.command.CommandBase;
 
 import java.util.function.DoubleSupplier;
 
+import core.parameters.PositionalBounds;
 import core.state.Subsystems;
 import core.subsystems.DualAxisGimble;
 import core.subsystems.Intake;
 
 public class RotateIntakeClaw extends CommandBase {
 
-    private final DualAxisGimble intakeSubsystem;
+    private Intake intakeSubsystem;
     private DoubleSupplier right;
     private DoubleSupplier left;
 
     public RotateIntakeClaw(Intake intakeSubsystem, DoubleSupplier right, DoubleSupplier left) {
-        this.intakeSubsystem = intakeSubsystem.takeGimbleSubsystem();
+        this.intakeSubsystem = intakeSubsystem;
         this.right = right;
         this.left = left;
     }
@@ -24,9 +25,9 @@ public class RotateIntakeClaw extends CommandBase {
     // Run forever, rotating the claw by the left and right inputs
     public void execute() {
         if (intakeSubsystem.state == Subsystems.IntakeState.ExtendedClawDown || intakeSubsystem.state == Subsystems.IntakeState.ExtendedClawGrabbing) {
-            this.intakeSubsystem.rotateIntakeClaw(right.getAsDouble() - left.getAsDouble());
+            this.intakeSubsystem.rotateIntakeClaw((right.getAsDouble() - left.getAsDouble()) / 60); // Scale speed down
         } else {
-            this.intakeSubsystem.setIntakeClawRotation(0);
+            this.intakeSubsystem.setIntakeClawRotation(PositionalBounds.ServoPositions.ClawPositions.yawRest);
         }
     }
 }

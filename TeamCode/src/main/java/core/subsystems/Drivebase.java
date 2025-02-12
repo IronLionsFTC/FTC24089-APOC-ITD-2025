@@ -13,6 +13,7 @@ public class Drivebase extends SubsystemBase {
 
     // Parameters to control the drivetrain
     private Vector driveVector;
+    private double yawInput;
     private double driveScalar;
     private double yaw = 0;
 
@@ -103,8 +104,26 @@ public class Drivebase extends SubsystemBase {
         );
     }
 
+    public void setYaw(double yaw) {
+        this.yaw = yaw;
+        while (this.yaw > 180) { this.yaw -= 360; }
+        while (this.yaw < -180) { this.yaw += 360; }
+    }
+
+    public void rotate45DegreesCCW() {
+        this.setYaw(this.yaw - 45);
+        this.lastYawActionWasManual = false;
+    }
+
+    public void rotate45DegreesCW() {
+        this.setYaw(this.yaw + 45);
+        this.lastYawActionWasManual = false;
+    }
+
     @Override
     public void periodic() {
+
+        this.lastYawActionWasManual = this.yawInput != 0;
 
         // If the pid coefficients are being tuned, update them constantly
         if (pidfCoefficients.Drivetrain.tuning) {
@@ -120,8 +139,9 @@ public class Drivebase extends SubsystemBase {
         this.yaw = this.odometry.calculateYaw();
 
         // PID (position, target)
+        double r = this.yawInput;
         if (this.lastYawActionWasManual) { this.targetYaw = this.yaw; }
-        double r = this.yawCorrectionController.calculate(this.yaw, this.targetYaw);
+        else { r = this.yawCorrectionController.calculate(this.yaw, this.targetYaw); }
 
         this.frontLeft.setPower((driveVector.x - driveVector.y) * driveScalar + r);
         this.frontRight.setPower((-driveVector.x - driveVector.y) * driveScalar - r);
@@ -143,5 +163,9 @@ public class Drivebase extends SubsystemBase {
 
     public void resetSpeed() {
         this.driveScalar = 1;
+    }
+
+    public void setYawInput(double yawInput) {
+        this.yawInput = yawInput;
     }
 }
