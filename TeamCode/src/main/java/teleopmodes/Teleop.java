@@ -15,10 +15,13 @@ public class Teleop extends CommandOpMode {
 
     private Drivebase drivebaseSubsystem;
     private Intake intakeSubsystem;
-    private Buttons buttons = new Buttons(gamepad1, gamepad2);
+    private Buttons buttons;
 
     @Override
     public void initialize() {
+        this.buttons = new Buttons(gamepad1, gamepad2);
+        this.intakeSubsystem = new Intake(hardwareMap);
+        this.drivebaseSubsystem = new Drivebase(hardwareMap);
 
         // IMPORTANT - Register SUBSYSTEMS that implement periodic
         CommandScheduler.getInstance().registerSubsystem(drivebaseSubsystem);

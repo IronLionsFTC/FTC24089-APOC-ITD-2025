@@ -5,8 +5,6 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.robotcore.external.matrices.GeneralMatrixF;
-
 import java.util.function.DoubleSupplier;
 
 public class Controls {

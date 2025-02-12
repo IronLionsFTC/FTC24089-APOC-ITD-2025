@@ -5,14 +5,15 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class CachedServo {
-    private Servo servo;
+    private final Servo servo;
     private double position;
-    private Timer timeSinceUpdate;
+    private final Timer timeSinceUpdate = new Timer();
 
     // Expose a constructor pulling a Servo of name from hardwaremap
     public CachedServo(HardwareMap hwmp, String name) {
         this.servo = hwmp.get(Servo.class, name);
-        this.position = 0.0;
+        this.servo.setPosition(0);
+        this.position = -1;
     }
 
     // Allow construction of a servo starting at a specific position
