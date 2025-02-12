@@ -36,7 +36,7 @@ public class DualAxisGimble extends SubsystemBase {
     }
 
     public void rotateYaw(double speed) {
-        this.yawServo.setPosition(Utility.clamp(yawServo.getPosition() + (speed / 50),
+        this.yawServo.setPosition(Utility.clamp(yawServo.getPosition() + (speed / -5),
                 ClawPositions.yawRest - ClawPositions.yawRange, ClawPositions.yawRest + ClawPositions.yawRange));
     }
 
