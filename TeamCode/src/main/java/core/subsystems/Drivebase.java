@@ -71,6 +71,15 @@ public class Drivebase extends SubsystemBase {
     }
 
     public Drivebase(HardwareMap hwmp) {
+
+        // PID
+        this.yawCorrectionController = new PIDFController(
+                pidfCoefficients.Drivetrain.p,
+                pidfCoefficients.Drivetrain.i,
+                pidfCoefficients.Drivetrain.d,
+                pidfCoefficients.Drivetrain.f
+        );
+
         this.driveVector = Vector.cartesian(0, 0);
         this.driveScalar = 1;
 

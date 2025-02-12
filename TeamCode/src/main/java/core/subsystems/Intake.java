@@ -104,4 +104,15 @@ public class Intake extends SubsystemBase {
     public DualAxisGimble takeGimbleSubsystem() {
         return this.gimble;
     }
+
+    @Override
+    public void periodic() {
+        if (pidfCoefficients.IntakeSlides.tuning) {
+            this.slideController.setPID(
+                pidfCoefficients.IntakeSlides.p,
+                pidfCoefficients.IntakeSlides.i,
+                pidfCoefficients.IntakeSlides.d
+            );
+        }
+    }
 }
