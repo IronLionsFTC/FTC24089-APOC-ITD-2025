@@ -31,14 +31,14 @@ public class Intake extends SubsystemBase {
     private Telemetry telemetry;
 
     public Intake(HardwareMap hwmp, Telemetry telemetry) {
+        this.telemetry = telemetry;
         this.slideMotors = new MasterSlaveMotorPair(hwmp, HardwareParameters.Motors.HardwareMapNames.intakeSlide, HardwareParameters.Motors.Reversed.intakeSlide);
         this.slideController = new PIDController(
                 pidfCoefficients.IntakeSlides.p,
                 pidfCoefficients.IntakeSlides.i,
                 pidfCoefficients.IntakeSlides.d
         );
-        this.slides = new LinearSlides(this.slideMotors, this.slideController, pidfCoefficients.IntakeSlides.f, 150);
-        this.telemetry = telemetry;
+        this.slides = new LinearSlides(this.slideMotors, this.slideController, this.telemetry, pidfCoefficients.IntakeSlides.f, 150);
 
         // Claw and gimble do not need to be scheduled as they are servo abstractions and need no update
         this.claw = new Claw(hwmp, HardwareParameters.Motors.HardwareMapNames.intakeClawServo);
@@ -59,26 +59,21 @@ public class Intake extends SubsystemBase {
         switch (this.state) {
             case RetractedClawOpen:
                 this.state = Subsystems.IntakeState.ExtendedClawUp;
-                this.slides.setTarget(1);
                 break;
             case ExtendedClawUp:
                 this.state = Subsystems.IntakeState.ExtendedClawDown;
-                this.gimble.extendPitch();
                 break;
             case ExtendedClawDown:
                 this.state = Subsystems.IntakeState.ExtendedClawGrabbing;
-                this.claw.setState(Subsystems.ClawState.WeakGripClosed);
                 break;
             case ExtendedClawGrabbing:
                 this.state = Subsystems.IntakeState.RetractedClawClosed;
-                this.gimble.resetPosition();
-                this.slides.setTarget(0);
                 break;
             default:
                 this.state = Subsystems.IntakeState.RetractedClawOpen;
-                this.claw.setState(Subsystems.ClawState.WideOpen);
                 break;
         }
+
     }
 
     // Allow for claw to be opened without breaking state machine
@@ -121,6 +116,33 @@ public class Intake extends SubsystemBase {
                 pidfCoefficients.IntakeSlides.i,
                 pidfCoefficients.IntakeSlides.d
             );
+        }
+
+        switch (this.state) {
+            case RetractedClawOpen:
+                this.slides.setTarget(0);
+                this.claw.setState(Subsystems.ClawState.WideOpen);
+                this.gimble.resetPosition();
+                break;
+            case ExtendedClawUp:
+                this.slides.setTarget(1);
+                this.claw.setState(Subsystems.ClawState.WideOpen);
+                break;
+            case ExtendedClawDown:
+                this.slides.setTarget(1);
+                this.gimble.extendPitch();
+                this.claw.setState(Subsystems.ClawState.WideOpen);
+                break;
+            case ExtendedClawGrabbing:
+                this.slides.setTarget(1);
+                this.gimble.extendPitch();
+                this.claw.setState(Subsystems.ClawState.WeakGripClosed);
+                break;
+            default:
+                this.claw.setState(Subsystems.ClawState.WeakGripClosed);
+                this.slides.setTarget(0);
+                this.gimble.resetPosition();
+                break;
         }
     }
 }

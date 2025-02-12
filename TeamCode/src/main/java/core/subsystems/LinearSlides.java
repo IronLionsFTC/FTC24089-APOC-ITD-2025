@@ -3,6 +3,8 @@ package core.subsystems;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.PIDController;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 import core.hardware.MasterSlaveMotorPair;
 import core.math.Utility;
 
@@ -27,9 +29,11 @@ public class LinearSlides extends SubsystemBase {
     private double target = 0;
 
     private MasterSlaveMotorPair motors;
+    private Telemetry telemetry;
 
     // Public constructor requires non-null motor pair to avoid overhead
-    public LinearSlides(MasterSlaveMotorPair motors, PIDController pidController, double feedForward, double maximumExtension) {
+    public LinearSlides(MasterSlaveMotorPair motors, PIDController pidController, Telemetry telemetry, double feedForward, double maximumExtension) {
+        this.telemetry = telemetry;
         this.motors = motors;
         this.pidController = pidController;
         this.positiveFeedForward = feedForward;
@@ -40,9 +44,11 @@ public class LinearSlides extends SubsystemBase {
     // Allow for different negative and positive feedforward values on construction
     public LinearSlides(MasterSlaveMotorPair motors,
             PIDController pidController,
+            Telemetry telemetry,
             double positiveFeedForward,
             double negativeFeedForward,
             double maximumExtension) {
+        this.telemetry = telemetry;
         this.motors = motors;
         this.pidController = pidController;
         this.positiveFeedForward = positiveFeedForward;
@@ -62,12 +68,13 @@ public class LinearSlides extends SubsystemBase {
     @Override
     public void periodic() {
         double response = this.pidController.calculate(this.motors.getPosition(), this.target * this.maximumExtension);
+        this.telemetry.addData("Intake Slides", this.motors.getPosition());
         double feedforward;
         if (response > 0) { feedforward = positiveFeedForward; }
         else { feedforward = -negativeFeedForward; }
 
         // If the slides are at the return position, cut power
-        if (response < this.cutPowerOnNegativeThreshold) {
+        if (this.motors.getPosition() < this.cutPowerOnNegativeThreshold) {
             response = 0;
         } else {
             // Apply calculated feedforward

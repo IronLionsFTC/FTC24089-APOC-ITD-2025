@@ -147,7 +147,7 @@ public class Drivebase extends SubsystemBase {
         }
 
         // Calculate the yaw
-        this.yaw = this.odometry.calculateYaw();
+        this.yaw = -this.odometry.calculateYaw();
         telemetry.addData("YAW", this.yaw);
 
         // PID (position, target)
