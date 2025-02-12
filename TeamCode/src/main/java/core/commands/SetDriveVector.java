@@ -20,7 +20,7 @@ public class SetDriveVector extends CommandBase {
     }
 
     private void calculateDriveVector() {
-        this.driveVector = Vector.cartesian(this.x.getAsDouble(), this.y.getAsDouble());
+        this.driveVector = Vector.cartesian(this.x.getAsDouble(), -this.y.getAsDouble());
     }
 
     @Override

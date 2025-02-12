@@ -1,8 +1,11 @@
 package teleopmodes;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
+import com.arcrobotics.ftclib.command.RunCommand;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import core.controls.Controls.Buttons;
@@ -19,9 +22,10 @@ public class Teleop extends CommandOpMode {
 
     @Override
     public void initialize() {
+        this.telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         this.buttons = new Buttons(gamepad1, gamepad2);
-        this.intakeSubsystem = new Intake(hardwareMap);
-        this.drivebaseSubsystem = new Drivebase(hardwareMap);
+        this.intakeSubsystem = new Intake(hardwareMap, this.telemetry);
+        this.drivebaseSubsystem = new Drivebase(hardwareMap, this.telemetry);
 
         // IMPORTANT - Register SUBSYSTEMS that implement periodic
         CommandScheduler.getInstance().registerSubsystem(drivebaseSubsystem);
@@ -35,6 +39,7 @@ public class Teleop extends CommandOpMode {
         // Schedule the command based opmode
         schedule(
                 CMD.sleepUntil(this::opModeIsActive),
+                new RunCommand(telemetry::update),
 
                 new ParallelCommandGroup(
                         CMD.setDriveVector(drivebaseSubsystem, buttons.driveX, buttons.driveY, buttons.yaw),

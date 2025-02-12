@@ -1,9 +1,12 @@
 package core.subsystems;
 
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import core.hardware.MasterSlaveMotorPair;
 import core.parameters.HardwareParameters;
@@ -24,7 +27,10 @@ public class Intake extends SubsystemBase {
     private PIDController slideController;
     private MasterSlaveMotorPair slideMotors;
 
-    public Intake(HardwareMap hwmp) {
+    // Telemetry
+    private Telemetry telemetry;
+
+    public Intake(HardwareMap hwmp, Telemetry telemetry) {
         this.slideMotors = new MasterSlaveMotorPair(hwmp, HardwareParameters.Motors.HardwareMapNames.intakeSlide, HardwareParameters.Motors.Reversed.intakeSlide);
         this.slideController = new PIDController(
                 pidfCoefficients.IntakeSlides.p,
@@ -32,6 +38,7 @@ public class Intake extends SubsystemBase {
                 pidfCoefficients.IntakeSlides.d
         );
         this.slides = new LinearSlides(this.slideMotors, this.slideController, pidfCoefficients.IntakeSlides.f, 150);
+        this.telemetry = telemetry;
 
         // Claw and gimble do not need to be scheduled as they are servo abstractions and need no update
         this.claw = new Claw(hwmp, HardwareParameters.Motors.HardwareMapNames.intakeClawServo);
@@ -107,6 +114,7 @@ public class Intake extends SubsystemBase {
 
     @Override
     public void periodic() {
+        this.telemetry.addData("Perform update: ", pidfCoefficients.IntakeSlides.tuning);
         if (pidfCoefficients.IntakeSlides.tuning) {
             this.slideController.setPID(
                 pidfCoefficients.IntakeSlides.p,

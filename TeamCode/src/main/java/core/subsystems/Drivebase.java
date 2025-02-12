@@ -1,8 +1,12 @@
 package core.subsystems;
 
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 import core.hardware.CachedEncoder;
 import core.hardware.CachedMotor;
 import core.math.Vector;
@@ -36,6 +40,9 @@ public class Drivebase extends SubsystemBase {
     private CachedMotor backLeft;
     private CachedMotor backRight;
 
+    // Telemetry
+    private Telemetry telemetry;
+
     // Odometry
     public Odometry odometry;
 
@@ -55,11 +62,12 @@ public class Drivebase extends SubsystemBase {
             this.left = new CachedEncoder(hwmp, HardwareParameters.Odometry.HardwareMapNames.left);
             this.right = new CachedEncoder(hwmp, HardwareParameters.Odometry.HardwareMapNames.right);
             this.sideways = new CachedEncoder(hwmp, HardwareParameters.Odometry.HardwareMapNames.sideways);
+            this.zero();
         }
 
         // Derive the yaw from the encoder positions
         public double calculateYaw() {
-            return (this.left.read() + this.right.read()) * this.scalar;
+            return (this.left.read() + this.right.read()) * scalar;
         }
 
         // Reset the dt odometry
@@ -70,7 +78,8 @@ public class Drivebase extends SubsystemBase {
         }
     }
 
-    public Drivebase(HardwareMap hwmp) {
+    public Drivebase(HardwareMap hwmp, Telemetry telemetry) {
+        this.telemetry = telemetry;
 
         // PID
         this.yawCorrectionController = new PIDFController(
@@ -103,14 +112,6 @@ public class Drivebase extends SubsystemBase {
 
         // Odometry
         this.odometry = new Odometry(hwmp);
-
-        // Yaw Correction
-        this.yawCorrectionController.setPIDF(
-                pidfCoefficients.Drivetrain.p,
-                pidfCoefficients.Drivetrain.i,
-                pidfCoefficients.Drivetrain.d,
-                pidfCoefficients.Drivetrain.f
-        );
     }
 
     public void setYaw(double yaw) {
@@ -135,6 +136,7 @@ public class Drivebase extends SubsystemBase {
         this.lastYawActionWasManual = this.yawInput != 0;
 
         // If the pid coefficients are being tuned, update them constantly
+        telemetry.addData("Drivebase tuning: ", pidfCoefficients.Drivetrain.tuning);
         if (pidfCoefficients.Drivetrain.tuning) {
             this.yawCorrectionController.setPIDF(
                     pidfCoefficients.Drivetrain.p,
@@ -146,6 +148,7 @@ public class Drivebase extends SubsystemBase {
 
         // Calculate the yaw
         this.yaw = this.odometry.calculateYaw();
+        telemetry.addData("YAW", this.yaw);
 
         // PID (position, target)
         double r = this.yawInput;
