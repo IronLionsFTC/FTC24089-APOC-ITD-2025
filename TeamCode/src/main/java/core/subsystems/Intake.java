@@ -1,6 +1,5 @@
 package core.subsystems;
 
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.PIDController;
@@ -12,6 +11,7 @@ import core.hardware.MasterSlaveMotorPair;
 import core.parameters.HardwareParameters;
 import core.parameters.pidfCoefficients;
 import core.state.Subsystems;
+import core.state.Subsystems.IntakeState;
 
 public class Intake extends SubsystemBase {
 
@@ -21,7 +21,7 @@ public class Intake extends SubsystemBase {
     private DualAxisGimble gimble;
 
     // Internal Subsystem State
-    public Subsystems.IntakeState state = Subsystems.IntakeState.RetractedClawOpen;
+    public IntakeState state;
 
     // Hardware Interface / Controllers
     private PIDController slideController;
@@ -31,6 +31,9 @@ public class Intake extends SubsystemBase {
     private Telemetry telemetry;
 
     public Intake(HardwareMap hwmp, Telemetry telemetry) {
+        this.state = IntakeState.RetractedClawOpen;
+        this.gimble.resetPosition();
+        this.slides.setTarget(0);
         this.telemetry = telemetry;
         this.slideMotors = new MasterSlaveMotorPair(hwmp, HardwareParameters.Motors.HardwareMapNames.intakeSlide, HardwareParameters.Motors.Reversed.intakeSlide);
         this.slideController = new PIDController(
@@ -38,7 +41,7 @@ public class Intake extends SubsystemBase {
                 pidfCoefficients.IntakeSlides.i,
                 pidfCoefficients.IntakeSlides.d
         );
-        this.slides = new LinearSlides(this.slideMotors, this.slideController, this.telemetry, pidfCoefficients.IntakeSlides.f, 150);
+        this.slides = new LinearSlides(this.slideMotors, this.slideController, this.telemetry, pidfCoefficients.IntakeSlides.f, 145);
 
         // Claw and gimble do not need to be scheduled as they are servo abstractions and need no update
         this.claw = new Claw(hwmp, HardwareParameters.Motors.HardwareMapNames.intakeClawServo);
@@ -58,19 +61,19 @@ public class Intake extends SubsystemBase {
 
         switch (this.state) {
             case RetractedClawOpen:
-                this.state = Subsystems.IntakeState.ExtendedClawUp;
+                this.state = IntakeState.ExtendedClawUp;
                 break;
             case ExtendedClawUp:
-                this.state = Subsystems.IntakeState.ExtendedClawDown;
+                this.state = IntakeState.ExtendedClawDown;
                 break;
             case ExtendedClawDown:
-                this.state = Subsystems.IntakeState.ExtendedClawGrabbing;
+                this.state = IntakeState.ExtendedClawGrabbing;
                 break;
             case ExtendedClawGrabbing:
-                this.state = Subsystems.IntakeState.RetractedClawClosed;
+                this.state = IntakeState.RetractedClawClosed;
                 break;
             default:
-                this.state = Subsystems.IntakeState.RetractedClawOpen;
+                this.state = IntakeState.RetractedClawOpen;
                 break;
         }
 
@@ -78,8 +81,8 @@ public class Intake extends SubsystemBase {
 
     // Allow for claw to be opened without breaking state machine
     public void cancelGrab() {
-        if (this.state == Subsystems.IntakeState.ExtendedClawGrabbing) {
-            this.state = Subsystems.IntakeState.ExtendedClawDown;
+        if (this.state == IntakeState.ExtendedClawGrabbing) {
+            this.state = IntakeState.ExtendedClawDown;
             this.claw.setState(Subsystems.ClawState.WideOpen);
         }
     }
@@ -109,7 +112,6 @@ public class Intake extends SubsystemBase {
 
     @Override
     public void periodic() {
-        this.telemetry.addData("Perform update: ", pidfCoefficients.IntakeSlides.tuning);
         if (pidfCoefficients.IntakeSlides.tuning) {
             this.slideController.setPID(
                 pidfCoefficients.IntakeSlides.p,
@@ -127,6 +129,7 @@ public class Intake extends SubsystemBase {
             case ExtendedClawUp:
                 this.slides.setTarget(1);
                 this.claw.setState(Subsystems.ClawState.WideOpen);
+                this.gimble.resetPosition();
                 break;
             case ExtendedClawDown:
                 this.slides.setTarget(1);
@@ -139,8 +142,9 @@ public class Intake extends SubsystemBase {
                 this.claw.setState(Subsystems.ClawState.WeakGripClosed);
                 break;
             default:
-                this.claw.setState(Subsystems.ClawState.WeakGripClosed);
-                this.slides.setTarget(0);
+                this.claw.setState(Subsystems.ClawState.StrongGripClosed);
+                if (this.gimble.doneFolding()) { this.slides.setTarget(0); }
+                else { this.slides.setTarget(1); }
                 this.gimble.resetPosition();
                 break;
         }

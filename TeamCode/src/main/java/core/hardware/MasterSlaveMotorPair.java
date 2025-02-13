@@ -12,6 +12,8 @@ public class MasterSlaveMotorPair {
         this.master = master;
         this.slave = slave;
         this.hasSlave = true;
+
+        this.master.resetEncoder();
     }
 
     // Allow for construction of motors owned by the pair
@@ -21,6 +23,8 @@ public class MasterSlaveMotorPair {
         this.slave = new CachedMotor(hwmp, slave);
         this.slave.setReversed(reverseSlave);
         this.hasSlave = true;
+
+        this.master.resetEncoder();
     }
 
     // Master without slave (single motor wrapped in pair for functions that assume a pair).
@@ -30,6 +34,8 @@ public class MasterSlaveMotorPair {
         this.master = master;
         this.slave = null;
         this.hasSlave = false;
+
+        this.master.resetEncoder();
     }
 
     public MasterSlaveMotorPair(HardwareMap hwmp, String master, boolean reverseMaster) {
@@ -37,6 +43,8 @@ public class MasterSlaveMotorPair {
         this.master.setReversed(reverseMaster);
         this.slave = null;
         this.hasSlave = false;
+
+        this.master.resetEncoder();
     }
 
     // Only update the slaves power if the masters power changed.
