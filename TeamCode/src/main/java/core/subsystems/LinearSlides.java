@@ -89,4 +89,7 @@ public class LinearSlides extends SubsystemBase {
     public double getRelative() {
         return this.motors.getPosition() / this.maximumExtension;
     }
+
+    public void setFeedForward(double feedForward) { this.positiveFeedForward = feedForward; }
+    public void setFeedBackward(double feedBackward) { this.negativeFeedForward = feedBackward; }
 }

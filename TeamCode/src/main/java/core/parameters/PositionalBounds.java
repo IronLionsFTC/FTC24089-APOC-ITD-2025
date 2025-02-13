@@ -21,5 +21,20 @@ public final class PositionalBounds {
             // yaw rest
             public static final double yawRange = 0.5;
         }
+
+    }
+
+    public static final class SlidePositions {
+
+        // Degrees of motor rotation for maximum extension,
+        // Positions expressed as relative 0-1 so that they are consistent
+        // Across motors and ratios
+
+        public static final double outtakeMaximumExtension = 1000;
+
+        public static final class OuttakePositions {
+            public static final double highBasket = 1;
+            public static final double lowBasket = 0.37;
+        }
     }
 }

@@ -17,4 +17,15 @@ public class Subsystems {
         ExtendedClawGrabbing,
         RetractedClawClosed
     }
+
+    public enum OuttakeState {
+        DownClawOpen,
+        DownClawClosed,
+
+        LowBasketUpClawClosed,
+        LowBasketUpClawOpen,
+
+        HighBasketUpClawClosed,
+        HighBasketUpClawOpen
+    }
 }
