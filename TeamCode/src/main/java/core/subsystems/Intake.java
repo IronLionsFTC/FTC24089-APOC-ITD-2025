@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import core.hardware.CachedServo;
 import core.hardware.MasterSlaveMotorPair;
 import core.parameters.HardwareParameters;
+import core.parameters.PositionalBounds;
 import core.parameters.pidfCoefficients;
 import core.state.Subsystems;
 import core.state.Subsystems.IntakeState;
@@ -24,6 +25,7 @@ public class Intake extends SubsystemBase {
 
     // Internal Subsystem State
     public IntakeState state;
+    private int retractionCounter;
 
     // Hardware Interface / Controllers
     private PIDController slideController;
@@ -36,6 +38,7 @@ public class Intake extends SubsystemBase {
         this.state = IntakeState.RetractedClawOpen;
         this.gimble.resetPosition();
         this.slides.setTarget(0);
+        this.retractionCounter = 0;
         this.telemetry = telemetry;
         this.slideMotors = new MasterSlaveMotorPair(hwmp, HardwareParameters.Motors.HardwareMapNames.intakeSlide, HardwareParameters.Motors.Reversed.intakeSlide);
         this.slideController = new PIDController(
@@ -122,6 +125,10 @@ public class Intake extends SubsystemBase {
             );
         }
 
+        // Track retraction stability (make sure it hasn't bounced out)
+        if (this.slideExtension() < 0.05) retractionCounter =+ 1;
+        else retractionCounter = 0;
+
         switch (this.state) {
             case RetractedClawOpen:
                 this.slides.setTarget(0);
@@ -152,11 +159,16 @@ public class Intake extends SubsystemBase {
         }
 
         if (this.state == IntakeState.RetractedClawOpen || this.state == IntakeState.RetractedClawClosed) {
-
+            if (retractionCounter > 20) this.latchServo.setPosition(PositionalBounds.ServoPositions.LatchPositions.closed);
+            else this.latchServo.setPosition(PositionalBounds.ServoPositions.LatchPositions.open);
         }
     }
 
     public boolean hasClawClosed() {
         return this.claw.hasClawPhysicallyClosed();
+    }
+
+    public boolean isSlideLatched() {
+        return this.retractionCounter > 20 && (this.state == IntakeState.RetractedClawClosed || this.state == IntakeState.RetractedClawOpen);
     }
 }

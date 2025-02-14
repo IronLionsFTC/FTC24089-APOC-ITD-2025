@@ -22,7 +22,10 @@ public final class PositionalBounds {
             public static final double yawRange = 0.5;
         }
 
-        public static 
+        public static final class LatchPositions {
+            public static final double open = 0.13;
+            public static final double closed = 0.4;
+        }
 
     }
 
