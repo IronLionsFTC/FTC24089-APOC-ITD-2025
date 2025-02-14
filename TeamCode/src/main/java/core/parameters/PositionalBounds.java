@@ -22,6 +22,8 @@ public final class PositionalBounds {
             public static final double yawRange = 0.5;
         }
 
+        public static 
+
     }
 
     public static final class SlidePositions {

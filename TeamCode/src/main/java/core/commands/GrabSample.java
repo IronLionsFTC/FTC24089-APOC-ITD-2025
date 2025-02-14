@@ -15,7 +15,6 @@ public class GrabSample extends CommandBase {
 
     @Override
     public void initialize() {
-
         if (this.intakeSubsystem.state == Subsystems.IntakeState.ExtendedClawDown) {
             this.intakeSubsystem.nextState();
         }

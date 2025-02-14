@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import core.hardware.CachedServo;
 import core.hardware.MasterSlaveMotorPair;
 import core.parameters.HardwareParameters;
 import core.parameters.pidfCoefficients;
@@ -19,6 +20,7 @@ public class Intake extends SubsystemBase {
     private LinearSlides slides;
     private Claw claw;
     private DualAxisGimble gimble;
+    private CachedServo latchServo;
 
     // Internal Subsystem State
     public IntakeState state;
@@ -147,6 +149,10 @@ public class Intake extends SubsystemBase {
                 else { this.slides.setTarget(1); }
                 this.gimble.resetPosition();
                 break;
+        }
+
+        if (this.state == IntakeState.RetractedClawOpen || this.state == IntakeState.RetractedClawClosed) {
+
         }
     }
 
