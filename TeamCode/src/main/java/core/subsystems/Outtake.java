@@ -10,6 +10,7 @@ import core.hardware.CachedServo;
 import core.hardware.MasterSlaveMotorPair;
 import core.parameters.HardwareParameters;
 import core.parameters.PositionalBounds;
+import core.parameters.Timings;
 import core.parameters.pidfCoefficients;
 import core.state.Subsystems;
 import core.state.Subsystems.OuttakeState;
@@ -21,10 +22,8 @@ public class Outtake extends SubsystemBase {
     private Claw claw;
     private MasterSlaveMotorPair slideMotors;
 
-    // Servos - note that one of these must be the inverse (1 - x) of the other
-    // As of current configuration, right is the inversed one.
-    private CachedServo leftArmServo;
-    private CachedServo rightArmServo;
+    // Arm handler - this COULD be a subsystem, for now it is not.
+    private Arm arm;
 
     // Telemetry
     private Telemetry telemetry;
@@ -33,16 +32,18 @@ public class Outtake extends SubsystemBase {
     private PIDController slideController;
 
     // State
-    private OuttakeState state;
+    public OuttakeState state;
+    private boolean useHighBasket;
 
     public Outtake(HardwareMap hwmp, Telemetry telemetry) {
 
-        // Load the servos directly
-        this.leftArmServo = new CachedServo(hwmp, HardwareParameters.Motors.HardwareMapNames.leftArmServo);
-        this.rightArmServo = new CachedServo(hwmp, HardwareParameters.Motors.HardwareMapNames.rightArmServo);
+        this.useHighBasket = true;
+        this.arm = new Arm(hwmp);
 
-        // Currently start with claw open
+        // Currently start with claw open, always use high basket
         this.state = OuttakeState.DownClawOpen;
+        this.useHighBasket = true;
+
         this.telemetry = telemetry;
         this.slideMotors = new MasterSlaveMotorPair(hwmp,
                 HardwareParameters.Motors.HardwareMapNames.rightOuttakeSlide,
@@ -63,9 +64,59 @@ public class Outtake extends SubsystemBase {
 
     // Wrapper around setting the positions such that the right servo is inverted,
     // prevents me having to set both every time potentially forgetting an inversion
-    private void setArmPosition(double position) {
-        this.leftArmServo.setPosition(position);
-        this.rightArmServo.setPosition(1 - position);
+
+    private class Arm {
+
+        // Servos - note that one of these must be the inverse (1 - x) of the other
+        // As of current configuration, right is the inversed one.
+        private CachedServo leftArmServo;
+        private CachedServo rightArmServo;
+
+        public Arm(HardwareMap hwmp) {
+
+            // Load the servos directly
+            this.leftArmServo = new CachedServo(hwmp, HardwareParameters.Motors.HardwareMapNames.leftArmServo);
+            this.rightArmServo = new CachedServo(hwmp, HardwareParameters.Motors.HardwareMapNames.rightArmServo);
+
+        }
+
+        public void setArmPosition(double position) {
+            this.leftArmServo.setPosition(position);
+            this.rightArmServo.setPosition(1 - position);
+        }
+
+        public double getArmPosition() {
+            return this.leftArmServo.getPosition();
+        }
+
+        public boolean armPhysicallyUp() { return this.getArmPosition() > 0.5 && this.leftArmServo.secondsSinceMovement() > Timings.armFoldUpTime; }
+        public boolean armPhysicallyDown() { return this.getArmPosition() < 0.5 && this.leftArmServo.secondsSinceMovement() > Timings.armFoldDownTime; }
+    }
+
+    // Wrapper function for getting height based on basket substate
+    public double getTargetHeight() {
+        if (this.useHighBasket) return PositionalBounds.SlidePositions.OuttakePositions.highBasket;
+        return PositionalBounds.SlidePositions.OuttakePositions.lowBasket;
+    }
+
+    public void toggleBasket() {
+        this.useHighBasket = !this.useHighBasket;
+    }
+
+    public void nextState() {
+        switch (this.state) {
+            case DownClawOpen:
+                this.state = OuttakeState.DownClawClosed;
+                break;
+            case DownClawClosed:
+                this.state = OuttakeState.UpClawClosed;
+                break;
+            case UpClawClosed:
+                this.state = OuttakeState.UpClawOpen;
+                break;
+            case UpClawOpen:
+                this.state = OuttakeState.DownClawOpen;
+        }
     }
 
     @Override
@@ -86,33 +137,37 @@ public class Outtake extends SubsystemBase {
         // Internal state machine
         switch (this.state) {
             case DownClawOpen:
-                this.slides.setTarget(0);
+                if (this.arm.armPhysicallyDown()) this.slides.setTarget(0);
+                else {
+                    if (this.useHighBasket) this.slides.setTarget(PositionalBounds.SlidePositions.OuttakePositions.highBasket);
+                    this.slides.setTarget(PositionalBounds.SlidePositions.OuttakePositions.lowBasket);
+                }
                 this.claw.setState(Subsystems.ClawState.Open);
-                this.setArmPosition(0);
+                this.arm.setArmPosition(0);
                 break;
             case DownClawClosed:
                 this.slides.setTarget(0);
                 this.claw.setState(Subsystems.ClawState.StrongGripClosed);
-                this.setArmPosition(0);
+                this.arm.setArmPosition(0);
                 break;
 
-            case HighBasketUpClawClosed:
-                this.slides.setTarget(PositionalBounds.SlidePositions.OuttakePositions.highBasket);
+            case UpClawClosed:
+                this.slides.setTarget(this.getTargetHeight());
+                if (this.slides.getRelative() > PositionalBounds.SlidePositions.OuttakePositions.highBasket * 0.7) {
+                    this.arm.setArmPosition(0);
+                } else {
+                    this.arm.setArmPosition(0.7);
+                }
                 this.claw.setState(Subsystems.ClawState.StrongGripClosed);
-                this.setArmPosition(0.7);
                 break;
-            case HighBasketUpClawOpen:
-                this.slides.setTarget(PositionalBounds.SlidePositions.OuttakePositions.highBasket);
-                this.claw.setState(Subsystems.ClawState.StrongGripClosed);
-                this.setArmPosition(0.7);
-                break;
+            case UpClawOpen:
+                this.slides.setTarget(this.getTargetHeight());
+                this.claw.setState(Subsystems.ClawState.WideOpen);
+                this.arm.setArmPosition(0.7);
 
-            case LowBasketUpClawClosed:
-                this.slides.setTarget(PositionalBounds.SlidePositions.OuttakePositions.highBasket);
-                this.claw.setState(Subsystems.ClawState.StrongGripClosed);
-                this.setArmPosition(0.7);
+                // Automatically retract outtake when the sample has been dropped
+                if (this.claw.hasClawPhysicallyOpened()) this.nextState();
                 break;
-
         }
     }
 }

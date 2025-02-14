@@ -22,10 +22,7 @@ public class Subsystems {
         DownClawOpen,
         DownClawClosed,
 
-        LowBasketUpClawClosed,
-        LowBasketUpClawOpen,
-
-        HighBasketUpClawClosed,
-        HighBasketUpClawOpen
+        UpClawClosed,
+        UpClawOpen
     }
 }

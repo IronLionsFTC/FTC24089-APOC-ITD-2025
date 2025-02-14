@@ -149,4 +149,8 @@ public class Intake extends SubsystemBase {
                 break;
         }
     }
+
+    public boolean hasClawClosed() {
+        return this.claw.hasClawPhysicallyClosed();
+    }
 }
