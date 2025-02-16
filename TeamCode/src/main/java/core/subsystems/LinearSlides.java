@@ -26,6 +26,7 @@ public class LinearSlides extends SubsystemBase {
     // When retracting slides, if they are within this threshold (0-1), then cut power
     private double cutPowerOnNegativeThreshold = 0.05;
     private double maximumExtension;
+    private boolean powerOnRetraction = true;
     private double target = 0;
 
     private MasterSlaveMotorPair motors;
@@ -74,12 +75,14 @@ public class LinearSlides extends SubsystemBase {
         else { feedforward = -negativeFeedForward; }
 
         // If the slides are at the return position, cut power
-        if (this.motors.getPosition() < this.cutPowerOnNegativeThreshold) {
+        if (this.motors.getPosition() < this.cutPowerOnNegativeThreshold * this.maximumExtension && target < cutPowerOnNegativeThreshold) {
             response = 0;
         } else {
             // Apply calculated feedforward
             response += feedforward;
         }
+
+        if (response < 0 && !this.powerOnRetraction && this.motors.getPosition() > this.cutPowerOnNegativeThreshold * this.maximumExtension * 5) response = 0;
 
         // Set the master-slave paradigm to use the power
         motors.setPower(response);
@@ -92,4 +95,5 @@ public class LinearSlides extends SubsystemBase {
 
     public void setFeedForward(double feedForward) { this.positiveFeedForward = feedForward; }
     public void setFeedBackward(double feedBackward) { this.negativeFeedForward = feedBackward; }
+    public void setZeroPowerOnRetraction() { this.powerOnRetraction = false; }
 }

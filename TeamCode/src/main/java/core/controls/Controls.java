@@ -19,6 +19,7 @@ public class Controls {
         public GamepadButton outtakeCycle;
         public GamepadButton rotateLeft;
         public GamepadButton rotateRight;
+        public GamepadButton override;
 
         // Controls to be constantly read
         public DoubleSupplier rotateClawLeft;
@@ -37,6 +38,7 @@ public class Controls {
             this.outtakeCycle = this.gamepad1.getGamepadButton(GamepadKeys.Button.A);
             this.rotateLeft = this.gamepad1.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER);
             this.rotateRight = this.gamepad1.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER);
+            this.override = this.gamepad1.getGamepadButton(GamepadKeys.Button.Y);
 
             // Lambda to pass arguments as a double supplier
             this.rotateClawLeft = () -> this.gamepad1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER);

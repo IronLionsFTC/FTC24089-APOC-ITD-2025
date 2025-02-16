@@ -56,6 +56,7 @@ public class Intake extends SubsystemBase {
         // Schedule SLIDES, as they must constantly update as they contain a PID controller
         // prevents developer error later by ensuring the subsystem is registered no matter what
         this.gimble.resetPosition();
+        this.latchServo = new CachedServo(hwmp, HardwareParameters.Motors.HardwareMapNames.latchServo);
         CommandScheduler.getInstance().registerSubsystem(this.slides);
     }
 
@@ -77,7 +78,7 @@ public class Intake extends SubsystemBase {
             case ExtendedClawGrabbing:
                 this.state = IntakeState.RetractedClawClosed;
                 break;
-            default:
+            case RetractedClawClosed:
                 this.state = IntakeState.RetractedClawOpen;
                 break;
         }
@@ -126,7 +127,7 @@ public class Intake extends SubsystemBase {
         }
 
         // Track retraction stability (make sure it hasn't bounced out)
-        if (this.slideExtension() < 0.05) retractionCounter =+ 1;
+        if (this.slideExtension() < 0.05) retractionCounter += 1;
         else retractionCounter = 0;
 
         switch (this.state) {
@@ -150,25 +151,23 @@ public class Intake extends SubsystemBase {
                 this.gimble.extendPitch();
                 this.claw.setState(Subsystems.ClawState.WeakGripClosed);
                 break;
-            default:
+            case RetractedClawClosed:
                 this.claw.setState(Subsystems.ClawState.StrongGripClosed);
-                if (this.gimble.doneFolding()) { this.slides.setTarget(0); }
+                if (this.gimble.foldedUp()) { this.slides.setTarget(0); }
                 else { this.slides.setTarget(1); }
                 this.gimble.resetPosition();
                 break;
         }
 
         if (this.state == IntakeState.RetractedClawOpen || this.state == IntakeState.RetractedClawClosed) {
-            if (retractionCounter > 20) this.latchServo.setPosition(PositionalBounds.ServoPositions.LatchPositions.closed);
+            if (retractionCounter > 0) this.latchServo.setPosition(PositionalBounds.ServoPositions.LatchPositions.closed);
             else this.latchServo.setPosition(PositionalBounds.ServoPositions.LatchPositions.open);
-        }
-    }
-
+        } else this.latchServo.setPosition(PositionalBounds.ServoPositions.LatchPositions.open); }
     public boolean hasClawClosed() {
         return this.claw.hasClawPhysicallyClosed();
     }
 
     public boolean isSlideLatched() {
-        return this.retractionCounter > 20 && (this.state == IntakeState.RetractedClawClosed || this.state == IntakeState.RetractedClawOpen);
+        return this.retractionCounter > 5 && (this.state == IntakeState.RetractedClawClosed || this.state == IntakeState.RetractedClawOpen);
     }
 }

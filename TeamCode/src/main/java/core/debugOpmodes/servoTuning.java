@@ -25,7 +25,7 @@ public class servoTuning extends LinearOpMode {
 
     @Config
     public static class ServoPositions {
-        public static double intakeYaw = 0;
+        public static double intakeYaw = 0.5;
         public static double intakePitch = 0;
         public static double intakeClaw = 0;
         public static double outtakePitch = 0;

@@ -34,11 +34,14 @@ public class Outtake extends SubsystemBase {
     // State
     public OuttakeState state;
     private boolean useHighBasket;
+    private boolean hasCycleOccured = false;
 
     public Outtake(HardwareMap hwmp, Telemetry telemetry) {
 
         this.useHighBasket = true;
         this.arm = new Arm(hwmp);
+        this.claw = new Claw(hwmp, HardwareParameters.Motors.HardwareMapNames.outtakeClawServo, true);
+        this.claw.setScalar(0.5);
 
         // Currently start with claw open, always use high basket
         this.state = OuttakeState.DownClawOpen;
@@ -60,6 +63,7 @@ public class Outtake extends SubsystemBase {
         this.slides = new LinearSlides(this.slideMotors, this.slideController, telemetry,
                 pidfCoefficients.OuttakeSlides.feedforward, pidfCoefficients.OuttakeSlides.feedbackward,
                 PositionalBounds.SlidePositions.outtakeMaximumExtension);
+        this.slides.setZeroPowerOnRetraction();
     }
 
     // Wrapper around setting the positions such that the right servo is inverted,
@@ -104,6 +108,7 @@ public class Outtake extends SubsystemBase {
     }
 
     public void nextState() {
+        this.hasCycleOccured = true;
         switch (this.state) {
             case DownClawOpen:
                 this.state = OuttakeState.DownClawClosed;
@@ -137,7 +142,7 @@ public class Outtake extends SubsystemBase {
         // Internal state machine
         switch (this.state) {
             case DownClawOpen:
-                if (this.arm.armPhysicallyDown()) this.slides.setTarget(0);
+                if (this.arm.armPhysicallyDown() || !hasCycleOccured) this.slides.setTarget(0);
                 else {
                     if (this.useHighBasket) this.slides.setTarget(PositionalBounds.SlidePositions.OuttakePositions.highBasket);
                     this.slides.setTarget(PositionalBounds.SlidePositions.OuttakePositions.lowBasket);
@@ -153,7 +158,7 @@ public class Outtake extends SubsystemBase {
 
             case UpClawClosed:
                 this.slides.setTarget(this.getTargetHeight());
-                if (this.slides.getRelative() > PositionalBounds.SlidePositions.OuttakePositions.highBasket * 0.7) {
+                if (this.slides.getRelative() < PositionalBounds.SlidePositions.OuttakePositions.highBasket * 0.7) {
                     this.arm.setArmPosition(0);
                 } else {
                     this.arm.setArmPosition(0.7);

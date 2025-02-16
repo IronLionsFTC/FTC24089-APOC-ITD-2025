@@ -40,6 +40,7 @@ public class Teleop extends CommandOpMode {
         buttons.outtakeCycle.whenPressed(CMD.teleopOuttakeCycle(outtakeSubsystem));
         buttons.rotateRight.whenPressed(CMD.rotateCW(drivebaseSubsystem));
         buttons.rotateLeft.whenPressed(CMD.rotateCCW(drivebaseSubsystem));
+        buttons.override.whenPressed(CMD.teleopOverride(intakeSubsystem, outtakeSubsystem));
 
         // Schedule the command based opmode
         schedule(

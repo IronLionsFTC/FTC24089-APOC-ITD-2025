@@ -7,11 +7,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class CachedServo {
     private final Servo servo;
     private double position;
+    private boolean inverse;
     private final Timer timeSinceUpdate = new Timer();
 
     // Expose a constructor pulling a Servo of name from hardwaremap
     public CachedServo(HardwareMap hwmp, String name) {
         this.servo = hwmp.get(Servo.class, name);
+        this.inverse = false;
         this.servo.setPosition(0);
         this.position = -1;
     }
@@ -20,6 +22,7 @@ public class CachedServo {
     public CachedServo(HardwareMap hwmp, String name, double position) {
         this.servo = hwmp.get(Servo.class, name);
         this.position = position;
+        this.inverse = false;
         this.servo.setPosition(this.position);
     }
 
@@ -27,7 +30,8 @@ public class CachedServo {
     public void setPosition(double position) {
         if (this.position != position) {
             this.position = position;
-            servo.setPosition(this.position);
+            if (this.inverse) servo.setPosition(1 - this.position);
+            else servo.setPosition(this.position);
             timeSinceUpdate.resetTimer();
         }
     }
@@ -44,5 +48,9 @@ public class CachedServo {
 
     public void resetTimer() {
         timeSinceUpdate.resetTimer();
+    }
+
+    public void inverse() {
+        this.inverse = true;
     }
 }

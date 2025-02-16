@@ -44,6 +44,10 @@ public class DualAxisGimble extends SubsystemBase {
         this.yawServo.setPosition(yaw);
     }
 
+    public boolean foldedUp() {
+        return this.pitchServo.secondsSinceMovement() > Timings.clawFoldUpTime && this.pitchServo.getPosition() == ClawPositions.pitchRest;
+    }
+
     public boolean doneFolding() {
         if (this.pitchServo.secondsSinceMovement() > Timings.clawFoldDownTime && this.pitchServo.getPosition() == ClawPositions.pitchExtended) {
             return true;

@@ -42,6 +42,8 @@ public class CMD {
     // PERMANENTLY perform automatic transfer, targetted for teleop but could be used in auto
     public static Command teleopAutomaticTransfer(Intake intakeSubsystem, Outtake outtakeSubsystem) { return new TeleopAutomaticTransfer(intakeSubsystem, outtakeSubsystem); }
 
+    public static Command teleopOverride(Intake intakeSubsystem, Outtake outtakeSubsystem) { return new TeleopOverride(intakeSubsystem, outtakeSubsystem); }
+
     // Override control (Y button) does different things to different subsystems depending on the state.
     // General overview:
     //
