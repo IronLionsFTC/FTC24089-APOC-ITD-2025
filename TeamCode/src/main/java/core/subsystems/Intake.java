@@ -36,8 +36,6 @@ public class Intake extends SubsystemBase {
 
     public Intake(HardwareMap hwmp, Telemetry telemetry) {
         this.state = IntakeState.RetractedClawOpen;
-        this.gimble.resetPosition();
-        this.slides.setTarget(0);
         this.retractionCounter = 0;
         this.telemetry = telemetry;
         this.slideMotors = new MasterSlaveMotorPair(hwmp, HardwareParameters.Motors.HardwareMapNames.intakeSlide, HardwareParameters.Motors.Reversed.intakeSlide);
@@ -47,6 +45,7 @@ public class Intake extends SubsystemBase {
                 pidfCoefficients.IntakeSlides.d
         );
         this.slides = new LinearSlides(this.slideMotors, this.slideController, this.telemetry, pidfCoefficients.IntakeSlides.f, 145);
+        this.slides.setTarget(0);
 
         // Claw and gimble do not need to be scheduled as they are servo abstractions and need no update
         this.claw = new Claw(hwmp, HardwareParameters.Motors.HardwareMapNames.intakeClawServo);
@@ -56,6 +55,7 @@ public class Intake extends SubsystemBase {
 
         // Schedule SLIDES, as they must constantly update as they contain a PID controller
         // prevents developer error later by ensuring the subsystem is registered no matter what
+        this.gimble.resetPosition();
         CommandScheduler.getInstance().registerSubsystem(this.slides);
     }
 

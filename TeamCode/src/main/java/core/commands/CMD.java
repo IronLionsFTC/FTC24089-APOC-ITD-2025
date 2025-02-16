@@ -10,6 +10,7 @@ import java.util.function.DoubleSupplier;
 
 import core.subsystems.Drivebase;
 import core.subsystems.Intake;
+import core.subsystems.Outtake;
 
 public class CMD {
 
@@ -33,6 +34,13 @@ public class CMD {
     public static InstantCommand teleopIntakeCycle(Intake intakeSubsystem) {
         return new InstantCommand(intakeSubsystem::nextState);
     }
+    // Cycle outtake state machine
+    public static InstantCommand teleopOuttakeCycle(Outtake outtakeSubsystem) {
+        return new InstantCommand(outtakeSubsystem::nextState);
+    }
+
+    // PERMANENTLY perform automatic transfer, targetted for teleop but could be used in auto
+    public static Command teleopAutomaticTransfer(Intake intakeSubsystem, Outtake outtakeSubsystem) { return new TeleopAutomaticTransfer(intakeSubsystem, outtakeSubsystem); }
 
     // Override control (Y button) does different things to different subsystems depending on the state.
     // General overview:

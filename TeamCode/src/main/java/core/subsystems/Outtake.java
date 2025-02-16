@@ -174,4 +174,8 @@ public class Outtake extends SubsystemBase {
     public boolean clawOpened() {
         return this.claw.hasClawPhysicallyOpened();
     }
+
+    public boolean clawClosed() {
+        return this.claw.hasClawPhysicallyClosed();
+    }
 }
