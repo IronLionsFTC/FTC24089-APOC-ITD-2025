@@ -23,5 +23,9 @@ public class TeleopAutomaticTransfer extends CommandBase {
         if (this.intakeSubsystem.state == Subsystems.IntakeState.RetractedClawClosed
                 && this.outtakeSubsystem.state == Subsystems.OuttakeState.DownClawClosed
                 && this.outtakeSubsystem.clawClosed()) this.intakeSubsystem.nextState();
+
+        if (this.intakeSubsystem.state == Subsystems.IntakeState.ExtendedClawGrabbing && outtakeSubsystem.state == Subsystems.OuttakeState.DownClawClosed) {
+            outtakeSubsystem.state = Subsystems.OuttakeState.DownClawOpen;
+        }
     }
 }

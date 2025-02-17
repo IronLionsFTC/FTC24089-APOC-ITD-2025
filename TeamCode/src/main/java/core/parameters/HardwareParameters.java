@@ -34,10 +34,10 @@ public final class HardwareParameters {
         public static final class Reversed {
 
             // Drivetrain
-            public static final boolean frontLeft = true;
-            public static final boolean backLeft = true;
-            public static final boolean frontRight = false;
-            public static final boolean backRight = false;
+            public static final boolean frontLeft = false;
+            public static final boolean backLeft = false;
+            public static final boolean frontRight = true;
+            public static final boolean backRight = true;
 
             // Intake Slides
             public static final boolean intakeSlide = true;
@@ -86,12 +86,14 @@ public final class HardwareParameters {
             // RIGHT: 153mm to the RIGHT, 105mm forward
             // SIDEWAYS [TEMPORARY, WE MIGHT CHANGE THIS]: 110mm forward, 26mm RIGHT
 
-            public static final double leftx = 105;
-            public static final double lefty = 153;
-            public static final double rightx = 105;
-            public static final double righty = -153;
-            public static final double sidex = 120;
-            public static final double sidey = 65;
+            public static final double leftx = 165;
+            public static final double lefty = 165;
+
+            public static final double rightx = 165;
+            public static final double righty = -165;
+
+            public static final double sidex = 40;
+            public static final double sidey = 15;
         }
 
         // Calculate the inches from the mm

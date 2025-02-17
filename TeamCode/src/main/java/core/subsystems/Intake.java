@@ -160,7 +160,7 @@ public class Intake extends SubsystemBase {
         }
 
         if (this.state == IntakeState.RetractedClawOpen || this.state == IntakeState.RetractedClawClosed) {
-            if (retractionCounter > 0) this.latchServo.setPosition(PositionalBounds.ServoPositions.LatchPositions.closed);
+            if (retractionCounter > 5) this.latchServo.setPosition(PositionalBounds.ServoPositions.LatchPositions.closed);
             else this.latchServo.setPosition(PositionalBounds.ServoPositions.LatchPositions.open);
         } else this.latchServo.setPosition(PositionalBounds.ServoPositions.LatchPositions.open); }
     public boolean hasClawClosed() {
@@ -168,6 +168,6 @@ public class Intake extends SubsystemBase {
     }
 
     public boolean isSlideLatched() {
-        return this.retractionCounter > 5 && (this.state == IntakeState.RetractedClawClosed || this.state == IntakeState.RetractedClawOpen);
+        return this.retractionCounter > 15 && (this.state == IntakeState.RetractedClawClosed || this.state == IntakeState.RetractedClawOpen);
     }
 }
