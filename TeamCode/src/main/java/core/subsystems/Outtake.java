@@ -85,8 +85,8 @@ public class Outtake extends SubsystemBase {
         }
 
         public void setArmPosition(double position) {
-            this.leftArmServo.setPosition(position);
-            this.rightArmServo.setPosition(1 - position);
+            this.leftArmServo.setPosition(1 - position);
+            this.rightArmServo.setPosition(position);
         }
 
         public double getArmPosition() {

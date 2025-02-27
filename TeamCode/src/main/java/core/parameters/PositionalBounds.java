@@ -27,6 +27,12 @@ public final class PositionalBounds {
             public static final double closed = 0.4;
         }
 
+        public static final class Outtake {
+            public static final double armDown = 0.01;
+            public static final double armSample = 0.65;
+            public static final double armSpecimen = 0.3;
+        }
+
     }
 
     public static final class SlidePositions {
