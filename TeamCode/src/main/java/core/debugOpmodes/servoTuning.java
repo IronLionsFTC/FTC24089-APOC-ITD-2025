@@ -23,15 +23,19 @@ public class servoTuning extends LinearOpMode {
     private Servo flagServo;
     private Servo latchServo;
 
+    private Servo leftIntakeServo;
+    private Servo rightIntakeServo;
+
     @Config
     public static class ServoPositions {
         public static double intakeYaw = 0.5;
         public static double intakePitch = 0;
         public static double intakeClaw = 0;
         public static double outtakePitch = 0;
-        public static double outtakeClaw = 0.7;
+        public static double outtakeClaw = 1.0;
         public static double flag = 0;
         public static double latch = 0;
+        public static double intakeServo = 0;
     }
 
     @Override
@@ -47,6 +51,9 @@ public class servoTuning extends LinearOpMode {
 
         latchServo = hardwareMap.get(Servo.class, HardwareParameters.Motors.HardwareMapNames.latchServo);
 
+        leftIntakeServo = hardwareMap.get(Servo.class, HardwareParameters.Motors.HardwareMapNames.leftIntakeServo);
+        rightIntakeServo = hardwareMap.get(Servo.class, HardwareParameters.Motors.HardwareMapNames.rightIntakeServo);
+
         if (isStopRequested()) { return; }
         waitForStart();
 
@@ -57,11 +64,14 @@ public class servoTuning extends LinearOpMode {
             intakeYawServo.setPosition(ServoPositions.intakeYaw);
             intakePitchServo.setPosition(ServoPositions.intakePitch);
             intakeClawServo.setPosition(ServoPositions.intakeClaw);
-            leftOuttakePitchServo.setPosition(ServoPositions.outtakePitch);
-            rightOuttakePitchServo.setPosition(1 - ServoPositions.outtakePitch);
+            leftOuttakePitchServo.setPosition(1 - ServoPositions.outtakePitch);
+            rightOuttakePitchServo.setPosition(ServoPositions.outtakePitch);
             outtakeClawServo.setPosition(ServoPositions.outtakeClaw);
             //flagServo.setPosition(ServoPositions.flag);
             latchServo.setPosition(ServoPositions.latch);
+
+            leftIntakeServo.setPosition(ServoPositions.intakeServo);
+            rightIntakeServo.setPosition(ServoPositions.intakeServo);
         }
     }
 }

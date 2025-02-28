@@ -25,8 +25,13 @@ public final class HardwareParameters {
             public static final String intakeYawServo = "intakeYawServo"; // Port c1
             public static final String intakeClawServo = "intakeClawServo"; // Port c2
 
+            // Intake Retraction and Extension
+            public static final String leftIntakeServo = "leftIntakeServo"; // Port s3
+            public static final String rightIntakeServo = "rightIntakeServo"; // Port s4
+
             // Outtake Servos
-            public static final String outtakeClawServo = "outtakeClawServo";
+            public static final String outtakeClawServo = "outtakeClaw";
+            public static final String outtakePitchServo = "outtakePitchServo"; // Port e0
             public static final String leftArmServo = "leftArmServo";
             public static final String rightArmServo = "rightArmServo";
         }
