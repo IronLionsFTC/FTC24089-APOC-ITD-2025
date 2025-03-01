@@ -19,11 +19,8 @@ public class DualAxisGimble extends SubsystemBase {
     public DualAxisGimble(HardwareMap hwmp, String pitchServoName, String yawServoName) {
         this.pitchServo = new CachedServo(hwmp, pitchServoName);
         this.yawServo = new CachedServo(hwmp, yawServoName, ClawPositions.yawRest);
-    }
-
-    public DualAxisGimble(CachedServo pitchServo, CachedServo yawServo) {
-        this.pitchServo = pitchServo;
-        this.yawServo = yawServo;
+        this.yawServo.setPosition(ClawPositions.yawRest);
+        this.pitchServo.setPosition(0);
     }
 
     public void resetPosition() {

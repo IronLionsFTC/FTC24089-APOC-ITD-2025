@@ -45,7 +45,7 @@ public class Outtake extends SubsystemBase {
         this.arm = new Arm(hwmp);
         this.claw = new Claw(hwmp, HardwareParameters.Motors.HardwareMapNames.outtakeClawServo);
         this.pitchServo = new CachedServo(hwmp, HardwareParameters.Motors.HardwareMapNames.outtakePitchServo);
-        this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.armDown);
+        this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleTransfer);
 
         // Currently start with claw open, always use high basket
         this.state = OuttakeState.DownClawOpen;

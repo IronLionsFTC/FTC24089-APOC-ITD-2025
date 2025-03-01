@@ -16,6 +16,7 @@ public class RetractIntakeAndTransfer extends CommandBase {
     public RetractIntakeAndTransfer(Intake intakeSubsystem, Outtake outtakeSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
         this.outtakeSubsystem = outtakeSubsystem;
+        addRequirements(intakeSubsystem, outtakeSubsystem);
     }
 
     @Override

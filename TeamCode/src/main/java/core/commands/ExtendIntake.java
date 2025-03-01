@@ -18,25 +18,19 @@ public class ExtendIntake extends CommandBase {
         } else {
             this.clawRotation = clawRotation;
         }
+
+        addRequirements(intakeSubsystem);
     }
 
     @Override
     public void initialize() {
-        // If transferring and need to extend, swap states
-        if (intakeSubsystem.state == Subsystems.IntakeState.RetractedClawClosed) {
-            intakeSubsystem.nextState();
-        }
-
-        // Once states have been swapped, or if it was already ready
-        if (intakeSubsystem.state == Subsystems.IntakeState.RetractedClawOpen) {
-            intakeSubsystem.nextState();
-        }
+        this.intakeSubsystem.state = Subsystems.IntakeState.ExtendedClawUp;
     }
 
     @Override
     public void execute() {
         // If the intake has begun moving, and is nearly at full extension, fold down the claw
-        if (intakeSubsystem.state == Subsystems.IntakeState.ExtendedClawUp && intakeSubsystem.isSlidesPartiallyExtended()) {
+        if (intakeSubsystem.isSlidesPartiallyExtended()) {
             intakeSubsystem.nextState();
         }
     }

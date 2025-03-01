@@ -132,6 +132,7 @@ public class Intake extends SubsystemBase {
 
     @Override
     public void periodic() {
+        telemetry.addData("[PERIODIC] Intake: ", this.state.toString());
         switch (this.state) {
             case RetractedClawOpen:
                 this.slides.setPosition(PositionalBounds.SlidePositions.IntakePositions.retracted);

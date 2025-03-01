@@ -11,6 +11,7 @@ public class GrabSample extends CommandBase {
 
     public GrabSample(Intake intakeSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
+        addRequirements(intakeSubsystem);
     }
 
     @Override

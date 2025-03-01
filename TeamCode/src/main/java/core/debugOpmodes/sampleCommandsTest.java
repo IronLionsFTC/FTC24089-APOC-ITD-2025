@@ -6,11 +6,13 @@ import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import core.commands.CMD;
 import core.subsystems.Intake;
 import core.subsystems.Outtake;
 
+@Autonomous(name = "Test Sample Commands")
 public class sampleCommandsTest extends CommandOpMode {
     private Intake intakeSubsystem;
     private Outtake outtakeSubsystem;
@@ -25,10 +27,11 @@ public class sampleCommandsTest extends CommandOpMode {
         CommandScheduler.getInstance().registerSubsystem(outtakeSubsystem);
 
         schedule(
+            new RunCommand(telemetry::update),
             new SequentialCommandGroup(
                     CMD.sleepUntil(this::opModeIsActive),
-                    new RunCommand(telemetry::update),
 
+                    CMD.sleep(1000),
                     CMD.extendIntake(intakeSubsystem, 45),
                     CMD.grabSample(intakeSubsystem),
                     CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem)

@@ -10,6 +10,7 @@ public class SlamDunkSample extends CommandBase {
 
     public SlamDunkSample(Outtake outtakeSubsystem) {
         this.outtakeSubsystem = outtakeSubsystem;
+        addRequirements(outtakeSubsystem);
     }
 
     @Override
