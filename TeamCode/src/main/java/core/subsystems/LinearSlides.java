@@ -96,4 +96,7 @@ public class LinearSlides extends SubsystemBase {
     public void setFeedForward(double feedForward) { this.positiveFeedForward = feedForward; }
     public void setFeedBackward(double feedBackward) { this.negativeFeedForward = feedBackward; }
     public void setZeroPowerOnRetraction() { this.powerOnRetraction = false; }
+    public boolean atTarget() {
+        return Math.abs(this.getRelative() - this.target) < 0.1;
+    }
 }

@@ -30,6 +30,18 @@ public class CMD {
     public static ExtendIntake extendIntake(Intake intakeSubsystem) { return new ExtendIntake(intakeSubsystem, (double)0); }
     public static ExtendIntake extendIntake(Intake intakeSubsystem, double r) { return new ExtendIntake(intakeSubsystem, r); }
 
+    // Assumes intake is extended and claw is down and ready to grab.
+    public static GrabSample grabSample(Intake intakeSubsystem) { return new GrabSample(intakeSubsystem); }
+
+    // Assumes the intake is currently holding a sample at full extension and intake is down.
+    public static RetractIntakeAndTransfer retractIntakeAndTransfer(Intake intakeSubsystem, Outtake outtakeSubsystem) { return new RetractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem); }
+
+    // Assumes that the intake is currently retracted and that the outtake is gripping the sample in transfer position.
+    public static RaiseSlidesForSampleDump raiseSlidesForSampleDump(Outtake outtakeSubsystem) { return new RaiseSlidesForSampleDump(outtakeSubsystem); }
+
+    // If the outtake is already up and ready to drop, then drop the sample.
+    public static SlamDunkSample slamDunkSample(Outtake outtakeSubsystem) { return new SlamDunkSample(outtakeSubsystem); }
+
     // Cycle intake state machine
     public static InstantCommand teleopIntakeCycle(Intake intakeSubsystem) {
         return new InstantCommand(intakeSubsystem::nextState);

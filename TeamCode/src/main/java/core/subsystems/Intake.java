@@ -18,37 +18,56 @@ import core.state.Subsystems.IntakeState;
 public class Intake extends SubsystemBase {
 
     // Subsystems of intake
-    private LinearSlides slides;
     private Claw claw;
     private DualAxisGimble gimble;
     private CachedServo latchServo;
+    private Slides slides;
 
     // Internal Subsystem State
     public IntakeState state;
     private int retractionCounter;
 
-    // Hardware Interface / Controllers
-    private PIDController slideController;
-    private MasterSlaveMotorPair slideMotors;
-
     // Telemetry
     private Telemetry telemetry;
+
+    private class Slides {
+        private CachedServo leftSlide;
+        private CachedServo rightSlide;
+
+        private Slides(HardwareMap hwmp) {
+            this.leftSlide = new CachedServo(hwmp, HardwareParameters.Motors.HardwareMapNames.leftIntakeServo);
+            this.rightSlide = new CachedServo(hwmp, HardwareParameters.Motors.HardwareMapNames.rightIntakeServo);
+            this.setPosition(0);
+        }
+
+        private void setPosition(double position) {
+            this.leftSlide.setPosition(position);
+            this.rightSlide.setPosition(1 - position);
+        }
+
+        private double getPosition() {
+            return this.leftSlide.getPosition();
+        }
+
+        private boolean isExtended() {
+            return this.getPosition() >= PositionalBounds.SlidePositions.IntakePositions.extended && this.leftSlide.secondsSinceMovement() > 0.5;
+        }
+
+        private boolean isRetracted() {
+            return this.getPosition() == PositionalBounds.SlidePositions.IntakePositions.retracted && this.leftSlide.secondsSinceMovement() > 0.5;
+        }
+    }
 
     public Intake(HardwareMap hwmp, Telemetry telemetry) {
         this.state = IntakeState.RetractedClawOpen;
         this.retractionCounter = 0;
         this.telemetry = telemetry;
-        this.slideMotors = new MasterSlaveMotorPair(hwmp, HardwareParameters.Motors.HardwareMapNames.intakeSlide, HardwareParameters.Motors.Reversed.intakeSlide);
-        this.slideController = new PIDController(
-                pidfCoefficients.IntakeSlides.p,
-                pidfCoefficients.IntakeSlides.i,
-                pidfCoefficients.IntakeSlides.d
-        );
-        this.slides = new LinearSlides(this.slideMotors, this.slideController, this.telemetry, pidfCoefficients.IntakeSlides.f, 145);
-        this.slides.setTarget(0);
+        this.slides = new Slides(hwmp);
 
         // Claw and gimble do not need to be scheduled as they are servo abstractions and need no update
         this.claw = new Claw(hwmp, HardwareParameters.Motors.HardwareMapNames.intakeClawServo);
+        this.claw.setState(Subsystems.ClawState.WideOpen);
+
         this.gimble = new DualAxisGimble(hwmp,
                 HardwareParameters.Motors.HardwareMapNames.intakeLiftServo,
                 HardwareParameters.Motors.HardwareMapNames.intakeYawServo);
@@ -57,7 +76,6 @@ public class Intake extends SubsystemBase {
         // prevents developer error later by ensuring the subsystem is registered no matter what
         this.gimble.resetPosition();
         this.latchServo = new CachedServo(hwmp, HardwareParameters.Motors.HardwareMapNames.latchServo);
-        CommandScheduler.getInstance().registerSubsystem(this.slides);
     }
 
     public void nextState() {
@@ -93,10 +111,6 @@ public class Intake extends SubsystemBase {
         }
     }
 
-    public double slideExtension() {
-        return this.slides.getRelative();
-    }
-
     public boolean gimblePitchDone() {
         return this.gimble.doneFolding();
     }
@@ -118,49 +132,41 @@ public class Intake extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (pidfCoefficients.IntakeSlides.tuning) {
-            this.slideController.setPID(
-                pidfCoefficients.IntakeSlides.p,
-                pidfCoefficients.IntakeSlides.i,
-                pidfCoefficients.IntakeSlides.d
-            );
-        }
-
-        // Track retraction stability (make sure it hasn't bounced out)
-        if (this.slideExtension() < 0.05) retractionCounter += 1;
-        else retractionCounter = 0;
-
         switch (this.state) {
             case RetractedClawOpen:
-                this.slides.setTarget(0);
+                this.slides.setPosition(PositionalBounds.SlidePositions.IntakePositions.retracted);
                 this.claw.setState(Subsystems.ClawState.WideOpen);
                 this.gimble.resetPosition();
                 break;
             case ExtendedClawUp:
-                this.slides.setTarget(1);
+                this.slides.setPosition(PositionalBounds.SlidePositions.IntakePositions.extended);
                 this.claw.setState(Subsystems.ClawState.WideOpen);
                 this.gimble.resetPosition();
                 break;
             case ExtendedClawDown:
-                this.slides.setTarget(1);
+                this.slides.setPosition(PositionalBounds.SlidePositions.IntakePositions.extended);
                 this.gimble.extendPitch();
                 this.claw.setState(Subsystems.ClawState.WideOpen);
                 break;
             case ExtendedClawGrabbing:
-                this.slides.setTarget(1);
+                this.slides.setPosition(PositionalBounds.SlidePositions.IntakePositions.extended);
                 this.gimble.extendPitch();
                 this.claw.setState(Subsystems.ClawState.WeakGripClosed);
                 break;
             case RetractedClawClosed:
                 this.claw.setState(Subsystems.ClawState.StrongGripClosed);
-                if (this.gimble.foldedUp()) { this.slides.setTarget(0); }
-                else { this.slides.setTarget(1); }
+                if (this.gimble.foldedUp()) {
+                    this.slides.setPosition(PositionalBounds.SlidePositions.IntakePositions.retracted);
+                }
+                else {
+                    this.slides.setPosition(PositionalBounds.SlidePositions.IntakePositions.extended);
+                }
                 this.gimble.resetPosition();
                 break;
         }
 
         if (this.state == IntakeState.RetractedClawOpen || this.state == IntakeState.RetractedClawClosed) {
-            if (retractionCounter > 5) this.latchServo.setPosition(PositionalBounds.ServoPositions.LatchPositions.closed);
+            if (this.slides.isRetracted()) this.latchServo.setPosition(PositionalBounds.ServoPositions.LatchPositions.closed);
             else this.latchServo.setPosition(PositionalBounds.ServoPositions.LatchPositions.open);
         } else this.latchServo.setPosition(PositionalBounds.ServoPositions.LatchPositions.open); }
     public boolean hasClawClosed() {
@@ -168,6 +174,14 @@ public class Intake extends SubsystemBase {
     }
 
     public boolean isSlideLatched() {
-        return this.retractionCounter > 15 && (this.state == IntakeState.RetractedClawClosed || this.state == IntakeState.RetractedClawOpen);
+        return this.slides.isRetracted() && (this.state == IntakeState.RetractedClawClosed || this.state == IntakeState.RetractedClawOpen);
+    }
+
+    public boolean isSlidesExtended() {
+        return this.slides.isExtended();
+    }
+
+    public boolean isSlidesPartiallyExtended() {
+        return this.slides.getPosition() >= PositionalBounds.SlidePositions.IntakePositions.extended && this.slides.leftSlide.secondsSinceMovement() > 0.35;
     }
 }

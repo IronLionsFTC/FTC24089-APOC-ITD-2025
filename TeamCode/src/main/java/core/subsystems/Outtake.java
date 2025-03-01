@@ -85,7 +85,7 @@ public class Outtake extends SubsystemBase {
             // Load the servos directly
             this.leftArmServo = new CachedServo(hwmp, HardwareParameters.Motors.HardwareMapNames.leftArmServo);
             this.rightArmServo = new CachedServo(hwmp, HardwareParameters.Motors.HardwareMapNames.rightArmServo);
-
+            this.setArmPosition(0);
         }
 
         public void setArmPosition(double position) {
@@ -168,7 +168,7 @@ public class Outtake extends SubsystemBase {
 
             case UpClawClosed:
                 this.slides.setTarget(this.getTargetHeight());
-                if (this.slides.getRelative() < PositionalBounds.SlidePositions.OuttakePositions.highBasket * 0.7) {
+                if (this.slides.getRelative() < PositionalBounds.SlidePositions.OuttakePositions.highBasket * 0.5) {
                     this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armDown);
                 } else {
                     this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armSample);
@@ -195,7 +195,7 @@ public class Outtake extends SubsystemBase {
     public boolean clawOpened() {
         return this.claw.hasClawPhysicallyOpened();
     }
-
+    public boolean atTargetHeight() { return this.slides.atTarget(); }
     public boolean clawClosed() {
         return this.claw.hasClawPhysicallyClosed();
     }
