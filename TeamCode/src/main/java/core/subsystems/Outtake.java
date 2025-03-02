@@ -256,4 +256,12 @@ public class Outtake extends SubsystemBase {
     public boolean areSlidesDown() {
         return (this.state == OuttakeState.DownClawClosed || this.state == OuttakeState.DownClawOpen) && this.slides.getRelative() > 0.1;
     }
+
+    public boolean armPhysicallyOver() {
+        return this.arm.armPhysicallyUp();
+    }
+
+    public boolean armPhysicallyDown() {
+        return this.arm.armPhysicallyDown();
+    }
 }

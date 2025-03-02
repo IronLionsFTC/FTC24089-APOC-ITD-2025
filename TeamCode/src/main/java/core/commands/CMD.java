@@ -58,6 +58,11 @@ public class CMD {
         return new WaitUntilOuttakeDown(outtakeSubsystem);
     }
 
+    // Specimen Cycle
+    public static ReachForWallSpecimen reachForWallSpecimen(Outtake outtakeSubsystem) { return new ReachForWallSpecimen(outtakeSubsystem); }
+    public static GrabWallSpecimenAndFlip grabWallSpecimenAndFlip(Outtake outtakeSubsystem) { return new GrabWallSpecimenAndFlip(outtakeSubsystem); }
+    public static ClipSpecimen clipSpecimen(Outtake outtakeSubsystem) { return new ClipSpecimen(outtakeSubsystem); }
+
     // PERMANENTLY perform automatic transfer, targetted for teleop but could be used in auto
     public static Command teleopAutomaticTransfer(Intake intakeSubsystem, Outtake outtakeSubsystem) { return new TeleopAutomaticTransfer(intakeSubsystem, outtakeSubsystem); }
 
