@@ -112,7 +112,6 @@ public class Outtake extends SubsystemBase {
     }
 
     public void nextState() {
-        this.hasCycleOccured = true;
         switch (this.state) {
             case DownClawOpen:
                 this.state = OuttakeState.DownClawClosed;
@@ -125,6 +124,20 @@ public class Outtake extends SubsystemBase {
                 break;
             case UpClawOpen:
                 this.state = OuttakeState.DownClawOpen;
+                break;
+
+            case SpecimenIntakeClawOpen:
+                this.state = OuttakeState.SpecimenIntakeClawClosed;
+                break;
+            case SpecimenIntakeClawClosed:
+                this.state = OuttakeState.SpecimenOuttakeEntry;
+                break;
+            case SpecimenOuttakeEntry:
+                this.state = OuttakeState.SpecimenOuttakeExit;
+                break;
+            case SpecimenOuttakeExit:
+                this.state = OuttakeState.DownClawOpen;
+                break;
         }
     }
 
@@ -178,6 +191,7 @@ public class Outtake extends SubsystemBase {
                 else this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleOuttake);
 
                 this.claw.setState(Subsystems.ClawState.StrongGripClosed);
+                this.hasCycleOccured = true;
                 break;
 
             case UpClawOpen:
@@ -188,6 +202,41 @@ public class Outtake extends SubsystemBase {
 
                 // Automatically retract outtake when the sample has been dropped
                 if (this.claw.hasClawPhysicallyOpened()) this.nextState();
+                this.hasCycleOccured = true;
+                break;
+
+            case SpecimenIntakeClawOpen:
+                this.slides.setTarget(0);
+                this.claw.setState(Subsystems.ClawState.WideOpen);
+                this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armSpecimen);
+
+                if (!this.arm.armPhysicallyUp()) this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.safeMovement);
+                else this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSpecimenIntake);
+                break;
+
+            case SpecimenIntakeClawClosed:
+                this.slides.setTarget(0);
+                this.claw.setState(Subsystems.ClawState.StrongGripClosed);
+                this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armSpecimen);
+                this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSpecimenIntake);
+                this.hasCycleOccured = false;
+                break;
+
+            case SpecimenOuttakeEntry:
+                this.slides.setTarget(PositionalBounds.SlidePositions.OuttakePositions.specimenOuttake);
+                this.claw.setState(Subsystems.ClawState.StrongGripClosed);
+                this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armDown);
+                if (!this.arm.armPhysicallyDown()) this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.safeMovement * 2);
+                else this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.specimenEntry);
+                this.hasCycleOccured = false;
+                break;
+
+            case SpecimenOuttakeExit:
+                this.slides.setTarget(PositionalBounds.SlidePositions.OuttakePositions.specimenOuttake);
+                this.claw.setState(Subsystems.ClawState.StrongGripClosed);
+                this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armDown + 0.1);
+                this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.specimenEntry);
+                this.hasCycleOccured = false;
                 break;
         }
     }

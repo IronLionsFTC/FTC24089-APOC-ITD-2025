@@ -23,6 +23,12 @@ public class Subsystems {
         DownClawClosed,
 
         UpClawClosed,
-        UpClawOpen
+        UpClawOpen,
+
+        SpecimenIntakeClawOpen,
+        SpecimenIntakeClawClosed,
+
+        SpecimenOuttakeEntry,
+        SpecimenOuttakeExit
     }
 }

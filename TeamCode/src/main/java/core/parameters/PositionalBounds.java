@@ -36,6 +36,8 @@ public final class PositionalBounds {
             public static final double pitchSpecimenIntake = 0;
             public static final double pitchSampleTransfer = 1;
             public static final double safeMovement = 0.15;
+
+            public static final double specimenEntry = 0.5;
         }
 
     }
@@ -50,7 +52,9 @@ public final class PositionalBounds {
 
         public static final class OuttakePositions {
             public static final double highBasket = 1;
-            public static final double lowBasket = 0.37;
+            public static final double lowBasket = 0.2;
+
+            public static final double specimenOuttake = 0.3;
         }
 
         public static final class IntakePositions {
