@@ -183,6 +183,8 @@ public class Intake extends SubsystemBase {
     }
 
     public boolean isSlidesPartiallyExtended() {
-        return this.slides.getPosition() >= PositionalBounds.SlidePositions.IntakePositions.extended && this.slides.leftSlide.secondsSinceMovement() > 0.35;
+        return this.slides.getPosition() >= PositionalBounds.SlidePositions.IntakePositions.extended && this.slides.leftSlide.secondsSinceMovement() > 0.25;
     }
+
+    public boolean gimblePitchDown() { return this.gimble.foldedDown(); }
 }

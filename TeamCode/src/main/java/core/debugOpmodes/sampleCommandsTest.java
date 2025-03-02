@@ -32,9 +32,21 @@ public class sampleCommandsTest extends CommandOpMode {
                     CMD.sleepUntil(this::opModeIsActive),
 
                     CMD.sleep(1000),
+
                     CMD.extendIntake(intakeSubsystem, 45),
                     CMD.grabSample(intakeSubsystem),
-                    CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem)
+                    CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem),
+
+                    CMD.raiseSlidesForSampleDump(outtakeSubsystem),
+                    CMD.slamDunkSample(outtakeSubsystem),
+
+                    CMD.extendIntake(intakeSubsystem, 45),
+                    CMD.grabSample(intakeSubsystem),
+                    CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem),
+
+                    CMD.raiseSlidesForSampleDump(outtakeSubsystem),
+                    CMD.slamDunkSample(outtakeSubsystem),
+                    CMD.sleep(2000)
             )
         );
     }

@@ -30,7 +30,7 @@ public class ExtendIntake extends CommandBase {
     @Override
     public void execute() {
         // If the intake has begun moving, and is nearly at full extension, fold down the claw
-        if (intakeSubsystem.isSlidesPartiallyExtended()) {
+        if (intakeSubsystem.isSlidesPartiallyExtended() && intakeSubsystem.state == Subsystems.IntakeState.ExtendedClawUp) {
             intakeSubsystem.nextState();
         }
     }
@@ -42,6 +42,6 @@ public class ExtendIntake extends CommandBase {
             return true;
         }
         // If the slides are 70% extended, finish command
-        return intakeSubsystem.isSlidesExtended() && intakeSubsystem.gimblePitchDone();
+        return intakeSubsystem.isSlidesExtended() && intakeSubsystem.gimblePitchDown();
     }
 }

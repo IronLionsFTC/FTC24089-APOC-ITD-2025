@@ -15,11 +15,11 @@ public class RaiseSlidesForSampleDump extends CommandBase {
 
     @Override
     public void initialize() {
-        if (this.outtakeSubsystem.state == Subsystems.OuttakeState.DownClawClosed) outtakeSubsystem.nextState();
+        this.outtakeSubsystem.state = Subsystems.OuttakeState.UpClawClosed;
     }
 
     @Override
     public boolean isFinished() {
-        return this.outtakeSubsystem.atTargetHeight();
+        return this.outtakeSubsystem.areSlidesRaised();
     }
 }

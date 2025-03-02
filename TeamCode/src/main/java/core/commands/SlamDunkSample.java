@@ -10,18 +10,17 @@ public class SlamDunkSample extends CommandBase {
 
     public SlamDunkSample(Outtake outtakeSubsystem) {
         this.outtakeSubsystem = outtakeSubsystem;
-        addRequirements(outtakeSubsystem);
     }
 
     @Override
     public void initialize() {
-        if (outtakeSubsystem.state == Subsystems.OuttakeState.UpClawClosed) outtakeSubsystem.nextState();
+        this.outtakeSubsystem.state = Subsystems.OuttakeState.UpClawOpen;
     }
 
     @Override
     public boolean isFinished() {
         if (this.outtakeSubsystem.clawOpened()) {
-            this.outtakeSubsystem.nextState();
+            this.outtakeSubsystem.state = Subsystems.OuttakeState.DownClawOpen;
             return true;
         } else {
             return false;

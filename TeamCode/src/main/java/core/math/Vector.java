@@ -1,5 +1,7 @@
 package core.math;
 
+import com.pedropathing.localization.Pose;
+
 public class Vector {
     public double x;
     public double y;
@@ -21,6 +23,7 @@ public class Vector {
         return new Vector(Math.cos(d) * m, Math.sin(d) * m, d, m);
     }
 
+    public Pose pose(double rotation) { return new Pose(this.x, this.y, rotation); }
     public Vector add(Vector other) { return Vector.cartesian(this.x + other.x, this.y + other.y); }
     public Vector sub(Vector other) { return Vector.cartesian(this.x - other.x, this.y - other.y); }
     public Vector mul(double other) { return Vector.cartesian(this.x * other, this.y * other); }

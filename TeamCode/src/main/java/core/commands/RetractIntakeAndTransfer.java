@@ -35,7 +35,7 @@ public class RetractIntakeAndTransfer extends CommandBase {
             // Grab with the outtake claw
             if (this.outtakeSubsystem.state == Subsystems.OuttakeState.DownClawOpen) this.outtakeSubsystem.nextState();
             // If the outtake claw has closed, release the intake claw
-            if (this.outtakeSubsystem.state == Subsystems.OuttakeState.DownClawClosed && this.outtakeSubsystem.clawClosed()) this.intakeSubsystem.nextState();
+            if (this.outtakeSubsystem.state == Subsystems.OuttakeState.DownClawClosed && this.outtakeSubsystem.clawClosed()) this.intakeSubsystem.state = Subsystems.IntakeState.RetractedClawOpen;
         }
     }
 

@@ -39,7 +39,7 @@ public class servoTuning extends LinearOpMode {
         public static double flag = 0;
         public static double latch = 0;
         public static double intakeServo = 0;
-        public static double outtakeGimble = 0;
+        public static double outtakeGimble = 1;
     }
 
     @Override
@@ -70,8 +70,8 @@ public class servoTuning extends LinearOpMode {
             intakeYawServo.setPosition(ServoPositions.intakeYaw);
             intakePitchServo.setPosition(ServoPositions.intakePitch);
             intakeClawServo.setPosition(ServoPositions.intakeClaw);
-            leftOuttakePitchServo.setPosition(1 - ServoPositions.outtakePitch);
-            rightOuttakePitchServo.setPosition(ServoPositions.outtakePitch);
+            leftOuttakePitchServo.setPosition(ServoPositions.outtakePitch);
+            rightOuttakePitchServo.setPosition(1 - ServoPositions.outtakePitch);
             outtakeClawServo.setPosition(ServoPositions.outtakeClaw);
             //flagServo.setPosition(ServoPositions.flag);
             latchServo.setPosition(ServoPositions.latch);

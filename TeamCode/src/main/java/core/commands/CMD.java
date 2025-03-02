@@ -4,10 +4,12 @@ import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
+import com.pedropathing.follower.Follower;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import core.math.Vector;
 import core.subsystems.Drivebase;
 import core.subsystems.Intake;
 import core.subsystems.Outtake;
@@ -51,6 +53,11 @@ public class CMD {
         return new InstantCommand(outtakeSubsystem::nextState);
     }
 
+    // Wait until outtake down for carefully timed actions
+    public static WaitUntilOuttakeDown waitUntilOuttakeDown(Outtake outtakeSubsystem) {
+        return new WaitUntilOuttakeDown(outtakeSubsystem);
+    }
+
     // PERMANENTLY perform automatic transfer, targetted for teleop but could be used in auto
     public static Command teleopAutomaticTransfer(Intake intakeSubsystem, Outtake outtakeSubsystem) { return new TeleopAutomaticTransfer(intakeSubsystem, outtakeSubsystem); }
 
@@ -70,4 +77,8 @@ public class CMD {
     public static RotateIntakeClaw rotateIntakeClaw(Intake intakeSubsystem, DoubleSupplier right, DoubleSupplier left) {
         return new RotateIntakeClaw(intakeSubsystem, right, left);
     }
+
+    // ---------------- PEDRO COMMANDS --------------------------------------
+    public static MoveRelative moveRelative(Follower follower, Vector position, boolean holdEnd) { return new MoveRelative(follower, position, holdEnd); }
+    public static MoveAbsolute moveAbsolute(Follower follower, Vector position, boolean holdEnd) { return new MoveAbsolute(follower, position, holdEnd); }
 }

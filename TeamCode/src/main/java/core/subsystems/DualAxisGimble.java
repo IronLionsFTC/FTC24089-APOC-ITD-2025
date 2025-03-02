@@ -45,14 +45,14 @@ public class DualAxisGimble extends SubsystemBase {
         return this.pitchServo.secondsSinceMovement() > Timings.clawFoldUpTime && this.pitchServo.getPosition() == ClawPositions.pitchRest;
     }
 
+    public boolean foldedDown() {
+        return this.pitchServo.secondsSinceMovement() > Timings.clawFoldDownTime && this.pitchServo.getPosition() == ClawPositions.pitchExtended;
+    }
+
     public boolean doneFolding() {
-        if (this.pitchServo.secondsSinceMovement() > Timings.clawFoldDownTime && this.pitchServo.getPosition() == ClawPositions.pitchExtended) {
+        if (this.foldedDown()) {
             return true;
-        } else if (this.pitchServo.secondsSinceMovement() > Timings.clawFoldUpTime && this.pitchServo.getPosition() == ClawPositions.pitchRest) {
-            return true;
-        } else {
-            return false;
-        }
+        } else return this.foldedUp();
     }
 
     public double getYaw() {
