@@ -30,7 +30,7 @@ public final class PositionalBounds {
         public static final class Outtake {
             public static final double armDown = 0.0;
             public static final double armSample = 0.25;
-            public static final double armSpecimen = 0.5;
+            public static final double armSpecimen = 0.47;
 
             public static final double pitchSampleOuttake = 0;
             public static final double pitchSpecimenIntake = 0;
@@ -54,7 +54,7 @@ public final class PositionalBounds {
             public static final double highBasket = 1;
             public static final double lowBasket = 0.2;
 
-            public static final double specimenOuttake = 0.3;
+            public static final double specimenOuttake = 0.1;
         }
 
         public static final class IntakePositions {
