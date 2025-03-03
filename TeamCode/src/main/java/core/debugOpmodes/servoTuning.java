@@ -39,7 +39,7 @@ public class servoTuning extends LinearOpMode {
         public static double flag = 0;
         public static double latch = 0;
         public static double intakeServo = 0;
-        public static double outtakeGimble = 1;
+        public static double outtakeGimble = 0.3;
     }
 
     @Override
