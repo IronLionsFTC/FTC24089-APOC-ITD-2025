@@ -114,19 +114,19 @@ public class Drivebase extends SubsystemBase {
         this.odometry = new Odometry(hwmp);
     }
 
-    public void setYaw(double yaw) {
-        this.targetYaw = yaw;
+    public void setYaw(double newYaw) {
+        this.targetYaw = newYaw;
         while (this.targetYaw > 180) { this.targetYaw -= 360; }
         while (this.targetYaw < -180) { this.targetYaw += 360; }
     }
 
     public void rotate45DegreesCCW() {
-        this.setYaw(this.yaw - 45);
+        this.setYaw(this.targetYaw - 45);
         this.lastYawActionWasManual = false;
     }
 
     public void rotate45DegreesCW() {
-        this.setYaw(this.yaw + 45);
+        this.setYaw(this.targetYaw + 45);
         this.lastYawActionWasManual = false;
     }
 
