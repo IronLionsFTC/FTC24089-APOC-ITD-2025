@@ -207,11 +207,15 @@ public class Outtake extends SubsystemBase {
 
             case SpecimenIntakeClawOpen:
                 this.slides.setTarget(0);
-                this.claw.setState(Subsystems.ClawState.WideOpen);
                 this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armSpecimen);
 
-                if (!this.arm.armPhysicallyUp()) this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.safeMovement);
-                else this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSpecimenIntake);
+                if (!this.arm.armPhysicallyUp()) {
+                    this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.safeMovement);
+                    this.claw.setState(Subsystems.ClawState.StrongGripClosed);
+                } else {
+                    this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSpecimenIntake);
+                    this.claw.setState(Subsystems.ClawState.WideOpen);
+                }
                 break;
 
             case SpecimenIntakeClawClosed:
