@@ -26,6 +26,8 @@ public class TeleopOverride extends CommandBase {
             this.outtakeSubsystem.toggleBasket();
         } else if (this.outtakeSubsystem.state == Subsystems.OuttakeState.DownClawOpen || this.outtakeSubsystem.state == Subsystems.OuttakeState.DownClawClosed) {
             this.outtakeSubsystem.state = Subsystems.OuttakeState.SpecimenIntakeClawOpen;
+        } else if (this.outtakeSubsystem.state == Subsystems.OuttakeState.SpecimenIntakeClawOpen) {
+            this.outtakeSubsystem.state = Subsystems.OuttakeState.DownClawOpen;
         }
     }
 

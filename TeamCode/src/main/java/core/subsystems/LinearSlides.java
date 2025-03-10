@@ -2,6 +2,7 @@ package core.subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.PIDController;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -31,6 +32,7 @@ public class LinearSlides extends SubsystemBase {
 
     private MasterSlaveMotorPair motors;
     private Telemetry telemetry;
+    private VoltageSensor voltageSensor;
 
     // Public constructor requires non-null motor pair to avoid overhead
     public LinearSlides(MasterSlaveMotorPair motors, PIDController pidController, Telemetry telemetry, double feedForward, double maximumExtension) {
@@ -43,13 +45,16 @@ public class LinearSlides extends SubsystemBase {
     }
 
     // Allow for different negative and positive feedforward values on construction
-    public LinearSlides(MasterSlaveMotorPair motors,
+    public LinearSlides(
+            MasterSlaveMotorPair motors,
             PIDController pidController,
             Telemetry telemetry,
+            VoltageSensor voltageSensor,
             double positiveFeedForward,
             double negativeFeedForward,
             double maximumExtension) {
         this.telemetry = telemetry;
+        this.voltageSensor = voltageSensor;
         this.motors = motors;
         this.pidController = pidController;
         this.positiveFeedForward = positiveFeedForward;
@@ -69,6 +74,7 @@ public class LinearSlides extends SubsystemBase {
     @Override
     public void periodic() {
         double response = this.pidController.calculate(this.motors.getPosition(), this.target * this.maximumExtension);
+
         this.telemetry.addData("Intake Slides", this.motors.getPosition());
         double feedforward;
         if (response > 0) { feedforward = positiveFeedForward; }

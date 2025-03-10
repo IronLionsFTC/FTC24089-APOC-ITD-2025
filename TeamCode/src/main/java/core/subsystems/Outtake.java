@@ -5,6 +5,7 @@ import android.icu.text.Transliterator;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -64,7 +65,9 @@ public class Outtake extends SubsystemBase {
                 pidfCoefficients.OuttakeSlides.d
         );
 
-        this.slides = new LinearSlides(this.slideMotors, this.slideController, telemetry,
+        VoltageSensor voltageSensor = hwmp.voltageSensor.get("Control Hub");
+
+        this.slides = new LinearSlides(this.slideMotors, this.slideController, telemetry, voltageSensor,
                 pidfCoefficients.OuttakeSlides.feedforward, pidfCoefficients.OuttakeSlides.feedbackward,
                 PositionalBounds.SlidePositions.outtakeMaximumExtension);
         this.slides.setZeroPowerOnRetraction();
@@ -238,7 +241,7 @@ public class Outtake extends SubsystemBase {
             case SpecimenOuttakeExit:
                 this.slides.setTarget(PositionalBounds.SlidePositions.OuttakePositions.specimenOuttake);
                 this.claw.setState(Subsystems.ClawState.StrongGripClosed);
-                this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armDown + 0.1);
+                this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armDown + 0.15);
                 this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.specimenEntry);
                 this.hasCycleOccured = false;
                 break;
