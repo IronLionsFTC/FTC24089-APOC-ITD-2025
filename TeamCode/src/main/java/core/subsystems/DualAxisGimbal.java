@@ -8,7 +8,7 @@ import core.parameters.PositionalBounds.ServoPositions.ClawPositions;
 import core.hardware.CachedServo;
 import core.parameters.Timings;
 
-public class DualAxisGimble extends SubsystemBase {
+public class DualAxisGimbal extends SubsystemBase {
 
     // Servo / hardware interface
     // assume pitch and yaw, such that the yaw is ON the pitch
@@ -16,7 +16,7 @@ public class DualAxisGimble extends SubsystemBase {
     // Assume 0.5 is the resting position for the yaw servo so that it can rotate in either direction
     private CachedServo yawServo;
 
-    public DualAxisGimble(HardwareMap hwmp, String pitchServoName, String yawServoName) {
+    public DualAxisGimbal(HardwareMap hwmp, String pitchServoName, String yawServoName) {
         this.pitchServo = new CachedServo(hwmp, pitchServoName);
         this.yawServo = new CachedServo(hwmp, yawServoName, ClawPositions.yawRest);
         this.yawServo.setPosition(ClawPositions.yawRest);
