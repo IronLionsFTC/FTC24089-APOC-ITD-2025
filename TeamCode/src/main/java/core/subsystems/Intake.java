@@ -1,17 +1,13 @@
 package core.subsystems;
 
-import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import core.hardware.CachedServo;
-import core.hardware.MasterSlaveMotorPair;
 import core.parameters.HardwareParameters;
 import core.parameters.PositionalBounds;
-import core.parameters.pidfCoefficients;
 import core.state.Subsystems;
 import core.state.Subsystems.IntakeState;
 
@@ -19,7 +15,7 @@ public class Intake extends SubsystemBase {
 
     // Subsystems of intake
     private Claw claw;
-    private DualAxisGimble gimble;
+    private DualAxisGimbal gimble;
     private CachedServo latchServo;
     private Slides slides;
 
@@ -68,7 +64,7 @@ public class Intake extends SubsystemBase {
         this.claw = new Claw(hwmp, HardwareParameters.Motors.HardwareMapNames.intakeClawServo);
         this.claw.setState(Subsystems.ClawState.WideOpen);
 
-        this.gimble = new DualAxisGimble(hwmp,
+        this.gimble = new DualAxisGimbal(hwmp,
                 HardwareParameters.Motors.HardwareMapNames.intakeLiftServo,
                 HardwareParameters.Motors.HardwareMapNames.intakeYawServo);
 
@@ -126,7 +122,7 @@ public class Intake extends SubsystemBase {
     }
 
     // Allow for possession of nested subclass without owning entire intake class
-    public DualAxisGimble takeGimbleSubsystem() {
+    public DualAxisGimbal takeGimbleSubsystem() {
         return this.gimble;
     }
 

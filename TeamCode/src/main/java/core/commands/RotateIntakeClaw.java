@@ -6,7 +6,6 @@ import java.util.function.DoubleSupplier;
 
 import core.parameters.PositionalBounds;
 import core.state.Subsystems;
-import core.subsystems.DualAxisGimble;
 import core.subsystems.Intake;
 
 public class RotateIntakeClaw extends CommandBase {
