@@ -38,8 +38,9 @@ public class ComputerVisionTesting extends CommandOpMode {
                 new ParallelCommandGroup(
                         CMD.sleepUntil(this::opModeIsActive),
                         CMD.scanForSample(follower, limelight, buffer),
-                        CMD.driveToSample(follower, buffer)
+                        CMD.driveToSample(follower, buffer),
+                        CMD.alignClaw(intake, buffer)
                 )
-        )
+        );
     }
 }

@@ -92,6 +92,8 @@ public class CMD {
     public static FollowPath followPath(Follower follower, PathChain path) { return new FollowPath(follower, path); }
     public static FollowPath followPath(Follower follower, PathChain path, boolean holdEnd) { return new FollowPath(follower, path, holdEnd); }
 
+    public static DriveToSample driveToSample(Follower follower, Limelight.SampleState buffer) { return new DriveToSample(follower, buffer); }
+
     // --------------- COMPUTER VISION ----------------------------------
     public static ScanForSample scanForSample(Follower follower, Limelight limelight, Limelight.SampleState buffer) { return new ScanForSample(follower, limelight, buffer); }
 }

@@ -6,38 +6,29 @@ import com.pedropathing.pathgen.BezierLine;
 import com.pedropathing.pathgen.PathBuilder;
 import com.pedropathing.pathgen.Point;
 
-import core.math.Vector;
+import core.computerVision.Limelight;
 
-public class MoveRelative extends CommandBase {
+public class DriveToSample extends CommandBase {
     private Follower follower;
-    private Vector position;
-    private boolean holdEnd;
-    private double maxSpeed;
+    private Limelight.SampleState buffer;
 
-    public MoveRelative(Follower follower, Vector position, boolean holdEnd, double maxSpeed) {
+    public DriveToSample(Follower follower, Limelight.SampleState buffer) {
         this.follower = follower;
-        this.position = position;
-        this.holdEnd = holdEnd;
-        this.maxSpeed = maxSpeed;
-    }
-
-    public MoveRelative(Follower follower, Vector position, boolean holdEnd) {
-        this.follower = follower;
-        this.position = position;
-        this.holdEnd = holdEnd;
-        this.maxSpeed = 1;
+        this.buffer = buffer;
     }
 
     @Override
     public void initialize() {
-        this.follower.setMaxPower(maxSpeed);
+        this.follower.setMaxPower(0.7);
+        if (buffer == null) return;
+
         // Calculate current position and rotation
         double x = follower.getPose().getX();
         double y = follower.getPose().getY();
         double r = follower.getPose().getHeading();
 
-        double relativeX = position.y * Math.cos(r) + position.x * Math.sin(r);
-        double relativeY = position.x * Math.cos(r) + position.y * Math.sin(r);
+        double relativeX = buffer.center.y * Math.cos(r) + buffer.center.x * Math.sin(r);
+        double relativeY = buffer.center.x * Math.cos(r) + buffer.center.y * Math.sin(r);
 
         double targetX = x + relativeX;
         double targetY = y - relativeY;
@@ -52,16 +43,17 @@ public class MoveRelative extends CommandBase {
                         new Point(targetX, targetY, Point.CARTESIAN)
                 )
         ).setConstantHeadingInterpolation(r);
-        follower.followPath(builder.build(), this.holdEnd);
+        follower.followPath(builder.build(), true);
     }
 
     @Override
-    public boolean isFinished() {
-        return this.follower.getCurrentTValue() > 0.95;
-    }
+    public void execute() { follower.update(); }
 
     @Override
-    public void end(boolean interrupted) {
-        follower.setMaxPower(1);
+    public boolean isFinished() { return follower.getCurrentTValue() > 0.95; }
+
+    @Override
+    public void end(boolean i) {
+        this.follower.setMaxPower(1);
     }
 }
