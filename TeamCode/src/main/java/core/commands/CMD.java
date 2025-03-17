@@ -96,4 +96,5 @@ public class CMD {
 
     // --------------- COMPUTER VISION ----------------------------------
     public static ScanForSample scanForSample(Follower follower, Limelight limelight, Limelight.SampleState buffer) { return new ScanForSample(follower, limelight, buffer); }
+    public static AlignClaw alignClaw(Intake intakeSubsystem, Limelight.SampleState buffer) { return new AlignClaw(intakeSubsystem, buffer); }
 }
