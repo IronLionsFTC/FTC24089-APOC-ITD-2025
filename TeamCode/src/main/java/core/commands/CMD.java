@@ -10,6 +10,7 @@ import com.pedropathing.pathgen.PathChain;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import core.computerVision.Limelight;
 import core.math.Vector;
 import core.subsystems.Drivebase;
 import core.subsystems.Intake;
@@ -90,4 +91,7 @@ public class CMD {
 
     public static FollowPath followPath(Follower follower, PathChain path) { return new FollowPath(follower, path); }
     public static FollowPath followPath(Follower follower, PathChain path, boolean holdEnd) { return new FollowPath(follower, path, holdEnd); }
+
+    // --------------- COMPUTER VISION ----------------------------------
+    public static ScanForSample scanForSample(Follower follower, Limelight limelight, Limelight.SampleState buffer) { return new ScanForSample(follower, limelight, buffer); }
 }

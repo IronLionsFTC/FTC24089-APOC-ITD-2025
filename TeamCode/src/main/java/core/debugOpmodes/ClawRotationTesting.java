@@ -34,7 +34,7 @@ public class ClawRotationTesting extends LinearOpMode {
             telemetry.addData("ANGLE", sampleState.angle);
 
             double angle = sampleState.angle / 355;
-            clawYaw.setPosition(0.5 + angle);
+            clawYaw.setPosition(0.5 - angle);
         }
     }
 }

@@ -18,7 +18,7 @@ public class Limelight {
     public void disable() { hardware.stop(); }
     public void shutdown() { hardware.shutdown(); }
 
-    public class SampleState {
+    public static class SampleState {
         public double angle;
         public Vector center;
 
