@@ -100,8 +100,8 @@ public class Outtake extends SubsystemBase {
             return this.leftArmServo.getPosition();
         }
 
-        public boolean armPhysicallyUp() { return this.leftArmServo.getPosition() > 0.3 && this.leftArmServo.secondsSinceMovement() > Timings.armFoldUpTime; }
-        public boolean armPhysicallyDown() { return this.leftArmServo.getPosition() < 0.3 && this.leftArmServo.secondsSinceMovement() > Timings.armFoldDownTime; }
+        public boolean armPhysicallyUp() { return this.leftArmServo.getPosition() > 0.2 && this.leftArmServo.secondsSinceMovement() > Timings.armFoldUpTime; }
+        public boolean armPhysicallyDown() { return this.leftArmServo.getPosition() < 0.2 && this.leftArmServo.secondsSinceMovement() > Timings.armFoldDownTime; }
     }
 
     // Wrapper function for getting height based on basket substate
@@ -184,11 +184,7 @@ public class Outtake extends SubsystemBase {
 
             case UpClawClosed:
                 this.slides.setTarget(this.getTargetHeight());
-                if (this.slides.getRelative() < PositionalBounds.SlidePositions.OuttakePositions.highBasket * 0.5) {
-                    this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armDown);
-                } else {
-                    this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armSample);
-                }
+                this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armSample);
 
                 if (!this.arm.armPhysicallyUp()) this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.safeMovement);
                 else this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleOuttake);

@@ -14,8 +14,8 @@ public final class PositionalBounds {
             public static final double wideOpenPosition = 0.5;
 
             // Gimble positions
-            public static final double pitchRest = 0.33;
-            public static final double pitchExtended = 1;
+            public static final double pitchRest = 0.0;
+            public static final double pitchExtended = 0.69;
             public static final double yawRest = 0.5;
             // How far in each direction can the servo turn from the
             // yaw rest
@@ -29,10 +29,10 @@ public final class PositionalBounds {
 
         public static final class Outtake {
             public static final double armDown = 0.0;
-            public static final double armSample = 0.22;
+            public static final double armSample = 0.26;
             public static final double armSpecimen = 0.5;
 
-            public static final double pitchSampleOuttake = 0.1;
+            public static final double pitchSampleOuttake = 0.05;
             public static final double pitchSpecimenIntake = 0.05;
             public static final double pitchSampleTransfer = 1;
             public static final double safeMovement = 0.15;
