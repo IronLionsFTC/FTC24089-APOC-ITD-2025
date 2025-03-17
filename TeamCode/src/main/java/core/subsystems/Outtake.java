@@ -48,8 +48,8 @@ public class Outtake extends SubsystemBase {
         this.pitchServo = new CachedServo(hwmp, HardwareParameters.Motors.HardwareMapNames.outtakePitchServo);
         this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleTransfer);
 
-        // Currently start with claw open, always use high basket
-        this.state = OuttakeState.DownClawOpen;
+        // Currently start with claw closed for preloads, always use high basket
+        this.state = OuttakeState.DownClawClosed;
         this.useHighBasket = true;
 
         this.telemetry = telemetry;
@@ -71,6 +71,8 @@ public class Outtake extends SubsystemBase {
                 pidfCoefficients.OuttakeSlides.feedforward, pidfCoefficients.OuttakeSlides.feedbackward,
                 PositionalBounds.SlidePositions.outtakeMaximumExtension);
         this.slides.setZeroPowerOnRetraction();
+
+        this.claw.setState(Subsystems.ClawState.WeakGripClosed);
     }
 
     // Wrapper around setting the positions such that the right servo is inverted,

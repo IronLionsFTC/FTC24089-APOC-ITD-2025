@@ -24,10 +24,10 @@ public class pidfCoefficients {
 
     @Config
     public static class OuttakeSlides {
-        public static double p = 0.02;
+        public static double p = 0.03;
         public static double i = 0;
         public static double d = 0;
-        public static double feedforward = 0.2;
+        public static double feedforward = 0.15;
         public static double feedbackward = 0;
         public static boolean tuning = false;
     }
