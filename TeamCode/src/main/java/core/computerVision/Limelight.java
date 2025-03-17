@@ -11,6 +11,7 @@ public class Limelight {
 
     public Limelight(HardwareMap hwmp) {
         this.hardware = hwmp.get(Limelight3A.class, "limelight");
+        this.hardware.pipelineSwitch(3);
     }
 
     public void enable() { hardware.start(); }
