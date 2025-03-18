@@ -40,29 +40,11 @@ public class fullAutonomousTest extends CommandOpMode {
                 new RunCommand(follower::update),
                 new SequentialCommandGroup(
                         CMD.sleepUntil(this::opModeIsActive),
-                        CMD.sleep(4000),
-
-                        // Grab the first sample
-                        CMD.extendIntake(intakeSubsystem),
-                        CMD.grabSample(intakeSubsystem),
-                        CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem),
-
-                        // Outtake the first sample
-                        CMD.moveAbsolute(follower, Vector.cartesian(10, 0), true).andThen(CMD.sleep(500)).alongWith(CMD.extendIntake(intakeSubsystem)).andThen(CMD.grabSample(intakeSubsystem))
-                                .alongWith(
-                                        CMD.raiseSlidesForSampleDump(outtakeSubsystem).andThen(
-                                                CMD.slamDunkSample(outtakeSubsystem).andThen(
-                                                        CMD.waitUntilOuttakeDown(outtakeSubsystem)
-                                                )
-                                        )
-                                ),
-
-                        CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem),
+                        CMD.sleep(1000),
                         CMD.raiseSlidesForSampleDump(outtakeSubsystem),
+                        CMD.sleep(1000),
                         CMD.slamDunkSample(outtakeSubsystem),
-                        CMD.waitUntilOuttakeDown(outtakeSubsystem).alongWith(
-                                CMD.moveAbsolute(follower, Vector.cartesian(0, 0), true)
-                        )
+                        CMD.waitUntilOuttakeDown(outtakeSubsystem)
                 )
         );
     }

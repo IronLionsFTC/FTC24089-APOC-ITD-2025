@@ -6,16 +6,21 @@ import java.util.function.DoubleSupplier;
 
 import core.math.Vector;
 import core.subsystems.Drivebase;
+import core.subsystems.Intake;
 
 public class SetDriveVector extends CommandBase {
     private final Drivebase drivebaseSubsystem;
     private DoubleSupplier x;
     private DoubleSupplier y;
     private DoubleSupplier r;
+    private double power;
+    private Intake intakeSubsystem;
     private Vector driveVector;
 
-    public SetDriveVector(Drivebase drivebaseSubsystem, DoubleSupplier x, DoubleSupplier y, DoubleSupplier r) {
+    public SetDriveVector(Drivebase drivebaseSubsystem, Intake intakeSubsystem, DoubleSupplier x, DoubleSupplier y, DoubleSupplier r) {
         this.drivebaseSubsystem = drivebaseSubsystem;
+        this.intakeSubsystem = intakeSubsystem;
+        this.power = 1;
         this.x = x; this.y = y; this.r = r;
     }
 
@@ -30,8 +35,12 @@ public class SetDriveVector extends CommandBase {
 
     @Override
     public void execute() {
+
+        if (this.intakeSubsystem.isSlideLatched()) { this.power = 1; }
+        else { this.power = 0.7; }
+
         this.calculateDriveVector();
-        this.drivebaseSubsystem.setDriveVector(this.driveVector);
+        this.drivebaseSubsystem.setDriveVector(this.driveVector.mul(this.power));
         this.drivebaseSubsystem.setYawInput(this.r.getAsDouble());
     }
 

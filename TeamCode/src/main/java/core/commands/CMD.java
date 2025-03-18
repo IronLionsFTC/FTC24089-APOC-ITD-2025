@@ -31,7 +31,7 @@ public class CMD {
     }
 
     // Extends the intake, automatically folding down the claw and rotating to 0 or x degrees.
-    public static ExtendIntake extendIntake(Intake intakeSubsystem) { return new ExtendIntake(intakeSubsystem, (double)0); }
+    public static ExtendIntake extendIntake(Intake intakeSubsystem) { return new ExtendIntake(intakeSubsystem, 0.5); }
     public static ExtendIntake extendIntake(Intake intakeSubsystem, double r) { return new ExtendIntake(intakeSubsystem, r); }
 
     // Assumes intake is extended and claw is down and ready to grab.
@@ -76,8 +76,8 @@ public class CMD {
     // Cancels grab (drops sample)
 
     // PERMANENTLY bind the drivebase subsystem to some double suppliers, usually joystick axis.
-    public static SetDriveVector setDriveVector(Drivebase drivebaseSubsystem, DoubleSupplier x, DoubleSupplier y, DoubleSupplier r) {
-        return new SetDriveVector(drivebaseSubsystem, x, y, r);
+    public static SetDriveVector setDriveVector(Drivebase drivebaseSubsystem, Intake intakeSubsystem, DoubleSupplier x, DoubleSupplier y, DoubleSupplier r) {
+        return new SetDriveVector(drivebaseSubsystem, intakeSubsystem, x, y, r);
     }
 
     // PERMANENTLY bind the intake subsystem's gimble yaw rotation to some double suppliers

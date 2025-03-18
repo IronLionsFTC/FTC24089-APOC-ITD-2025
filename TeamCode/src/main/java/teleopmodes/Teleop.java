@@ -50,7 +50,7 @@ public class Teleop extends CommandOpMode {
                 new RunCommand(telemetry::update),
 
                 new ParallelCommandGroup(
-                        CMD.setDriveVector(drivebaseSubsystem, buttons.driveX, buttons.driveY, buttons.yaw),
+                        CMD.setDriveVector(drivebaseSubsystem, intakeSubsystem, buttons.driveX, buttons.driveY, buttons.yaw),
                         CMD.rotateIntakeClaw(intakeSubsystem, buttons.rotateClawRight, buttons.rotateClawLeft),
                         CMD.teleopAutomaticTransfer(intakeSubsystem, outtakeSubsystem)
                 )

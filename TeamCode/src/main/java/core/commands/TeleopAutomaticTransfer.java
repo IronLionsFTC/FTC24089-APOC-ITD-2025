@@ -18,11 +18,16 @@ public class TeleopAutomaticTransfer extends CommandBase {
     @Override
     public void execute() {
         if (this.intakeSubsystem.isSlideLatched() && this.intakeSubsystem.state == Subsystems.IntakeState.RetractedClawClosed) {
-            if (this.outtakeSubsystem.state == Subsystems.OuttakeState.DownClawOpen) this.outtakeSubsystem.nextState();
+            if (this.outtakeSubsystem.state == Subsystems.OuttakeState.DownClawOpen) {
+                this.outtakeSubsystem.nextState();
+            }
         }
         if (this.intakeSubsystem.state == Subsystems.IntakeState.RetractedClawClosed
                 && this.outtakeSubsystem.state == Subsystems.OuttakeState.DownClawClosed
-                && this.outtakeSubsystem.clawClosed()) this.intakeSubsystem.nextState();
+                && this.outtakeSubsystem.clawClosed()) {
+            this.intakeSubsystem.nextState();
+            this.outtakeSubsystem.transferComplete = true;
+        }
 
         if (this.outtakeSubsystem.state == Subsystems.OuttakeState.UpClawClosed && this.intakeSubsystem.state == Subsystems.IntakeState.RetractedClawClosed) {
             this.intakeSubsystem.nextState();

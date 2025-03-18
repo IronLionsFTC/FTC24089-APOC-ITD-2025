@@ -14,7 +14,7 @@ public class ExtendIntake extends CommandBase {
         this.intakeSubsystem = intakeSubsystem;
 
         if (clawRotation.isNaN() || clawRotation == null) {
-            this.clawRotation = 0;
+            this.clawRotation = 0.5;
         } else {
             this.clawRotation = clawRotation;
         }
@@ -33,6 +33,8 @@ public class ExtendIntake extends CommandBase {
         if (intakeSubsystem.isSlidesPartiallyExtended() && intakeSubsystem.state == Subsystems.IntakeState.ExtendedClawUp) {
             intakeSubsystem.nextState();
         }
+
+        if (intakeSubsystem.state == Subsystems.IntakeState.ExtendedClawDown) this.intakeSubsystem.setIntakeClawRotation(this.clawRotation);
     }
 
     @Override

@@ -28,6 +28,7 @@ public class Outtake extends SubsystemBase {
 
     // Arm handler - this COULD be a subsystem, for now it is not.
     private Arm arm;
+    public boolean transferComplete;
 
     // Telemetry
     private Telemetry telemetry;
@@ -47,6 +48,7 @@ public class Outtake extends SubsystemBase {
         this.claw = new Claw(hwmp, HardwareParameters.Motors.HardwareMapNames.outtakeClawServo);
         this.pitchServo = new CachedServo(hwmp, HardwareParameters.Motors.HardwareMapNames.outtakePitchServo);
         this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleTransfer);
+        this.transferComplete = true;
 
         // Currently start with claw closed for preloads, always use high basket
         this.state = OuttakeState.DownClawClosed;
@@ -164,6 +166,7 @@ public class Outtake extends SubsystemBase {
         // Internal state machine
         switch (this.state) {
             case DownClawOpen:
+                this.transferComplete = false;
                 if (this.arm.armPhysicallyDown() || !hasCycleOccured) this.slides.setTarget(0);
                 else {
                     if (this.useHighBasket) this.slides.setTarget(PositionalBounds.SlidePositions.OuttakePositions.highBasket);
@@ -180,8 +183,14 @@ public class Outtake extends SubsystemBase {
             case DownClawClosed:
                 this.slides.setTarget(0);
                 this.claw.setState(Subsystems.ClawState.StrongGripClosed);
-                this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armDown);
-                this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleTransfer);
+
+                if (!this.transferComplete) {
+                    this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armDown);
+                    this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleTransfer);
+                } else {
+                    this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armSample);
+                    this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.safeMovement * 1.3);
+                }
                 break;
 
             case UpClawClosed:
