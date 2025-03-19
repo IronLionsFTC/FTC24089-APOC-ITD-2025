@@ -2,12 +2,6 @@ import cv2
 import numpy as np
 from math import atan2, degrees
 
-lx = 0
-ly = 0
-
-degration_scale = 10
-fail_counter = 0
-
 def angle(a, b):
     dx = a[0] - b[0]
     dy = a[1] - b[1]
@@ -38,17 +32,15 @@ def cdist(contour):
     x,y,w,h = cv2.boundingRect(contour)
     cx = x + w / 2
     cy = y + h / 2
-    return (lx - cx) ** 2 + (ly - cy) ** 2 + lx ** 2 + ly ** 2
+    return cx ** 2 + cy ** 2
 
 def runPipeline(img, llrobot):
-    global fail_counter
-    global degration_scale
-    global lx
-    global ly
+
+    lower = (20, 50, 100)
 
     image = img
     img_hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-    img_threshold = cv2.inRange(img_hsv, (15, 180, 120), (30, 255, 255))
+    img_threshold = cv2.inRange(img_hsv, (20, 140, 100), (30, 255, 255))
 
     image = cv2.bitwise_and(image, image, mask=img_threshold)
 
@@ -63,10 +55,10 @@ def runPipeline(img, llrobot):
 
         for idx in range(0, len(contour), 2):
             point = contour[idx]
-            cv2.circle(image, (point[0][0], point[0][1]), int(degration_scale), (0, 0, 0), thickness=-1)
+            cv2.circle(image, (point[0][0], point[0][1]), 0, (0, 0, 0), thickness=-1)
 
     img_hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-    img_threshold = cv2.inRange(img_hsv, (20, 160, 100), (60, 255, 255))
+    img_threshold = cv2.inRange(img_hsv, (20, 100, 200), (30, 255, 255))
     contours, _ = cv2.findContours(img_threshold,
     cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
@@ -76,7 +68,7 @@ def runPipeline(img, llrobot):
 
     for idx in range(len(contours)):
         size = cv2.contourArea(contours[idx])
-        if size < 1800 or size > 8000: to_remove.append(idx)
+        if size < 4000 or size > 10000: to_remove.append(idx)
         else:
             cv2.circle(image, center(contours[idx]), 10, (255, 0, 0))
     for idx in range(len(to_remove)):
@@ -96,8 +88,6 @@ def runPipeline(img, llrobot):
         a -= 90
         a *= -1
 
-        cv2.putText(image, f"ANGLE: {a}", extremeties[0], cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1, lineType=cv2.LINE_AA, bottomLeftOrigin=False)
-        cv2.line(image, extremeties[0], extremeties[idx], (255, 0, 0), 10)
 
         for e in extremeties:
             cv2.circle(image, e, 10, (255, 0, 0))
@@ -107,13 +97,13 @@ def runPipeline(img, llrobot):
         lx = x + w / 2
         ly = y + h / 2
 
-        llpython = [a,lx,ly]
+        cx = (lx - 120) / 80 * 3
+        cy = (ly - 120) / 80 *-3
 
-        if degration_scale > 5: degration_scale -= 1
+        cv2.putText(image, f"ANGLE: {int(a)}", [extremeties[0][0], extremeties[0][1] + 30], cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1, lineType=cv2.LINE_AA, bottomLeftOrigin=False)
+        cv2.putText(image, f"POSITION: {round(cx,2)}, {round(cy,2)}", [extremeties[0][0], extremeties[0][1] + 45], cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1, lineType=cv2.LINE_AA, bottomLeftOrigin=False)
+        cv2.line(image, extremeties[0], extremeties[idx], (255, 0, 0), 10)
 
-    elif degration_scale < 10 and fail_counter > 5: degration_scale += 11
-
-    if len(contours) == 0: fail_counter += 1
-    else: fail_counter = 0
+        llpython = [a,cx,cy]
 
     return largestContour, image, llpython

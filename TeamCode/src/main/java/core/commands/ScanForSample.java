@@ -3,17 +3,21 @@ package core.commands;
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.pedropathing.follower.Follower;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 import core.computerVision.Limelight;
 
 public class ScanForSample extends CommandBase {
     private Follower follower;
     private Limelight limelight;
     private Limelight.SampleState result;
+    private Telemetry telemetry;
 
-    public ScanForSample(Follower follower, Limelight limelight, Limelight.SampleState buffer) {
+    public ScanForSample(Follower follower, Limelight limelight, Limelight.SampleState buffer, Telemetry telemetry) {
         this.follower = follower;
         this.limelight = limelight;
         this.result = buffer;
+        this.telemetry = telemetry;
     }
 
     @Override
@@ -23,12 +27,21 @@ public class ScanForSample extends CommandBase {
 
     @Override
     public void execute() {
-        this.result = limelight.query();
+        this.limelight.logStatus(telemetry);
+        Limelight.SampleState detection = limelight.query(telemetry);
+
+        if (detection != null) {
+            telemetry.addData("ANGLE", detection.angle);
+            this.result.angle = detection.angle;
+            this.result.center = detection.center;
+        }
+        else telemetry.addLine("IS NULL");
     }
 
     @Override
     public boolean isFinished() {
-        return this.result != null;
+        telemetry.addData("ANGLE2", result.angle);
+        return this.result.angle != 0;
     }
 
     @Override

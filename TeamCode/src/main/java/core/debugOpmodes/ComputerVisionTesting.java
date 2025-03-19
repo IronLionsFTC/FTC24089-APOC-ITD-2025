@@ -6,6 +6,7 @@ import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.RunCommand;
+import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.util.Constants;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -26,6 +27,8 @@ public class ComputerVisionTesting extends CommandOpMode {
     private Follower follower;
     private Intake intakeSubsystem;
     private Outtake outtakeSubsystem;
+    private Limelight limelight;
+    private Limelight.SampleState buffer;
 
     @Override
     public void initialize() {
@@ -41,20 +44,22 @@ public class ComputerVisionTesting extends CommandOpMode {
         follower = new Follower(hardwareMap);
         follower.setStartingPose(Vector.cartesian(0, 0).pose(0));
 
-        Limelight limelight = new Limelight(hardwareMap);
-        Limelight.SampleState buffer = new Limelight.SampleState(0, Vector.cartesian(0, 0));
+        this.limelight = new Limelight(hardwareMap);
+        this.buffer = new Limelight.SampleState(0, Vector.cartesian(0, 0));
 
         schedule(
                 new RunCommand(follower::update),
-                new ParallelCommandGroup(
+                new RunCommand(telemetry::update),
+                new SequentialCommandGroup (
                         CMD.sleepUntil(this::opModeIsActive),
                         CMD.extendIntake(intakeSubsystem),
-                        CMD.scanForSample(follower, limelight, buffer),
-                        CMD.driveToSample(follower, buffer),
+                        CMD.scanForSample(follower, limelight, buffer, telemetry),
                         CMD.alignClaw(intakeSubsystem, buffer),
+                        CMD.sleep(2000),
+                        CMD.driveToSample(follower, buffer),
                         CMD.grabSample(intakeSubsystem),
                         CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem),
-                        CMD.sleep(500)
+                        CMD.sleep(1500)
                 )
         );
     }

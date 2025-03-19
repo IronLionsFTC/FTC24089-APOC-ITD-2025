@@ -56,8 +56,8 @@ public final class PositionalBounds {
         }
 
         public static final class IntakePositions {
-            public static final double retracted = 0;
-            public static final double extended = 0.6;
+            public static final double retracted = 0.6;
+            public static final double extended = 0;
         }
     }
 }
