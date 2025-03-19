@@ -33,7 +33,7 @@ public class Intake extends SubsystemBase {
         private Slides(HardwareMap hwmp) {
             this.leftSlide = new CachedServo(hwmp, HardwareParameters.Motors.HardwareMapNames.leftIntakeServo);
             this.rightSlide = new CachedServo(hwmp, HardwareParameters.Motors.HardwareMapNames.rightIntakeServo);
-            this.setPosition(0);
+            this.setPosition(PositionalBounds.SlidePositions.IntakePositions.retracted);
         }
 
         private void setPosition(double position) {
@@ -46,7 +46,7 @@ public class Intake extends SubsystemBase {
         }
 
         private boolean isExtended() {
-            return this.getPosition() >= PositionalBounds.SlidePositions.IntakePositions.extended && this.leftSlide.secondsSinceMovement() > 0.5;
+            return this.getPosition() == PositionalBounds.SlidePositions.IntakePositions.extended && this.leftSlide.secondsSinceMovement() > 0.5;
         }
 
         private boolean isRetracted() {

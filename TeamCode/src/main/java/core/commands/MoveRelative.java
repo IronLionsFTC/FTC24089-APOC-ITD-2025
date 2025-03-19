@@ -25,7 +25,7 @@ public class MoveRelative extends CommandBase {
         this.follower = follower;
         this.position = position;
         this.holdEnd = holdEnd;
-        this.maxSpeed = 1;
+        this.maxSpeed = 0.4;
     }
 
     @Override

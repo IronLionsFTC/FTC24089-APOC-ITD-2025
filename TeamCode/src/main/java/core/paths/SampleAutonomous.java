@@ -46,8 +46,9 @@ public class SampleAutonomous {
     public static final Point grab2 = point(600, 250);
     public static final Point dump2 = point(750, 380);
     public static final Point grab3 = point(550, 360);
-    public static final Point control = point(750, 1000);
-    public static final Point park = point(0, 1000);
+    public static final Point control = point(750, 1500);
+    public static final Point control2 = point(600, 500);
+    public static final Point park = point(-50, 1500);
 
     public static PathChain dumpPreload() {
         return simpleLine(start, dump, 10);
@@ -119,6 +120,23 @@ public class SampleAutonomous {
                         park
                 )
         );
+
+        PathBuilder pathBuilder = new PathBuilder();
+        pathBuilder.addPath(path);
+        return pathBuilder.build();
+    }
+
+    public static PathChain goToBasket() {
+        Path path = new Path(
+                new BezierCurve(
+                        park,
+                        control,
+                        control2,
+                        dump1
+                )
+        );
+
+        path.setReversed(true);
 
         PathBuilder pathBuilder = new PathBuilder();
         pathBuilder.addPath(path);

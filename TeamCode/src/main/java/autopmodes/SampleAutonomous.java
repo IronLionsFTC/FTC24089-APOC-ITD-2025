@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import core.commands.CMD;
+import core.computerVision.Limelight;
 import core.math.Vector;
 import core.subsystems.Intake;
 import core.subsystems.Outtake;
@@ -25,6 +26,8 @@ public class SampleAutonomous extends CommandOpMode {
     private Intake intakeSubsystem;
     private Outtake outtakeSubsystem;
     private Follower follower;
+    private Limelight limelight;
+    private Limelight.SampleState buffer;
 
     @Override
     public void initialize() {
@@ -38,6 +41,9 @@ public class SampleAutonomous extends CommandOpMode {
         Constants.setConstants(FConstants.class, LConstants.class);
         this.follower = new Follower(hardwareMap);
         this.follower.setStartingPose(Vector.cartesian(0, 0).pose(0));
+
+        this.limelight = new Limelight(hardwareMap);
+        this.buffer = new Limelight.SampleState(0, Vector.cartesian(0, 0));
 
         schedule(
                 new RunCommand(follower::update),
@@ -79,7 +85,42 @@ public class SampleAutonomous extends CommandOpMode {
                         ),
                         CMD.sleep(300),
                         CMD.slamDunkSample(outtakeSubsystem),
-                        CMD.waitUntilOuttakeDown(outtakeSubsystem).alongWith(CMD.followPath(follower, core.paths.SampleAutonomous.goToSub()))
+                        CMD.waitUntilOuttakeDown(outtakeSubsystem).alongWith(CMD.followPath(follower, core.paths.SampleAutonomous.goToSub())),
+
+                        CMD.extendIntake(intakeSubsystem),
+                        CMD.moveRelative(follower, Vector.cartesian(3, 10), true).raceWith(
+                                CMD.scanForSample(follower, limelight, buffer, telemetry)
+                        ),
+                        CMD.sleep(300),
+                        CMD.driveToSample(follower, buffer),
+                        CMD.alignClaw(intakeSubsystem, buffer),
+                        CMD.sleep(300),
+                        CMD.grabSample(intakeSubsystem),
+                        CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem),
+                        CMD.followPath(follower, core.paths.SampleAutonomous.goToBasket()).alongWith(
+                                CMD.raiseSlidesForSampleDump(outtakeSubsystem)
+                        ),
+                        CMD.sleep(300),
+                        CMD.slamDunkSample(outtakeSubsystem),
+                        CMD.waitUntilOuttakeDown(outtakeSubsystem).alongWith(
+                                CMD.followPath(follower, core.paths.SampleAutonomous.goToSub())
+                        ),
+                        CMD.extendIntake(intakeSubsystem),
+                        CMD.moveRelative(follower, Vector.cartesian(3, 10), true).raceWith(
+                                CMD.scanForSample(follower, limelight, buffer, telemetry)
+                        ),
+                        CMD.sleep(300),
+                        CMD.driveToSample(follower, buffer),
+                        CMD.alignClaw(intakeSubsystem, buffer),
+                        CMD.sleep(300),
+                        CMD.grabSample(intakeSubsystem),
+                        CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem),
+                        CMD.followPath(follower, core.paths.SampleAutonomous.goToBasket()).alongWith(
+                                CMD.raiseSlidesForSampleDump(outtakeSubsystem)
+                        ),
+                        CMD.sleep(300),
+                        CMD.slamDunkSample(outtakeSubsystem),
+                        CMD.waitUntilOuttakeDown(outtakeSubsystem)
                 )
         );
     }

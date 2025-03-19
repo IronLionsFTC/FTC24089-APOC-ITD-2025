@@ -24,7 +24,8 @@ public class RetractIntakeAndTransfer extends CommandBase {
         // Ensure the intake state is grabbing, and if so bring it in for transfer
         if (this.intakeSubsystem.state == Subsystems.IntakeState.ExtendedClawGrabbing) this.intakeSubsystem.nextState();
         // If outtake is not ready for transfer, abort
-        if (this.outtakeSubsystem.state != Subsystems.OuttakeState.DownClawOpen) this.intakeSubsystem.state = Subsystems.IntakeState.ExtendedClawGrabbing;
+        if (this.outtakeSubsystem.state != Subsystems.OuttakeState.DownClawOpen) this.outtakeSubsystem.state = Subsystems.OuttakeState.DownClawOpen;
+        this.outtakeSubsystem.transferComplete = false;
     }
 
     @Override

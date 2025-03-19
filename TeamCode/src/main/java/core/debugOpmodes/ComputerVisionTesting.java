@@ -52,14 +52,19 @@ public class ComputerVisionTesting extends CommandOpMode {
                 new RunCommand(telemetry::update),
                 new SequentialCommandGroup (
                         CMD.sleepUntil(this::opModeIsActive),
+                        CMD.moveAbsolute(follower, Vector.cartesian(0, 14), false),
                         CMD.extendIntake(intakeSubsystem),
-                        CMD.scanForSample(follower, limelight, buffer, telemetry),
-                        CMD.alignClaw(intakeSubsystem, buffer),
-                        CMD.sleep(2000),
+                        CMD.scanForSample(follower, limelight, buffer, telemetry).raceWith(
+                                CMD.moveRelative(follower, Vector.cartesian(3, 10), true)
+                                        .andThen(CMD.moveRelative(follower, Vector.cartesian(-3, -10), true))
+                        ),
+                        CMD.sleep(200),
                         CMD.driveToSample(follower, buffer),
+                        CMD.alignClaw(intakeSubsystem, buffer),
+                        CMD.sleep(500),
                         CMD.grabSample(intakeSubsystem),
                         CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem),
-                        CMD.sleep(1500)
+                        CMD.moveAbsolute(follower, Vector.cartesian(0, 0), true)
                 )
         );
     }
