@@ -52,18 +52,16 @@ public class SampleAutonomous extends CommandOpMode {
                         CMD.followPath(this.follower, core.paths.SampleAutonomous.dumpPreload(), true).alongWith(
                                 CMD.raiseSlidesForSampleDump(outtakeSubsystem)
                         ),
-                        CMD.sleep(300),
                         CMD.slamDunkSample(outtakeSubsystem),
-                        CMD.waitUntilOuttakeDown(outtakeSubsystem),
                         CMD.followPath(follower, core.paths.SampleAutonomous.firstPreplaced(), true)
-                            .alongWith(CMD.extendIntake(intakeSubsystem)),
+                                .alongWith(CMD.extendIntake(intakeSubsystem)
+                        ),
                         CMD.sleep(300),
                         CMD.grabSample(intakeSubsystem),
-                        CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem).alongWith(
-                                CMD.followPath(follower, core.paths.SampleAutonomous.firstDump(), true)
+                        CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem),
+                        CMD.followPath(follower, core.paths.SampleAutonomous.firstDump(), true).alongWith(
+                                CMD.raiseSlidesForSampleDump(outtakeSubsystem)
                         ),
-                        CMD.raiseSlidesForSampleDump(outtakeSubsystem),
-                        CMD.sleep(200),
                         CMD.slamDunkSample(outtakeSubsystem),
                         CMD.waitUntilOuttakeDown(outtakeSubsystem).alongWith(CMD.extendIntake(intakeSubsystem)).alongWith(
                                 CMD.followPath(follower, core.paths.SampleAutonomous.secondPreplaced(), true)
@@ -74,24 +72,23 @@ public class SampleAutonomous extends CommandOpMode {
                         CMD.followPath(follower, core.paths.SampleAutonomous.secondDump(), true).alongWith(
                                 CMD.raiseSlidesForSampleDump(outtakeSubsystem)
                         ),
-                        CMD.sleep(200),
                         CMD.slamDunkSample(outtakeSubsystem),
-                        CMD.waitUntilOuttakeDown(outtakeSubsystem).alongWith(CMD.followPath(follower, core.paths.SampleAutonomous.thirdGrab())),
-                        CMD.extendIntake(intakeSubsystem, 0.3),
+                        CMD.followPath(follower, core.paths.SampleAutonomous.thirdGrab()).alongWith(
+                                CMD.extendIntake(intakeSubsystem, 0.3)
+                        ),
+                        CMD.sleep(300),
                         CMD.grabSample(intakeSubsystem),
                         CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem),
                         CMD.followPath(follower, core.paths.SampleAutonomous.thirdDump()).alongWith(
                                 CMD.raiseSlidesForSampleDump(outtakeSubsystem)
                         ),
-                        CMD.sleep(300),
                         CMD.slamDunkSample(outtakeSubsystem),
-                        CMD.waitUntilOuttakeDown(outtakeSubsystem).alongWith(CMD.followPath(follower, core.paths.SampleAutonomous.goToSub())),
+                        CMD.followPath(follower, core.paths.SampleAutonomous.goToSub()),
 
                         CMD.extendIntake(intakeSubsystem),
                         CMD.moveRelative(follower, Vector.cartesian(3, 10), true).raceWith(
                                 CMD.scanForSample(follower, limelight, buffer, telemetry)
                         ),
-                        CMD.sleep(300),
                         CMD.driveToSample(follower, buffer),
                         CMD.alignClaw(intakeSubsystem, buffer),
                         CMD.sleep(300),
@@ -100,8 +97,8 @@ public class SampleAutonomous extends CommandOpMode {
                         CMD.followPath(follower, core.paths.SampleAutonomous.goToBasket()).alongWith(
                                 CMD.raiseSlidesForSampleDump(outtakeSubsystem)
                         ),
-                        CMD.sleep(300),
                         CMD.slamDunkSample(outtakeSubsystem),
+
                         CMD.waitUntilOuttakeDown(outtakeSubsystem).alongWith(
                                 CMD.followPath(follower, core.paths.SampleAutonomous.goToSub())
                         ),
@@ -109,7 +106,6 @@ public class SampleAutonomous extends CommandOpMode {
                         CMD.moveRelative(follower, Vector.cartesian(3, 10), true).raceWith(
                                 CMD.scanForSample(follower, limelight, buffer, telemetry)
                         ),
-                        CMD.sleep(300),
                         CMD.driveToSample(follower, buffer),
                         CMD.alignClaw(intakeSubsystem, buffer),
                         CMD.sleep(300),
@@ -118,7 +114,6 @@ public class SampleAutonomous extends CommandOpMode {
                         CMD.followPath(follower, core.paths.SampleAutonomous.goToBasket()).alongWith(
                                 CMD.raiseSlidesForSampleDump(outtakeSubsystem)
                         ),
-                        CMD.sleep(300),
                         CMD.slamDunkSample(outtakeSubsystem),
                         CMD.waitUntilOuttakeDown(outtakeSubsystem)
                 )
