@@ -24,7 +24,7 @@ public class RetractIntakeAndTransfer extends CommandBase {
         // Ensure the intake state is grabbing, and if so bring it in for transfer
         if (this.intakeSubsystem.state == Subsystems.IntakeState.ExtendedClawGrabbing) this.intakeSubsystem.nextState();
         // If outtake is not ready for transfer, abort
-        if (this.outtakeSubsystem.state != Subsystems.OuttakeState.DownClawOpen) this.outtakeSubsystem.state = Subsystems.OuttakeState.DownClawOpen;
+        this.outtakeSubsystem.state = Subsystems.OuttakeState.DownClawOpen;
         this.outtakeSubsystem.transferComplete = false;
     }
 
@@ -36,7 +36,7 @@ public class RetractIntakeAndTransfer extends CommandBase {
             // Grab with the outtake claw
             if (this.outtakeSubsystem.state == Subsystems.OuttakeState.DownClawOpen) this.outtakeSubsystem.nextState();
             // If the outtake claw has closed, release the intake claw
-            if (this.outtakeSubsystem.state == Subsystems.OuttakeState.DownClawClosed && this.outtakeSubsystem.clawClosed()) {
+            if (this.outtakeSubsystem.state == Subsystems.OuttakeState.DownClawClosed && this.outtakeSubsystem.clawTime() > 0.25) {
                 this.intakeSubsystem.state = Subsystems.IntakeState.RetractedClawOpen;
                 this.outtakeSubsystem.transferComplete = true;
             }
@@ -45,6 +45,6 @@ public class RetractIntakeAndTransfer extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return this.outtakeSubsystem.state == Subsystems.OuttakeState.DownClawClosed && this.intakeSubsystem.state == Subsystems.IntakeState.RetractedClawOpen;
+        return this.outtakeSubsystem.state == Subsystems.OuttakeState.DownClawClosed && this.outtakeSubsystem.clawClosed();
     }
 }

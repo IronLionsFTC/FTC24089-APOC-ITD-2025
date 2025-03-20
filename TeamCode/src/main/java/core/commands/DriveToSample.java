@@ -7,6 +7,7 @@ import com.pedropathing.pathgen.PathBuilder;
 import com.pedropathing.pathgen.Point;
 
 import core.computerVision.Limelight;
+import core.math.Vector;
 
 public class DriveToSample extends CommandBase {
     private Follower follower;
@@ -58,5 +59,6 @@ public class DriveToSample extends CommandBase {
     @Override
     public void end(boolean i) {
         this.follower.setMaxPower(1);
+        if (!i) buffer.center = Vector.cartesian(0, 0);
     }
 }

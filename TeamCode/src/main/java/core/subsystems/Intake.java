@@ -50,7 +50,7 @@ public class Intake extends SubsystemBase {
         }
 
         private boolean isRetracted() {
-            return this.getPosition() == PositionalBounds.SlidePositions.IntakePositions.retracted && this.leftSlide.secondsSinceMovement() > 0.8;
+            return this.getPosition() == PositionalBounds.SlidePositions.IntakePositions.retracted && this.leftSlide.secondsSinceMovement() > 0.5;
         }
     }
 

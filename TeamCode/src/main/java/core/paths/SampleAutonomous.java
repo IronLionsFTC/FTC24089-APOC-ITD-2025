@@ -45,9 +45,9 @@ public class SampleAutonomous {
     public static final Point dump1 = point(600, 340);
     public static final Point grab2 = point(600, 250);
     public static final Point dump2 = point(750, 380);
-    public static final Point grab3 = point(550, 360);
-    public static final Point control = point(750, 1500);
-    public static final Point control2 = point(600, 500);
+    public static final Point grab3 = point(570, 360);
+    public static final Point control = point(350, 1550);
+    public static final Point control2 = point(500, 500);
     public static final Point park = point(-50, 1500);
 
     public static PathChain dumpPreload() {
@@ -94,7 +94,7 @@ public class SampleAutonomous {
                 )
         );
 
-        path.setConstantHeadingInterpolation(Math.toRadians(92));
+        path.setConstantHeadingInterpolation(Math.toRadians(88));
         PathBuilder builder = new PathBuilder();
         builder.addPath(path);
         return builder.build();
@@ -105,7 +105,7 @@ public class SampleAutonomous {
     }
 
     public static PathChain thirdGrab() {
-        return simpleLine(dump2, grab3, 120);
+        return simpleLine(dump2, grab3, 115);
     }
 
     public static PathChain thirdDump() {

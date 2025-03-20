@@ -83,4 +83,8 @@ public class Claw extends SubsystemBase {
     public void setScalar(double scalar) {
         this.scalar = scalar;
     }
+
+    public double time() {
+        return this.servo.elapsedTime();
+    }
 }

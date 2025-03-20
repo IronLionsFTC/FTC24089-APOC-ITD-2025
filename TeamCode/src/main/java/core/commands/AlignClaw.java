@@ -25,4 +25,9 @@ public class AlignClaw extends CommandBase {
     public boolean isFinished() {
         return true;
     }
+
+    @Override
+    public void end(boolean i) {
+        if (!i) this.buffer.angle = 0;
+    }
 }

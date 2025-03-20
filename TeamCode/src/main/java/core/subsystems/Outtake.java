@@ -278,4 +278,8 @@ public class Outtake extends SubsystemBase {
     public boolean armPhysicallyDown() {
         return this.arm.armPhysicallyDown();
     }
+
+    public double clawTime() {
+        return this.claw.time();
+    }
 }

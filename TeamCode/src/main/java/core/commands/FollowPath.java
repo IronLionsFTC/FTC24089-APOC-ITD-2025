@@ -27,8 +27,10 @@ public class FollowPath extends CommandBase {
         this.speed = 0.8;
     }
 
-    public void setSpeed(double speed) {
-        this.speed = Utility.clamp(speed, 0.2, 1);
+    public FollowPath setSpeed(double speed) {
+        this.speed = speed;
+        this.follower.setMaxPower(speed);
+        return this;
     }
 
     @Override
