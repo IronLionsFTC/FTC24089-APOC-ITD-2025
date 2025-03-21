@@ -54,7 +54,7 @@ public class CachedServo {
         this.inverse = true;
     }
 
-    public double timeElapsed() {
+    public double elapsedTime() {
         return this.timeSinceUpdate.getElapsedTimeSeconds();
     }
 }

@@ -87,4 +87,12 @@ public class Claw extends SubsystemBase {
     public double time() {
         return this.servo.elapsedTime();
     }
+
+    public Subsystems.ClawState getState() {
+        return this.state;
+    }
+
+    public void resetTime() {
+        this.servo.resetTimer();
+    }
 }

@@ -183,4 +183,7 @@ public class Intake extends SubsystemBase {
     }
 
     public boolean gimblePitchDown() { return this.gimble.foldedDown(); }
+    public boolean clawOpen() {
+        return this.claw.hasClawPhysicallyOpened();
+    }
 }

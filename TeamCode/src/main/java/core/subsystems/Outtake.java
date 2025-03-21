@@ -282,4 +282,12 @@ public class Outtake extends SubsystemBase {
     public double clawTime() {
         return this.claw.time();
     }
+
+    public Subsystems.ClawState clawState() {
+        return this.claw.getState();
+    }
+
+    public void resetClawTime() {
+        this.claw.resetTime();
+    }
 }
