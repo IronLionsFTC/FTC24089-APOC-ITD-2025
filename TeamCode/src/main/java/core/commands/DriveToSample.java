@@ -28,7 +28,7 @@ public class DriveToSample extends CommandBase {
         double y = follower.getPose().getY();
         double r = follower.getPose().getHeading();
 
-        double tx = 1 - 0.8 * buffer.center.x;
+        double tx = 2 - 0.8 * buffer.center.x;
         double ty = 4 - 0.9 * buffer.center.y;
 
         double relativeX = ty * Math.cos(r) + tx * Math.sin(r);
