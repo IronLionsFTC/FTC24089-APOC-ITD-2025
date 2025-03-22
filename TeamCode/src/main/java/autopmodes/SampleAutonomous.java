@@ -73,7 +73,7 @@ public class SampleAutonomous extends CommandOpMode {
                         CMD.followPath(follower, core.paths.SampleAutonomous.secondDump(), true).alongWith(
                                 CMD.raiseSlidesForSampleDump(outtakeSubsystem)
                         ),
-                        CMD.sleep(300),
+                        CMD.sleep(800),
                         CMD.slamDunkSample(outtakeSubsystem),
                         CMD.followPath(follower, core.paths.SampleAutonomous.thirdGrab()).alongWith(
                                 CMD.extendIntake(intakeSubsystem, 0.3)
@@ -88,11 +88,14 @@ public class SampleAutonomous extends CommandOpMode {
                         CMD.slamDunkSample(outtakeSubsystem),
                         CMD.followPath(follower, core.paths.SampleAutonomous.goToSub()).setSpeed(1),
 
+
+
+
+
+
                         CMD.extendIntake(intakeSubsystem),
-                        CMD.moveRelative(follower, Vector.cartesian(5, 8), true).andThen(
-                                CMD.moveRelative(follower, Vector.cartesian(0, -8), true)
-                        ).raceWith(
-                                CMD.scanForSample(follower, limelight, buffer, telemetry)
+                        CMD.searchForever(follower).raceWith(
+                                CMD.scanForSample(limelight, buffer, telemetry)
                         ),
                         CMD.driveToSample(follower, buffer),
                         CMD.alignClaw(intakeSubsystem, buffer),
@@ -109,10 +112,8 @@ public class SampleAutonomous extends CommandOpMode {
                                 CMD.followPath(follower, core.paths.SampleAutonomous.goToSub()).setSpeed(1)
                         ),
                         CMD.extendIntake(intakeSubsystem),
-                        CMD.moveRelative(follower, Vector.cartesian(5, 8), true).andThen(
-                                CMD.moveRelative(follower, Vector.cartesian(0, -8), true)
-                        ).raceWith(
-                                CMD.scanForSample(follower, limelight, buffer, telemetry)
+                        CMD.searchForever(follower).raceWith(
+                                CMD.scanForSample(limelight, buffer, telemetry)
                         ),
                         CMD.driveToSample(follower, buffer),
                         CMD.alignClaw(intakeSubsystem, buffer),

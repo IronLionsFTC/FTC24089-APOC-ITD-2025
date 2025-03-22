@@ -197,8 +197,12 @@ public class Outtake extends SubsystemBase {
                 this.slides.setTarget(this.getTargetHeight());
                 this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armSample);
 
-                if (!this.arm.armPhysicallyUp()) this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.safeMovement);
-                else this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleOuttake);
+                if (this.useHighBasket) {
+                    if (!this.arm.armPhysicallyUp()) this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.safeMovement);
+                    else this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleOuttake);
+                } else {
+                    this.pitchServo.setPosition(0.33);
+                }
 
                 this.claw.setState(Subsystems.ClawState.StrongGripClosed);
                 this.hasCycleOccured = true;

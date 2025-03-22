@@ -97,6 +97,7 @@ public class CMD {
     public static DriveToSample driveToSample(Follower follower, Limelight.SampleState buffer) { return new DriveToSample(follower, buffer); }
 
     // --------------- COMPUTER VISION ----------------------------------
-    public static ScanForSample scanForSample(Follower follower, Limelight limelight, Limelight.SampleState buffer, Telemetry telemetry) { return new ScanForSample(follower, limelight, buffer, telemetry); }
+    public static ScanForSample scanForSample(Limelight limelight, Limelight.SampleState buffer, Telemetry telemetry) { return new ScanForSample(limelight, buffer, telemetry); }
     public static AlignClaw alignClaw(Intake intakeSubsystem, Limelight.SampleState buffer) { return new AlignClaw(intakeSubsystem, buffer); }
+    public static SearchForever searchForever(Follower follower) { return new SearchForever(follower); }
 }

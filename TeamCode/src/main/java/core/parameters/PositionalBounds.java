@@ -51,7 +51,7 @@ public final class PositionalBounds {
 
         public static final class OuttakePositions {
             public static final double highBasket = 0.77;
-            public static final double lowBasket = 0.2;
+            public static final double lowBasket = 0.0;
             public static final double specimenOuttake = 0.17;
         }
 

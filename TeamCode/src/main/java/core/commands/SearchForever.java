@@ -6,45 +6,30 @@ import com.pedropathing.pathgen.BezierLine;
 import com.pedropathing.pathgen.PathBuilder;
 import com.pedropathing.pathgen.Point;
 
-import core.computerVision.Limelight;
 import core.math.Vector;
 
-public class DriveToSample extends CommandBase {
+public class SearchForever extends CommandBase {
     private Follower follower;
-    private Limelight.SampleState buffer;
-    private boolean wasValid;
+    private boolean forward;
 
-    public DriveToSample(Follower follower, Limelight.SampleState buffer) {
+    public SearchForever(Follower follower) {
         this.follower = follower;
-        this.buffer = buffer;
-        this.wasValid = false;
+        this.forward = true;
     }
 
-    @Override
-    public void initialize() {
-
-        if (buffer == null) return;
-        if (buffer.angle == 0) return;
-        if (buffer.center.m < 0.05) return;
-
-        this.wasValid = true;
-        this.follower.setMaxPower(0.4);
-
+    public void followVec(Vector rel) {
+        this.follower.setMaxPower(0.3);
         // Calculate current position and rotation
         double x = follower.getPose().getX();
         double y = follower.getPose().getY();
         double r = follower.getPose().getHeading();
 
-        double tx = 2 - 0.8 * buffer.center.x;
-        double ty = 4 - 0.9 * buffer.center.y;
-
-        double relativeX = ty * Math.cos(r) + tx * Math.sin(r);
-        double relativeY = tx * Math.cos(r) + ty * Math.sin(r);
+        double relativeX = rel.y * Math.cos(r) + rel.x * Math.sin(r);
+        double relativeY = rel.x * Math.cos(r) + rel.y * Math.sin(r);
 
         double targetX = x + relativeX;
         double targetY = y - relativeY;
 
-        // End current path if applicable then path to new location
         PathBuilder builder = new PathBuilder();
         builder.addPath(
                 new BezierLine(
@@ -52,20 +37,34 @@ public class DriveToSample extends CommandBase {
                         new Point(targetX, targetY, Point.CARTESIAN)
                 )
         ).setConstantHeadingInterpolation(r);
+
         follower.followPath(builder.build(), true);
     }
 
     @Override
-    public void execute() { if (this.wasValid) follower.update(); }
+    public void initialize() {
+        followVec(Vector.cartesian(5, 8));
+    }
+
+    @Override
+    public void execute() {
+        if (follower.getCurrentTValue() > 0.95) {
+            this.forward = !this.forward;
+            if (this.forward) {
+                followVec(Vector.cartesian(5, 8));
+            } else {
+                followVec(Vector.cartesian(-5, -8));
+            }
+        }
+    }
 
     @Override
     public boolean isFinished() {
-        return follower.getCurrentTValue() > 0.95 || !this.wasValid;
+        return false;
     }
 
     @Override
     public void end(boolean i) {
         this.follower.setMaxPower(1);
-        buffer.center = Vector.cartesian(0, 0);
     }
 }

@@ -54,9 +54,8 @@ public class ComputerVisionTesting extends CommandOpMode {
                         CMD.sleepUntil(this::opModeIsActive),
                         CMD.moveAbsolute(follower, Vector.cartesian(0, 14), false),
                         CMD.extendIntake(intakeSubsystem),
-                        CMD.scanForSample(follower, limelight, buffer, telemetry).raceWith(
-                                CMD.moveRelative(follower, Vector.cartesian(3, 10), true)
-                                        .andThen(CMD.moveRelative(follower, Vector.cartesian(-3, -10), true))
+                        CMD.scanForSample(limelight, buffer, telemetry).raceWith(
+                                CMD.searchForever(follower)
                         ),
                         CMD.sleep(200),
                         CMD.driveToSample(follower, buffer),

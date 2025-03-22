@@ -1,20 +1,17 @@
 package core.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
-import com.pedropathing.follower.Follower;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import core.computerVision.Limelight;
 
 public class ScanForSample extends CommandBase {
-    private Follower follower;
     private Limelight limelight;
     private Limelight.SampleState result;
     private Telemetry telemetry;
 
-    public ScanForSample(Follower follower, Limelight limelight, Limelight.SampleState buffer, Telemetry telemetry) {
-        this.follower = follower;
+    public ScanForSample(Limelight limelight, Limelight.SampleState buffer, Telemetry telemetry) {
         this.limelight = limelight;
         this.result = buffer;
         this.telemetry = telemetry;
@@ -47,7 +44,5 @@ public class ScanForSample extends CommandBase {
     @Override
     public void end(boolean i) {
         this.limelight.disable();
-        if (!i) this.follower.breakFollowing();
-        if (!i) this.follower.holdPoint(follower.getPose());
     }
 }
