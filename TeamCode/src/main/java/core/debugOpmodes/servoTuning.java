@@ -3,11 +3,13 @@ package core.debugOpmodes;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.ftccommon.internal.manualcontrol.exceptions.UserOpModeRunningException;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import core.parameters.HardwareParameters;
 
@@ -29,6 +31,8 @@ public class servoTuning extends LinearOpMode {
     private Servo leftIntakeServo;
     private Servo rightIntakeServo;
 
+    private RevColorSensorV3 outtakeProximity;
+
     @Config
     public static class ServoPositions {
         public static double intakeYaw = 0.5;
@@ -44,6 +48,8 @@ public class servoTuning extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+
+        outtakeProximity = hardwareMap.get(RevColorSensorV3.class, HardwareParameters.Sensors.HardwareMapNames.outtakeProximity);
 
         intakeYawServo = hardwareMap.get(Servo.class, HardwareParameters.Motors.HardwareMapNames.intakeYawServo);
         intakePitchServo = hardwareMap.get(Servo.class, HardwareParameters.Motors.HardwareMapNames.intakeLiftServo);
@@ -67,6 +73,8 @@ public class servoTuning extends LinearOpMode {
 
         while (opModeIsActive()) {
 
+            telemetry.addData("distanceThreshold", outtakeProximity.getDistance(DistanceUnit.MM));
+
             intakeYawServo.setPosition(ServoPositions.intakeYaw);
             intakePitchServo.setPosition(ServoPositions.intakePitch);
             intakeClawServo.setPosition(ServoPositions.intakeClaw);
@@ -79,6 +87,8 @@ public class servoTuning extends LinearOpMode {
             leftIntakeServo.setPosition(ServoPositions.intakeServo);
             rightIntakeServo.setPosition(1 - ServoPositions.intakeServo);
             outtakeGimble.setPosition(ServoPositions.outtakeGimble);
+
+            telemetry.update();
         }
     }
 }

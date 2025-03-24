@@ -1,9 +1,11 @@
 package core.subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import core.hardware.CachedServo;
 import core.parameters.HardwareParameters;
@@ -18,6 +20,7 @@ public class Intake extends SubsystemBase {
     private DualAxisGimbal gimble;
     private CachedServo latchServo;
     private Slides slides;
+    private RevColorSensorV3 outtakeProximity;
 
     // Internal Subsystem State
     public IntakeState state;
@@ -50,11 +53,12 @@ public class Intake extends SubsystemBase {
         }
 
         private boolean isRetracted() {
-            return this.getPosition() == PositionalBounds.SlidePositions.IntakePositions.retracted && this.leftSlide.secondsSinceMovement() > 0.8;
+            return this.getPosition() == PositionalBounds.SlidePositions.IntakePositions.retracted && this.leftSlide.secondsSinceMovement() > 1.5;
         }
     }
 
     public Intake(HardwareMap hwmp, Telemetry telemetry) {
+        this.outtakeProximity = hwmp.get(RevColorSensorV3.class, HardwareParameters.Sensors.HardwareMapNames.outtakeProximity);
         this.state = IntakeState.RetractedClawOpen;
         this.retractionCounter = 0;
         this.telemetry = telemetry;
@@ -151,7 +155,11 @@ public class Intake extends SubsystemBase {
                 this.claw.setState(Subsystems.ClawState.WeakGripClosed);
                 break;
             case RetractedClawClosed:
-                this.claw.setState(Subsystems.ClawState.WeakGripClosed);
+                if (this.isSlideLatched()) {
+                    claw.setState(Subsystems.ClawState.StrongGripClosed);
+                } else {
+                    claw.setState(Subsystems.ClawState.WeakGripClosed);
+                }
                 if (this.gimble.foldedUp()) {
                     this.slides.setPosition(PositionalBounds.SlidePositions.IntakePositions.retracted);
                 }
@@ -166,12 +174,14 @@ public class Intake extends SubsystemBase {
             if (this.slides.isRetracted()) this.latchServo.setPosition(PositionalBounds.ServoPositions.LatchPositions.closed);
             else this.latchServo.setPosition(PositionalBounds.ServoPositions.LatchPositions.open);
         } else this.latchServo.setPosition(PositionalBounds.ServoPositions.LatchPositions.open); }
+
     public boolean hasClawClosed() {
         return this.claw.hasClawPhysicallyClosed();
     }
 
     public boolean isSlideLatched() {
-        return this.slides.isRetracted() && (this.state == IntakeState.RetractedClawClosed || this.state == IntakeState.RetractedClawOpen);
+        return (this.state == IntakeState.RetractedClawClosed || this.state == IntakeState.RetractedClawOpen)
+                && (this.outtakeProximity.getDistance(DistanceUnit.MM) < PositionalBounds.Sensors.transferThreshold || this.slides.isRetracted());
     }
 
     public boolean isSlidesExtended() {

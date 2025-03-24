@@ -10,7 +10,6 @@ public class RaiseSlidesForSampleDump extends CommandBase {
 
     public RaiseSlidesForSampleDump(Outtake outtakeSubsystem) {
         this.outtakeSubsystem = outtakeSubsystem;
-        addRequirements(outtakeSubsystem);
     }
 
     @Override

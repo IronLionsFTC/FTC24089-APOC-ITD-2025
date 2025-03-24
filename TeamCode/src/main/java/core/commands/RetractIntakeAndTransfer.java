@@ -16,7 +16,6 @@ public class RetractIntakeAndTransfer extends CommandBase {
     public RetractIntakeAndTransfer(Intake intakeSubsystem, Outtake outtakeSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
         this.outtakeSubsystem = outtakeSubsystem;
-        addRequirements(intakeSubsystem, outtakeSubsystem);
     }
 
     @Override
@@ -34,9 +33,9 @@ public class RetractIntakeAndTransfer extends CommandBase {
         // If the intake slides have been in for a certain period of time
         if (this.intakeSubsystem.isSlideLatched()) {
             // Grab with the outtake claw
-            if (this.outtakeSubsystem.state == Subsystems.OuttakeState.DownClawOpen) this.outtakeSubsystem.nextState();
+            if (this.outtakeSubsystem.state != Subsystems.OuttakeState.DownClawClosed) this.outtakeSubsystem.state = Subsystems.OuttakeState.DownClawClosed;
             // If the outtake claw has closed, release the intake claw
-            if (this.outtakeSubsystem.state == Subsystems.OuttakeState.DownClawClosed && this.outtakeSubsystem.clawClosed()) {
+            if (this.outtakeSubsystem.clawClosed()) {
                 this.intakeSubsystem.state = Subsystems.IntakeState.RetractedClawOpen;
                 this.outtakeSubsystem.transferComplete = true;
             }
@@ -45,6 +44,6 @@ public class RetractIntakeAndTransfer extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return this.outtakeSubsystem.state == Subsystems.OuttakeState.DownClawClosed && this.outtakeSubsystem.clawClosed();
+        return this.outtakeSubsystem.state == Subsystems.OuttakeState.DownClawClosed && this.intakeSubsystem.clawOpen();
     }
 }

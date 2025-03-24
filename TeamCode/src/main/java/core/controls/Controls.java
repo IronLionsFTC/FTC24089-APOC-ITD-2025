@@ -5,6 +5,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class Controls {
@@ -28,6 +29,9 @@ public class Controls {
         public DoubleSupplier driveX;
         public DoubleSupplier yaw;
 
+        // Register COMPUTER VISION
+        public GamepadButton useCV;
+
         public Buttons(Gamepad gamepad1, Gamepad gamepad2) {
 
             this.gamepad1 = new GamepadEx(gamepad1);
@@ -48,6 +52,9 @@ public class Controls {
             this.driveY = this.gamepad1::getLeftY;
             this.driveX = this.gamepad1::getLeftX;
             this.yaw = this.gamepad1::getRightX;
+
+            // Computer vision
+            this.useCV = this.gamepad1.getGamepadButton(GamepadKeys.Button.B);
         }
     }
 }

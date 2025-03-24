@@ -43,12 +43,15 @@ public class SampleAutonomous {
     public static final Point dump = point(360, 50);
     public static final Point grab1 = point(515, 250);
     public static final Point dump1 = point(600, 340);
+
+    public static final Point cvdump = point(610, 400);
+
     public static final Point grab2 = point(630, 250);
     public static final Point dump2 = point(750, 380);
     public static final Point grab3 = point(570, 360);
-    public static final Point control = point(350, 1550);
+    public static final Point control = point(400, 1450);
     public static final Point control2 = point(500, 500);
-    public static final Point park = point(0, 1500);
+    public static final Point park = point(-50, 1500);
 
     public static PathChain dumpPreload() {
         return simpleLine(start, dump, 10);
@@ -115,7 +118,7 @@ public class SampleAutonomous {
     public static PathChain goToSub() {
         Path path = new Path(
                 new BezierCurve(
-                        dump1,
+                        cvdump,
                         control,
                         park
                 )
@@ -132,7 +135,7 @@ public class SampleAutonomous {
                         park,
                         control,
                         control2,
-                        dump1
+                        cvdump
                 )
         );
 

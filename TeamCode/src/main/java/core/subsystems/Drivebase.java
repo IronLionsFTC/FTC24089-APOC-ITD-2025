@@ -20,6 +20,7 @@ public class Drivebase extends SubsystemBase {
     private double yawInput;
     private double driveScalar;
     private double yaw = 0;
+    private boolean active;
 
     // This is the yaw value to HOLD until either:
     //      the user presses BUMPERS for -45/45 change
@@ -112,6 +113,7 @@ public class Drivebase extends SubsystemBase {
 
         // Odometry
         this.odometry = new Odometry(hwmp);
+        this.active = true;
     }
 
     public void setYaw(double newYaw) {
@@ -132,6 +134,8 @@ public class Drivebase extends SubsystemBase {
 
     @Override
     public void periodic() {
+
+        if (!active) return;
 
         this.lastYawActionWasManual = this.yawInput != 0;
 
@@ -181,5 +185,21 @@ public class Drivebase extends SubsystemBase {
 
     public void setYawInput(double yawInput) {
         this.yawInput = yawInput;
+    }
+
+    public void enable() {
+        this.active = true;
+    }
+
+    public void disable() {
+        this.active = false;
+        this.frontLeft.setPower(0);
+        this.frontRight.setPower(0);
+        this.backLeft.setPower(0);
+        this.backRight.setPower(0);
+    }
+
+    public boolean active(){
+        return this.active;
     }
 }

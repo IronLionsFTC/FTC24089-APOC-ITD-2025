@@ -44,7 +44,7 @@ public class ComputerVisionTesting extends CommandOpMode {
         follower = new Follower(hardwareMap);
         follower.setStartingPose(Vector.cartesian(0, 0).pose(0));
 
-        this.limelight = new Limelight(hardwareMap);
+        this.limelight = new Limelight(hardwareMap, Limelight.Targets.RedAndYellow);
         this.buffer = new Limelight.SampleState(0, Vector.cartesian(0, 0));
 
         schedule(

@@ -9,9 +9,9 @@ public final class PositionalBounds {
 
             // Claw positions
             public static final double strongGripPosition = 0;
-            public static final double weakGripPosition = 0.05;
+            public static final double weakGripPosition = 0.055;
             public static final double openPosition = 0.4;
-            public static final double wideOpenPosition = 0.5;
+            public static final double wideOpenPosition = 0.65;
 
             // Gimble positions
             public static final double pitchRest = 0.0;
@@ -35,7 +35,7 @@ public final class PositionalBounds {
             public static final double pitchSampleOuttake = 0.05;
             public static final double pitchSpecimenIntake = 0.05;
             public static final double pitchSampleTransfer = 1;
-            public static final double safeMovement = 0.15;
+            public static final double safeMovement = 0.5;
 
             public static final double specimenEntry = 0.57;
         }
@@ -50,14 +50,18 @@ public final class PositionalBounds {
         public static final double outtakeMaximumExtension = 1000;
 
         public static final class OuttakePositions {
-            public static final double highBasket = 0.77;
+            public static final double highBasket = 0.74;
             public static final double lowBasket = 0.0;
             public static final double specimenOuttake = 0.17;
         }
 
         public static final class IntakePositions {
-            public static final double retracted = 0.6;
+            public static final double retracted = 0.63;
             public static final double extended = 0;
         }
+    }
+
+    public static final class Sensors {
+        public static final double transferThreshold = 40;
     }
 }

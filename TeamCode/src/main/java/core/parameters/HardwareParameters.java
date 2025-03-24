@@ -111,4 +111,10 @@ public final class HardwareParameters {
             public static final double sidey = HardwareParameters.Odometry.CenterOffset_mm.sidey  / 25.4;
         }
     }
+
+    public static final class Sensors {
+        public static final class HardwareMapNames {
+            public static final String outtakeProximity = "outtakeProximity";
+        }
+    }
 }

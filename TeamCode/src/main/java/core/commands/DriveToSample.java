@@ -23,19 +23,15 @@ public class DriveToSample extends CommandBase {
     @Override
     public void initialize() {
 
-        if (buffer == null) return;
-        if (buffer.angle == 0) return;
-        if (buffer.center.m < 0.05) return;
-
         this.wasValid = true;
-        this.follower.setMaxPower(0.4);
+        this.follower.setMaxPower(0.3);
 
         // Calculate current position and rotation
         double x = follower.getPose().getX();
         double y = follower.getPose().getY();
         double r = follower.getPose().getHeading();
 
-        double tx = 2 - 0.8 * buffer.center.x;
+        double tx = -0.8 * buffer.center.x;
         double ty = 4 - 0.9 * buffer.center.y;
 
         double relativeX = ty * Math.cos(r) + tx * Math.sin(r);

@@ -100,4 +100,25 @@ public class CMD {
     public static ScanForSample scanForSample(Limelight limelight, Limelight.SampleState buffer, Telemetry telemetry) { return new ScanForSample(limelight, buffer, telemetry); }
     public static AlignClaw alignClaw(Intake intakeSubsystem, Limelight.SampleState buffer) { return new AlignClaw(intakeSubsystem, buffer); }
     public static SearchForever searchForever(Follower follower) { return new SearchForever(follower); }
+    public static InstantCommand resetCV(Limelight.SampleState sampleState) {
+        return new InstantCommand(() -> {
+            sampleState.angle = 0;
+            sampleState.center = Vector.cartesian(0, 0);
+        });
+    }
+    public static InstantCommand disableDrivebase(Drivebase drivebaseSubsystem) {
+        return new InstantCommand(() -> {
+            drivebaseSubsystem.disable();
+        });
+    }
+
+    public static InstantCommand enableDrivebase(Drivebase drivebaseSubsystem) {
+        return new InstantCommand(() -> {
+            drivebaseSubsystem.enable();
+        });
+    }
+
+    public static ConstantlyUpdateFollower constantlyUpdateFollower(Follower follower, Drivebase drivebaseSubsystem) {
+        return new ConstantlyUpdateFollower(follower, drivebaseSubsystem);
+    }
 }
