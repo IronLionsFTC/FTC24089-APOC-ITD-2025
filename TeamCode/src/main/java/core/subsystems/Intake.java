@@ -25,6 +25,7 @@ public class Intake extends SubsystemBase {
     // Internal Subsystem State
     public IntakeState state;
     private int retractionCounter;
+    private double offset = 0;
 
     // Telemetry
     private Telemetry telemetry;
@@ -49,7 +50,7 @@ public class Intake extends SubsystemBase {
         }
 
         private boolean isExtended() {
-            return this.getPosition() == PositionalBounds.SlidePositions.IntakePositions.extended && this.leftSlide.secondsSinceMovement() > 0.5;
+            return this.getPosition() != PositionalBounds.SlidePositions.IntakePositions.retracted && this.leftSlide.secondsSinceMovement() > 0.5;
         }
 
         private boolean isRetracted() {
@@ -140,17 +141,17 @@ public class Intake extends SubsystemBase {
                 this.gimble.resetPosition();
                 break;
             case ExtendedClawUp:
-                this.slides.setPosition(PositionalBounds.SlidePositions.IntakePositions.extended);
+                this.slides.setPosition(PositionalBounds.SlidePositions.IntakePositions.extended + offset);
                 this.claw.setState(Subsystems.ClawState.WideOpen);
                 this.gimble.resetPosition();
                 break;
             case ExtendedClawDown:
-                this.slides.setPosition(PositionalBounds.SlidePositions.IntakePositions.extended);
+                this.slides.setPosition(PositionalBounds.SlidePositions.IntakePositions.extended + offset);
                 this.gimble.extendPitch();
                 this.claw.setState(Subsystems.ClawState.WideOpen);
                 break;
             case ExtendedClawGrabbing:
-                this.slides.setPosition(PositionalBounds.SlidePositions.IntakePositions.extended);
+                this.slides.setPosition(PositionalBounds.SlidePositions.IntakePositions.extended + offset);
                 this.gimble.extendPitch();
                 this.claw.setState(Subsystems.ClawState.WeakGripClosed);
                 break;
@@ -164,7 +165,7 @@ public class Intake extends SubsystemBase {
                     this.slides.setPosition(PositionalBounds.SlidePositions.IntakePositions.retracted);
                 }
                 else {
-                    this.slides.setPosition(PositionalBounds.SlidePositions.IntakePositions.extended);
+                    this.slides.setPosition(PositionalBounds.SlidePositions.IntakePositions.extended + offset);
                 }
                 this.gimble.resetPosition();
                 break;
@@ -191,6 +192,8 @@ public class Intake extends SubsystemBase {
     public boolean isSlidesPartiallyExtended() {
         return this.slides.getPosition() >= PositionalBounds.SlidePositions.IntakePositions.extended && this.slides.leftSlide.secondsSinceMovement() > 0.25;
     }
+
+    public void setOffset(double newOffset) { this.offset = newOffset; }
 
     public boolean gimblePitchDown() { return this.gimble.foldedDown(); }
     public boolean clawOpen() {

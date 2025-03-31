@@ -24,6 +24,8 @@ public class TeleopOverride extends CommandBase {
         } else if (this.outtakeSubsystem.state == Subsystems.OuttakeState.UpClawClosed) {
             // If the outtake is up ready to deposit, then the override button switches buckets
             this.outtakeSubsystem.toggleBasket();
+        } else if (this.outtakeSubsystem.state == Subsystems.OuttakeState.DownClawClosed) {
+            this.outtakeSubsystem.state = Subsystems.OuttakeState.SpecimenOuttakeEntry;
         }
     }
 

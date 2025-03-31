@@ -9,9 +9,16 @@ public class ExtendIntake extends CommandBase {
 
     private final Intake intakeSubsystem;
     private final double clawRotation;
+    private final double offset;
 
-    public ExtendIntake(Intake intakeSubsystem, Double clawRotation) {
+    public ExtendIntake(Intake intakeSubsystem, Double clawRotation, Double offset) {
         this.intakeSubsystem = intakeSubsystem;
+
+        if (offset.isNaN() || offset == null) {
+            this.offset = 0;
+        } else {
+            this.offset = offset;
+        }
 
         if (clawRotation.isNaN() || clawRotation == null) {
             this.clawRotation = 0.5;
@@ -25,6 +32,7 @@ public class ExtendIntake extends CommandBase {
     @Override
     public void initialize() {
         this.intakeSubsystem.state = Subsystems.IntakeState.ExtendedClawUp;
+        this.intakeSubsystem.setOffset(offset);
     }
 
     @Override

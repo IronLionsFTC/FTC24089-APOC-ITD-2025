@@ -18,7 +18,7 @@ public class SearchForever extends CommandBase {
     }
 
     public void followVec(Vector rel) {
-        this.follower.setMaxPower(0.5);
+        this.follower.setMaxPower(0.4);
         // Calculate current position and rotation
         double x = follower.getPose().getX();
         double y = follower.getPose().getY();

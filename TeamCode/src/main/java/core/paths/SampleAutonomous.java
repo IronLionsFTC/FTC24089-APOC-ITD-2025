@@ -44,10 +44,10 @@ public class SampleAutonomous {
     public static final Point grab1 = point(515, 250);
     public static final Point dump1 = point(600, 340);
 
-    public static final Point cvdump = point(610, 400);
+    public static final Point cvdump = point(630, 380);
 
     public static final Point grab2 = point(630, 250);
-    public static final Point dump2 = point(750, 380);
+    public static final Point dump2 = point(750, 400);
     public static final Point grab3 = point(570, 360);
     public static final Point control = point(400, 1450);
     public static final Point control2 = point(500, 500);

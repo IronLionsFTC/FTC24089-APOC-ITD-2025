@@ -33,8 +33,8 @@ public class CMD {
     }
 
     // Extends the intake, automatically folding down the claw and rotating to 0 or x degrees.
-    public static ExtendIntake extendIntake(Intake intakeSubsystem) { return new ExtendIntake(intakeSubsystem, 0.5); }
-    public static ExtendIntake extendIntake(Intake intakeSubsystem, double r) { return new ExtendIntake(intakeSubsystem, r); }
+    public static ExtendIntake extendIntake(Intake intakeSubsystem) { return new ExtendIntake(intakeSubsystem, 0.5, 0.0); }
+    public static ExtendIntake extendIntake(Intake intakeSubsystem, double r, double e) { return new ExtendIntake(intakeSubsystem, r, e); }
 
     // Assumes intake is extended and claw is down and ready to grab.
     public static GrabSample grabSample(Intake intakeSubsystem) { return new GrabSample(intakeSubsystem); }
