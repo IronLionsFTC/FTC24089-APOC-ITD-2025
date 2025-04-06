@@ -50,7 +50,7 @@ public final class PositionalBounds {
         public static final double outtakeMaximumExtension = 1000;
 
         public static final class OuttakePositions {
-            public static final double highBasket = 0.74;
+            public static final double highBasket = 1;
             public static final double lowBasket = 0.2;
             public static final double specimenOuttake = 0.2;
         }

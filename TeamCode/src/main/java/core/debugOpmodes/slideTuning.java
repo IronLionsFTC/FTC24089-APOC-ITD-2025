@@ -44,6 +44,8 @@ public class slideTuning extends LinearOpMode {
 
         leftMotor = new CachedMotor(hardwareMap, HardwareParameters.Motors.HardwareMapNames.leftOuttakeSlide);
         rightMotor = new CachedMotor(hardwareMap, HardwareParameters.Motors.HardwareMapNames.rightOuttakeSlide);
+        leftMotor.setReversed(false);
+        rightMotor.setReversed(true);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         while (opModeIsActive()) {
@@ -57,8 +59,9 @@ public class slideTuning extends LinearOpMode {
                 leftMotor.setPower(SlideParameters.leftPower);
                 rightMotor.setPower(SlideParameters.rightPower);
             } else {
-                leftMotor.setPower(0);
-                rightMotor.setPower(0);
+                double power = outtakePID.calculate(leftMotor.getPosition(), SlideParameters.T);
+                leftMotor.setPower(power);
+                rightMotor.setPower(power);
             }
 
             telemetry.addData("leftPos", leftMotor.getPosition());

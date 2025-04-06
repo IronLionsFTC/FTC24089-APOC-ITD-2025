@@ -52,6 +52,7 @@ public class ComputerVisionTesting extends CommandOpMode {
                 new RunCommand(telemetry::update),
                 new SequentialCommandGroup (
                         CMD.sleepUntil(this::opModeIsActive),
+                        CMD.sleep(4000),
                         CMD.moveAbsolute(follower, Vector.cartesian(0, 14), false),
                         CMD.extendIntake(intakeSubsystem),
                         CMD.searchForever(follower).raceWith(

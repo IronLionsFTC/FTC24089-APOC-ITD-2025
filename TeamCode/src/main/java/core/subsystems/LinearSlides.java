@@ -88,8 +88,6 @@ public class LinearSlides extends SubsystemBase {
             response += feedforward;
         }
 
-        if (response < 0 && !this.powerOnRetraction && this.motors.getPosition() > this.cutPowerOnNegativeThreshold * this.maximumExtension * 5) response = 0;
-
         // Set the master-slave paradigm to use the power
         motors.setPower(response);
     }
