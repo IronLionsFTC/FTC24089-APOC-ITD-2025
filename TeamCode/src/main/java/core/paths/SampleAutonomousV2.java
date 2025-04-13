@@ -49,8 +49,8 @@ public class SampleAutonomousV2 {
     public static Point stageThree = point(17, 12.5);
 
     public static Point submersible = point(0, 55);
-    public static Point basketToSubControl = point(10, 60);
-    public static Point cvStart = point(-10, 65);
+    public static Point basketToSubControl = point(10, 40);
+    public static Point cvStart = point(-5, 53);
 
     public static PathChain firstDumpAndPickup() {
         return simpleLine(start, stageOne, -22.9);
@@ -65,11 +65,11 @@ public class SampleAutonomousV2 {
     }
 
     public static PathChain lastDump() {
-        return simpleLine(stageThree, stageTwo, -12);
+        return simpleLine(stageThree, stageOne, -22.9);
     }
 
     public static PathChain basketToSub() {
-        return simpleCurve(stageTwo, basketToSubControl, submersible);
+        return simpleCurve(stageOne, basketToSubControl, submersible);
     }
 
     public static PathChain subToCV() {
@@ -77,6 +77,6 @@ public class SampleAutonomousV2 {
     }
 
     public static PathChain subToBasket() {
-        return simpleReverseCurve(submersible, basketToSubControl, stageTwo);
+        return simpleReverseCurve(submersible, basketToSubControl, stageOne);
     }
 }

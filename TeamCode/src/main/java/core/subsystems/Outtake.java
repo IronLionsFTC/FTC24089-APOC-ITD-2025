@@ -104,7 +104,7 @@ public class Outtake extends SubsystemBase {
             return this.leftArmServo.getPosition();
         }
 
-        public boolean armPhysicallyUp() { return this.leftArmServo.getPosition() > 0.2 && this.leftArmServo.secondsSinceMovement() > Timings.armFoldUpTime; }
+        public boolean armPhysicallyUp() { return this.leftArmServo.getPosition() >= 0.2 && this.leftArmServo.secondsSinceMovement() > Timings.armFoldUpTime; }
         public boolean armPhysicallyDown() { return this.leftArmServo.getPosition() < 0.2 && this.leftArmServo.secondsSinceMovement() > Timings.armFoldDownTime; }
     }
 

@@ -11,14 +11,15 @@ import core.math.Vector;
 public class SearchForever extends CommandBase {
     private Follower follower;
     private int state;
+    public double speed;
 
     public SearchForever(Follower follower) {
         this.follower = follower;
         this.state = 0;
+        this.speed = 0.4;
     }
 
     public void followVec(Vector rel) {
-        this.follower.setMaxPower(0.4);
         // Calculate current position and rotation
         double x = follower.getPose().getX();
         double y = follower.getPose().getY();
@@ -41,9 +42,15 @@ public class SearchForever extends CommandBase {
         follower.followPath(builder.build(), true);
     }
 
+    public SearchForever setSpeed(double speed) {
+        this.speed = speed;
+        return this;
+    }
+
     @Override
     public void initialize() {
         followVec(Vector.cartesian(5, 8));
+        this.follower.setMaxPower(this.speed);
     }
 
     @Override

@@ -26,8 +26,7 @@ public class pedroRelativePositionTest extends CommandOpMode {
                 new RunCommand(follower::update),
                 new SequentialCommandGroup(
                         CMD.sleepUntil(this::opModeIsActive),
-                        CMD.sleep(1000),
-                        CMD.moveRelative(follower, Vector.cartesian(0, 20), true),
+                        CMD.sleep(3000),
                         CMD.moveRelative(follower, Vector.cartesian(20, 0), true)
                 )
         );

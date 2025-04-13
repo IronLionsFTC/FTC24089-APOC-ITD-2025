@@ -36,11 +36,11 @@ public class MoveRelative extends CommandBase {
         double y = follower.getPose().getY();
         double r = follower.getPose().getHeading();
 
-        double relativeX = position.y * Math.cos(r) + position.x * Math.sin(r);
-        double relativeY = position.x * Math.cos(r) + position.y * Math.sin(r);
+        double relativeX = position.y * Math.cos(r) + position.x * Math.cos(r - Math.toRadians(90));
+        double relativeY = position.y * Math.sin(r) + position.x * Math.sin(r - Math.toRadians(90));
 
         double targetX = x + relativeX;
-        double targetY = y - relativeY;
+        double targetY = y + relativeY;
 
         // End current path if applicable then path to new location
         follower.breakFollowing();

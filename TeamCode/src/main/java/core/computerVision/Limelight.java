@@ -1,5 +1,7 @@
 package core.computerVision;
 
+import com.pedropathing.follower.Follower;
+import com.pedropathing.localization.Pose;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -50,13 +52,19 @@ public class Limelight {
         public double angle;
         public Vector center;
 
-        public SampleState(double angle, Vector center) {
+        public Vector robotPosition;
+
+        public double robotRotation;
+
+        public SampleState(double angle, Vector center, Vector robotPosition, double robotRotation) {
             this.angle = angle;
             this.center = center;
+            this.robotPosition = robotPosition;
+            this.robotRotation = robotRotation;
         }
     }
 
-    public SampleState query(Telemetry telemetry) {
+    public SampleState query(Telemetry telemetry, Follower follower) {
         LLResult result = hardware.getLatestResult();
 
         telemetry.addData("SOMERESULT", result == null);
@@ -73,6 +81,7 @@ public class Limelight {
         if (angle == 0) return null;
 
         Vector center = Vector.cartesian(result_array[1], result_array[2]);
-        return new SampleState(angle, center);
+        Pose current = follower.getPose();
+        return new SampleState(angle, center, Vector.cartesian(current.getX(), current.getY()), current.getHeading());
     }
 }

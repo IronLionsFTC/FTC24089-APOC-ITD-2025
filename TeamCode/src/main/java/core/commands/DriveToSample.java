@@ -27,24 +27,27 @@ public class DriveToSample extends CommandBase {
         this.follower.setMaxPower(0.4);
 
         // Calculate current position and rotation
-        double x = follower.getPose().getX();
-        double y = follower.getPose().getY();
-        double r = follower.getPose().getHeading();
+        double x = buffer.robotPosition.x;
+        double y = buffer.robotPosition.y;
+        double r = buffer.robotRotation;
 
-        double tx = -0.8 * buffer.center.x;
-        double ty = 3 - 0.9 * buffer.center.y;
+        double cx = follower.getPose().getX();
+        double cy = follower.getPose().getY();
 
-        double relativeX = ty * Math.cos(r) + tx * Math.sin(r);
-        double relativeY = tx * Math.cos(r) + ty * Math.sin(r);
+        double tx = -buffer.center.x;
+        double ty = 2.7 - buffer.center.y;
+
+        double relativeX = ty * Math.cos(r) + tx * Math.cos(r - Math.toRadians(90));
+        double relativeY = ty * Math.sin(r) + tx * Math.sin(r - Math.toRadians(90));
 
         double targetX = x + relativeX;
-        double targetY = y - relativeY;
+        double targetY = y + relativeY;
 
         // End current path if applicable then path to new location
         PathBuilder builder = new PathBuilder();
         builder.addPath(
                 new BezierLine(
-                        new Point(x, y, Point.CARTESIAN),
+                        new Point(cx, cy, Point.CARTESIAN),
                         new Point(targetX, targetY, Point.CARTESIAN)
                 )
         ).setConstantHeadingInterpolation(r);
