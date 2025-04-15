@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import core.commands.CMD;
 import core.computerVision.Limelight;
+import core.hardware.IndicatorLight;
 import core.math.Vector;
 import core.subsystems.Intake;
 import core.subsystems.Outtake;
@@ -29,6 +30,9 @@ public class SampleAutonomousV2 extends CommandOpMode {
 
     @Override
     public void initialize() {
+        IndicatorLight light = new IndicatorLight(hardwareMap, "light");
+        light.setColour(0.28);
+
         this.telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         this.intakeSubsystem = new Intake(hardwareMap, this.telemetry);
         this.outtakeSubsystem = new Outtake(hardwareMap, this.telemetry);
@@ -47,6 +51,7 @@ public class SampleAutonomousV2 extends CommandOpMode {
                 new RunCommand(follower::update),
                 new SequentialCommandGroup(
                         CMD.sleepUntil(this::opModeIsActive),
+                        CMD.light(light, 0.3),
 
                         CMD.followPath(follower, core.paths.SampleAutonomousV2.firstDumpAndPickup()).setSpeed(1).alongWith(
                             CMD.sleep(800).andThen(CMD.raiseSlidesForSampleDump(outtakeSubsystem))
@@ -96,48 +101,8 @@ public class SampleAutonomousV2 extends CommandOpMode {
                         CMD.slamDunkSample(outtakeSubsystem),
                         CMD.sleep(300),
 
-                        // -- COMPUTER VISION -- //
-                        CMD.followPath(follower, core.paths.SampleAutonomousV2.basketToSub()).setSpeed(1),
-                        CMD.followPath(follower, core.paths.SampleAutonomousV2.subToCV()).setSpeed(0.5).alongWith(
-                                CMD.extendIntake(intakeSubsystem)
-                        ),
-                        CMD.searchForever(follower).raceWith(
-                                CMD.scanForSample(limelight, buffer, telemetry, follower)
-                        ),
-                        CMD.driveToSample(follower, buffer),
-                        CMD.alignClaw(intakeSubsystem, buffer),
-                        CMD.sleep(300),
-                        CMD.grabSample(intakeSubsystem),
-                        CMD.sleep(300),
-                        CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem),
-                        CMD.followPath(follower, core.paths.SampleAutonomousV2.subToBasket()).setSpeed(1).alongWith(
-                                CMD.sleep(1800).andThen(CMD.raiseSlidesForSampleDump(outtakeSubsystem))
-                        ),
-                        CMD.sleep(200),
-                        CMD.slamDunkSample(outtakeSubsystem),
-                        CMD.sleep(200),
-
-
-                        // -- COMPUTER VISION -- //
-                        CMD.followPath(follower, core.paths.SampleAutonomousV2.basketToSub()).setSpeed(1),
-                        CMD.followPath(follower, core.paths.SampleAutonomousV2.subToCV()).setSpeed(0.5).alongWith(
-                                CMD.extendIntake(intakeSubsystem)
-                        ),
-                        CMD.searchForever(follower).raceWith(
-                                CMD.scanForSample(limelight, buffer, telemetry, follower)
-                        ),
-                        CMD.driveToSample(follower, buffer),
-                        CMD.alignClaw(intakeSubsystem, buffer),
-                        CMD.sleep(300),
-                        CMD.grabSample(intakeSubsystem),
-                        CMD.sleep(300),
-                        CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem),
-                        CMD.followPath(follower, core.paths.SampleAutonomousV2.subToBasket()).setSpeed(1).alongWith(
-                                CMD.sleep(1800).andThen(CMD.raiseSlidesForSampleDump(outtakeSubsystem))
-                        ),
-                        CMD.sleep(200),
-                        CMD.slamDunkSample(outtakeSubsystem),
-                        CMD.sleep(200)
+                        CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, light),
+                        CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, light)
                 )
         );
     }

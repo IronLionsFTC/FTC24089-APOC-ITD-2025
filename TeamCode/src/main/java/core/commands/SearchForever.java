@@ -25,11 +25,11 @@ public class SearchForever extends CommandBase {
         double y = follower.getPose().getY();
         double r = follower.getPose().getHeading();
 
-        double relativeX = rel.y * Math.cos(r) + rel.x * Math.sin(r);
-        double relativeY = rel.x * Math.cos(r) + rel.y * Math.sin(r);
+        double relativeX = rel.y * Math.cos(r) + rel.x * Math.cos(r - Math.toRadians(90));
+        double relativeY = rel.y * Math.sin(r) + rel.x * Math.sin(r - Math.toRadians(90));
 
         double targetX = x + relativeX;
-        double targetY = y - relativeY;
+        double targetY = y + relativeY;
 
         PathBuilder builder = new PathBuilder();
         builder.addPath(
@@ -49,7 +49,8 @@ public class SearchForever extends CommandBase {
 
     @Override
     public void initialize() {
-        followVec(Vector.cartesian(5, 8));
+        this.state = 0;
+        this.followVec(Vector.cartesian(0, 8));
         this.follower.setMaxPower(this.speed);
     }
 
@@ -59,13 +60,13 @@ public class SearchForever extends CommandBase {
             this.state += 1;
             if (this.state >= 4) this.state = 0;
             if (state == 0) {
-                followVec(Vector.cartesian(-5, 9));
+                followVec(Vector.cartesian(0, 8));
             } else if (this.state == 1) {
-                followVec(Vector.cartesian(12, 0));
+                followVec(Vector.cartesian(-12, 0));
             } else if (this.state == 2) {
-                followVec(Vector.cartesian(0, -9));
+                followVec(Vector.cartesian(0, -8));
             } else {
-                followVec(Vector.cartesian(-7, 0));
+                followVec(Vector.cartesian(12, 0));
             }
         }
     }

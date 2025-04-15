@@ -34,7 +34,7 @@ public class DriveToSample extends CommandBase {
         double cx = follower.getPose().getX();
         double cy = follower.getPose().getY();
 
-        double tx = -buffer.center.x;
+        double tx = 1 - 0.8 * buffer.center.x;
         double ty = 2.7 - buffer.center.y;
 
         double relativeX = ty * Math.cos(r) + tx * Math.cos(r - Math.toRadians(90));
@@ -66,5 +66,7 @@ public class DriveToSample extends CommandBase {
     public void end(boolean i) {
         this.follower.setMaxPower(1);
         buffer.center = Vector.cartesian(0, 0);
+        buffer.robotPosition = Vector.cartesian(0, 0);
+        buffer.robotRotation = 0;
     }
 }

@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.ftccommon.internal.manualcontrol.exceptions.UserOpModeRunningException;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
+import core.hardware.IndicatorLight;
 import core.parameters.HardwareParameters;
 
 @TeleOp(name = "<--- SERVO TUNING OPMODE --->")
@@ -33,6 +34,8 @@ public class servoTuning extends LinearOpMode {
 
     private RevColorSensorV3 outtakeProximity;
 
+    private IndicatorLight indicator;
+
     @Config
     public static class ServoPositions {
         public static double intakeYaw = 0.5;
@@ -44,12 +47,17 @@ public class servoTuning extends LinearOpMode {
         public static double latch = 0;
         public static double intakeServo = 0;
         public static double outtakeGimble = 0.3;
+
+        public static double colour = 0;
+
+        public static boolean enableLight = false;
     }
 
     @Override
     public void runOpMode() throws InterruptedException {
 
         outtakeProximity = hardwareMap.get(RevColorSensorV3.class, HardwareParameters.Sensors.HardwareMapNames.outtakeProximity);
+        indicator = new IndicatorLight(hardwareMap, "light");
 
         intakeYawServo = hardwareMap.get(Servo.class, HardwareParameters.Motors.HardwareMapNames.intakeYawServo);
         intakePitchServo = hardwareMap.get(Servo.class, HardwareParameters.Motors.HardwareMapNames.intakeLiftServo);
@@ -87,6 +95,9 @@ public class servoTuning extends LinearOpMode {
             leftIntakeServo.setPosition(ServoPositions.intakeServo);
             rightIntakeServo.setPosition(1 - ServoPositions.intakeServo);
             outtakeGimble.setPosition(ServoPositions.outtakeGimble);
+
+            indicator.setColour(ServoPositions.colour);
+            indicator.setPower(ServoPositions.enableLight);
 
             telemetry.update();
         }

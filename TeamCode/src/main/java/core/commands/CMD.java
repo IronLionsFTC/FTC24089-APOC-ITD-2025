@@ -2,6 +2,7 @@ package core.commands;
 
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.pedropathing.follower.Follower;
@@ -13,6 +14,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import core.computerVision.Limelight;
+import core.hardware.IndicatorLight;
 import core.math.Vector;
 import core.subsystems.Drivebase;
 import core.subsystems.Intake;
@@ -122,5 +124,48 @@ public class CMD {
 
     public static ConstantlyUpdateFollower constantlyUpdateFollower(Follower follower, Drivebase drivebaseSubsystem) {
         return new ConstantlyUpdateFollower(follower, drivebaseSubsystem);
+    }
+
+    public static Command subCycle(
+            Follower follower,
+            Intake intakeSubsystem,
+            Outtake outtakeSubsystem,
+            Limelight limelight,
+            Limelight.SampleState buffer,
+            Telemetry telemetry,
+            IndicatorLight light
+    ) {
+        return new SequentialCommandGroup(
+                CMD.followPath(follower, core.paths.SampleAutonomousV2.basketToSub()).setSpeed(1),
+                CMD.followPath(follower, core.paths.SampleAutonomousV2.subToCV()).setSpeed(1).alongWith(
+                        CMD.sleep(500).andThen(CMD.extendIntake(intakeSubsystem))
+                ),
+                CMD.searchForever(follower).setSpeed(0.6).raceWith(
+                        CMD.light(light, 0.28).andThen(
+                            CMD.scanForSample(limelight, buffer, telemetry, follower)
+                        )
+                ),
+                CMD.light(light, 0.53),
+                CMD.driveToSample(follower, buffer),
+                CMD.light(light, 0.611),
+                CMD.alignClaw(intakeSubsystem, buffer),
+                CMD.light(light, 0.333),
+                CMD.sleep(300),
+                CMD.grabSample(intakeSubsystem),
+                CMD.light(light, 0.388),
+                CMD.sleep(300),
+                CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem),
+                CMD.light(light, 0.53),
+                CMD.followPath(follower, core.paths.SampleAutonomousV2.subToBasket()).setSpeed(1).alongWith(
+                        CMD.sleep(1500).andThen(CMD.raiseSlidesForSampleDump(outtakeSubsystem))
+                ),
+                CMD.sleep(200),
+                CMD.slamDunkSample(outtakeSubsystem),
+                CMD.sleep(200)
+        );
+    }
+
+    public static InstantCommand light(IndicatorLight light, double colour) {
+        return new InstantCommand(()->light.setColour(colour));
     }
 }

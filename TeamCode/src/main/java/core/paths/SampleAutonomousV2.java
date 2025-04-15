@@ -32,9 +32,9 @@ public class SampleAutonomousV2 {
         return pathBuilder.build();
     }
 
-    public static PathChain simpleReverseCurve(Point a, Point c, Point b) {
+    public static PathChain simpleReverseCurve(Point a, Point c, Point c2, Point b) {
         Path path = new Path(
-                new BezierCurve(a, c, b)
+                new BezierCurve(a, c, c2, b)
         );
         path.setTangentHeadingInterpolation();
         path.setReversed(true);
@@ -49,7 +49,8 @@ public class SampleAutonomousV2 {
     public static Point stageThree = point(17, 12.5);
 
     public static Point submersible = point(0, 55);
-    public static Point basketToSubControl = point(10, 40);
+    public static Point basketToSubControl = point(15, 50);
+    public static Point subToBasketControl = point(10, 15);
     public static Point cvStart = point(-5, 53);
 
     public static PathChain firstDumpAndPickup() {
@@ -77,6 +78,6 @@ public class SampleAutonomousV2 {
     }
 
     public static PathChain subToBasket() {
-        return simpleReverseCurve(submersible, basketToSubControl, stageOne);
+        return simpleReverseCurve(submersible, basketToSubControl, subToBasketControl, stageOne);
     }
 }
