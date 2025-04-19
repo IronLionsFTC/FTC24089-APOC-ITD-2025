@@ -8,14 +8,17 @@ import com.pedropathing.pathgen.Point;
 
 import core.computerVision.Limelight;
 import core.math.Vector;
+import core.subsystems.Intake;
 
-public class DriveToSample extends CommandBase {
+public class DriveToSampleUseSlides extends CommandBase {
     private Follower follower;
+    private Intake intakeSubsystem;
     private Limelight.SampleState buffer;
     private boolean wasValid;
 
-    public DriveToSample(Follower follower, Limelight.SampleState buffer) {
+    public DriveToSampleUseSlides(Follower follower, Intake intakeSubsystem, Limelight.SampleState buffer) {
         this.follower = follower;
+        this.intakeSubsystem = intakeSubsystem;
         this.buffer = buffer;
         this.wasValid = false;
     }
@@ -34,12 +37,30 @@ public class DriveToSample extends CommandBase {
         double cx = follower.getPose().getX();
         double cy = follower.getPose().getY();
 
-        double theta = Math.toRadians(90 - ((75 - 0.1 * 30) - buffer.center.y));
+        double theta = Math.toRadians(90 - ((75- intakeSubsystem.getTilt() * 30) - buffer.center.y));
         double cm = Math.tan(theta) * 25; // height
         double inches = cm / 2.54;
 
+        double slidePosition = buffer.slidePosition;
+        double slideMovement = (-inches - 2.7) * 0.03;
+        double slideTarget   = slidePosition + slideMovement;
+
+        double newTy = 0;
+
+        if (slideTarget > 0.6) {
+            double error = slideTarget - 0.6;
+            slideMovement -= error;
+            newTy = error / 0.03;
+        } else if (slideTarget < 0) {
+            double error = -slideTarget;
+            slideMovement += error;
+            newTy = -error / 0.03;
+        }
+
         double tx = 1 - 0.8 * buffer.center.x;
-        double ty = inches + 2.7;
+        double ty = newTy;
+
+        intakeSubsystem.setOffset(buffer.slideOffset + slideMovement);
 
         double relativeX = ty * Math.cos(r) + tx * Math.cos(r - Math.toRadians(90));
         double relativeY = ty * Math.sin(r) + tx * Math.sin(r - Math.toRadians(90));

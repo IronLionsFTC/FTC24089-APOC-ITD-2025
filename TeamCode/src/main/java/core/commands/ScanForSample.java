@@ -6,6 +6,7 @@ import com.pedropathing.follower.Follower;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import core.computerVision.Limelight;
+import core.subsystems.Intake;
 
 public class ScanForSample extends CommandBase {
     private Limelight limelight;
@@ -13,23 +14,35 @@ public class ScanForSample extends CommandBase {
     private Telemetry telemetry;
 
     private Follower follower;
+    private Intake intakeSubsystem;
 
-    public ScanForSample(Limelight limelight, Limelight.SampleState buffer, Telemetry telemetry, Follower follower) {
+    private boolean check;
+    private double tilt = 0;
+
+    public ScanForSample(Limelight limelight, Limelight.SampleState buffer, Telemetry telemetry, Follower follower, Intake intakeSubsystem, boolean isSub) {
         this.limelight = limelight;
         this.result = buffer;
         this.telemetry = telemetry;
         this.follower = follower;
+        this.intakeSubsystem = intakeSubsystem;
+        this.check = isSub;
+    }
+
+    public ScanForSample tilt(double newTilt) {
+        this.tilt = newTilt;
+        return this;
     }
 
     @Override
     public void initialize() {
         this.limelight.enable();
+        this.intakeSubsystem.setTilt(this.tilt);
     }
 
     @Override
     public void execute() {
         this.limelight.logStatus(telemetry);
-        Limelight.SampleState detection = limelight.query(telemetry, follower);
+        Limelight.SampleState detection = limelight.query(telemetry, follower, intakeSubsystem);
 
         if (detection != null) {
 
@@ -38,7 +51,7 @@ public class ScanForSample extends CommandBase {
             double r = detection.robotRotation;
 
             double tx = 1 - 0.8 * detection.center.x;
-            double ty = 2.7 - detection.center.y;
+            double ty = 2.7 - Math.pow(detection.center.y, 2);
 
             double relativeX = ty * Math.cos(r) + tx * Math.cos(r - Math.toRadians(90));
             double relativeY = ty * Math.sin(r) + tx * Math.sin(r - Math.toRadians(90));
@@ -46,14 +59,16 @@ public class ScanForSample extends CommandBase {
             double targetX = x + relativeX;
             double targetY = y + relativeY;
 
-            if (targetY < -16) return;
-            if (targetX < 49) return;
+            if (targetY < -16 && check) return;
+            if (targetX < 49 && check) return;
 
             telemetry.addData("ANGLE", detection.angle);
             this.result.angle = detection.angle;
             this.result.center = detection.center;
             this.result.robotPosition = detection.robotPosition;
             this.result.robotRotation = detection.robotRotation;
+            this.result.slidePosition = intakeSubsystem.getSlideExtension();
+            this.result.slideOffset = intakeSubsystem.getOffset();
         }
         else telemetry.addLine("IS NULL");
     }
@@ -67,5 +82,6 @@ public class ScanForSample extends CommandBase {
     @Override
     public void end(boolean i) {
         this.limelight.disable();
+        this.intakeSubsystem.setTilt(0);
     }
 }

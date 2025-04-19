@@ -98,8 +98,8 @@ public class CMD {
     public static DriveToSample driveToSample(Follower follower, Limelight.SampleState buffer) { return new DriveToSample(follower, buffer); }
 
     // --------------- COMPUTER VISION ----------------------------------
-    public static ScanForSample scanForSample(Limelight limelight, Limelight.SampleState buffer, Telemetry telemetry, Follower follower) {
-        return new ScanForSample(limelight, buffer, telemetry, follower);
+    public static ScanForSample scanForSample(Limelight limelight, Limelight.SampleState buffer, Telemetry telemetry, Follower follower, Intake intakeSubsystem, boolean isSub) {
+        return new ScanForSample(limelight, buffer, telemetry, follower, intakeSubsystem, isSub);
     }
     public static AlignClaw alignClaw(Intake intakeSubsystem, Limelight.SampleState buffer) { return new AlignClaw(intakeSubsystem, buffer); }
     public static SearchForever searchForever(Follower follower) { return new SearchForever(follower); }
@@ -141,7 +141,7 @@ public class CMD {
                 ),
                 CMD.light(light, 0.28),
                 CMD.searchForever(follower).setSpeed(0.6).raceWith(
-                        CMD.scanForSample(limelight, buffer, telemetry, follower)
+                        CMD.scanForSample(limelight, buffer, telemetry, follower, intakeSubsystem, true)
                 ),
                 CMD.light(light, 0.5),
                 CMD.driveToSample(follower, buffer),
@@ -165,5 +165,13 @@ public class CMD {
 
     public static InstantCommand light(IndicatorLight light, double colour) {
         return new InstantCommand(()->light.setColour(colour));
+    }
+
+    public static DriveToSampleUseSlides driveToSampleUseSlides(Follower follower, Intake intakeSubsystem, Limelight.SampleState buffer) {
+        return new DriveToSampleUseSlides(follower, intakeSubsystem, buffer);
+    }
+
+    public static InstantCommand setTilt(Intake intakeSubsystem, double tilt) {
+        return new InstantCommand(()->intakeSubsystem.setTilt(tilt));
     }
 }

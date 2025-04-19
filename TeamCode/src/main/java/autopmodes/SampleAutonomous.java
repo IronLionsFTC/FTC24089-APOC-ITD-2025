@@ -43,7 +43,7 @@ public class SampleAutonomous extends CommandOpMode {
         this.follower.setStartingPose(Vector.cartesian(0, 0).pose(0));
 
         this.limelight = new Limelight(hardwareMap, Limelight.Targets.YellowOnly);
-        this.buffer = new Limelight.SampleState(0, Vector.cartesian(0, 0), Vector.cartesian(0, 0), 0);
+        this.buffer = new Limelight.SampleState();
 
         schedule(
                 new RunCommand(follower::update),
@@ -97,7 +97,7 @@ public class SampleAutonomous extends CommandOpMode {
                         ),
 
                         CMD.searchForever(follower).raceWith(
-                                CMD.scanForSample(limelight, buffer, telemetry, follower)
+                                CMD.scanForSample(limelight, buffer, telemetry, follower, intakeSubsystem, false)
                         ),
                         CMD.driveToSample(follower, buffer),
                         CMD.alignClaw(intakeSubsystem, buffer),
@@ -123,7 +123,7 @@ public class SampleAutonomous extends CommandOpMode {
                                 )
                         ),
                         CMD.searchForever(follower).raceWith(
-                                CMD.scanForSample(limelight, buffer, telemetry, follower)
+                                CMD.scanForSample(limelight, buffer, telemetry, follower, intakeSubsystem, false)
                         ),
                         CMD.driveToSample(follower, buffer),
                         CMD.alignClaw(intakeSubsystem, buffer),
@@ -151,7 +151,7 @@ public class SampleAutonomous extends CommandOpMode {
                                 )
                         ),
                         CMD.searchForever(follower).raceWith(
-                                CMD.scanForSample(limelight, buffer, telemetry, follower)
+                                CMD.scanForSample(limelight, buffer, telemetry, follower, intakeSubsystem, false)
                         ),
                         CMD.driveToSample(follower, buffer),
                         CMD.alignClaw(intakeSubsystem, buffer),
@@ -176,7 +176,7 @@ public class SampleAutonomous extends CommandOpMode {
                                 )
                         ),
                         CMD.searchForever(follower).raceWith(
-                                CMD.scanForSample(limelight, buffer, telemetry, follower)
+                                CMD.scanForSample(limelight, buffer, telemetry, follower, intakeSubsystem, false)
                         ),
                         CMD.driveToSample(follower, buffer),
                         CMD.alignClaw(intakeSubsystem, buffer),
@@ -200,7 +200,7 @@ public class SampleAutonomous extends CommandOpMode {
                                 )
                         ),
                         CMD.searchForever(follower).raceWith(
-                                CMD.scanForSample(limelight, buffer, telemetry, follower)
+                                CMD.scanForSample(limelight, buffer, telemetry, follower, intakeSubsystem, false)
                         ),
                         CMD.driveToSample(follower, buffer),
                         CMD.alignClaw(intakeSubsystem, buffer),

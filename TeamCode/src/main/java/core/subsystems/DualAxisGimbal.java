@@ -16,6 +16,8 @@ public class DualAxisGimbal extends SubsystemBase {
     // Assume 0.5 is the resting position for the yaw servo so that it can rotate in either direction
     private CachedServo yawServo;
 
+    private double tilt = 0;
+
     public DualAxisGimbal(HardwareMap hwmp, String pitchServoName, String yawServoName) {
         this.pitchServo = new CachedServo(hwmp, pitchServoName);
         this.yawServo = new CachedServo(hwmp, yawServoName, ClawPositions.yawRest);
@@ -29,7 +31,7 @@ public class DualAxisGimbal extends SubsystemBase {
     }
 
     public void extendPitch() {
-        this.pitchServo.setPosition(ClawPositions.pitchExtended);
+        this.pitchServo.setPosition(ClawPositions.pitchExtended - this.tilt);
     }
 
     public void rotateYaw(double speed) {
@@ -57,5 +59,9 @@ public class DualAxisGimbal extends SubsystemBase {
 
     public double getYaw() {
         return this.yawServo.getPosition();
+    }
+
+    public void setTilt(double newTilt) {
+        this.tilt = newTilt;
     }
 }

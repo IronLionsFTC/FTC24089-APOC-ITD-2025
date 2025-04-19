@@ -42,7 +42,7 @@ public class CVOnly extends CommandOpMode {
         this.follower.setStartingPose(Vector.cartesian(0, 0).pose(0));
 
         this.limelight = new Limelight(hardwareMap, Limelight.Targets.YellowOnly);
-        this.buffer = new Limelight.SampleState(0, Vector.cartesian(0, 0), Vector.cartesian(0, 0), 0);
+        this.buffer = new Limelight.SampleState();
 
         IndicatorLight light = new IndicatorLight(hardwareMap, "light");
 

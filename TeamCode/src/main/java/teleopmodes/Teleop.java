@@ -45,7 +45,7 @@ public class Teleop extends CommandOpMode {
         this.drivebaseSubsystem = new Drivebase(hardwareMap, this.telemetry);
 
         this.limelight = new Limelight(hardwareMap, Limelight.Targets.RedAndYellow);
-        this.sampleState = new Limelight.SampleState(0, Vector.cartesian(0, 0), Vector.cartesian(0, 0), 0);
+        this.sampleState = new Limelight.SampleState();
 
         // IMPORTANT - Register SUBSYSTEMS that implement periodic
         CommandScheduler.getInstance().registerSubsystem(drivebaseSubsystem);
@@ -63,7 +63,7 @@ public class Teleop extends CommandOpMode {
 
         buttons.useCV.whenPressed(
             CMD.resetCV(sampleState).andThen(
-                CMD.scanForSample(limelight, sampleState, telemetry, follower).andThen(
+                CMD.scanForSample(limelight, sampleState, telemetry, follower, intakeSubsystem, false).andThen(
                     CMD.alignClaw(intakeSubsystem, sampleState)
                 )
             )

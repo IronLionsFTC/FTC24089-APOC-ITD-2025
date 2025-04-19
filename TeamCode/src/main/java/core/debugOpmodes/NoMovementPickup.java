@@ -45,7 +45,7 @@ public class NoMovementPickup extends CommandOpMode {
         follower.setStartingPose(Vector.cartesian(0, 0).pose(0));
 
         this.limelight = new Limelight(hardwareMap, Limelight.Targets.YellowOnly);
-        this.buffer = new Limelight.SampleState(0, Vector.cartesian(0, 0), Vector.cartesian(0, 0), 0);
+        this.buffer = new Limelight.SampleState();
 
         GamepadEx gamepad = new GamepadEx(gamepad1);
         GamepadButton button = gamepad.getGamepadButton(GamepadKeys.Button.X);
@@ -62,7 +62,7 @@ public class NoMovementPickup extends CommandOpMode {
 
                         new WaitUntilCommand(button::get),
 
-                        CMD.scanForSample(limelight, buffer, telemetry, follower),
+                        CMD.scanForSample(limelight, buffer, telemetry, follower, intakeSubsystem, false),
                         CMD.driveToSample(follower, buffer),
                         CMD.sleep(1000),
                         CMD.alignClaw(intakeSubsystem, buffer),

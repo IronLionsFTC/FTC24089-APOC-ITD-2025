@@ -26,6 +26,7 @@ public class Intake extends SubsystemBase {
     public IntakeState state;
     private int retractionCounter;
     private double offset = 0;
+    private double tilt = 0;
 
     // Telemetry
     private Telemetry telemetry;
@@ -198,5 +199,21 @@ public class Intake extends SubsystemBase {
     public boolean gimblePitchDown() { return this.gimble.foldedDown(); }
     public boolean clawOpen() {
         return this.claw.hasClawPhysicallyOpened();
+    }
+    public double getSlideExtension() {
+        return this.slides.getPosition();
+    }
+
+    public double getOffset() {
+        return this.offset;
+    }
+
+    public void setTilt(double newTilt) {
+        this.tilt = newTilt;
+        this.gimble.setTilt(tilt);
+    }
+
+    public double getTilt() {
+        return this.tilt;
     }
 }
