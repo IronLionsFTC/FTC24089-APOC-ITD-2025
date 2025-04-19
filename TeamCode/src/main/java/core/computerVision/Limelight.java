@@ -60,14 +60,16 @@ public class Limelight {
         public double robotRotation;
         public double slidePosition;
         public double slideOffset;
+        public double intakeTilt;
 
-        public SampleState(double angle, Vector center, Vector robotPosition, double robotRotation, double slidePosition, double slideOffset) {
+        public SampleState(double angle, Vector center, Vector robotPosition, double robotRotation, double slidePosition, double slideOffset, double intakeTilt) {
             this.angle = angle;
             this.center = center;
             this.robotPosition = robotPosition;
             this.robotRotation = robotRotation;
             this.slidePosition = slidePosition;
             this.slideOffset = slideOffset;
+            this.intakeTilt = intakeTilt;
         }
 
         public SampleState() {
@@ -99,6 +101,7 @@ public class Limelight {
         Vector center = Vector.cartesian(result_array[1], result_array[2]);
         Pose current = follower.getPose();
         return new SampleState(angle, center, Vector.cartesian(current.getX(),
-                current.getY()), current.getHeading(), intakeSubsystem.getSlideExtension(), intakeSubsystem.getOffset());
+                current.getY()), current.getHeading(), intakeSubsystem.getSlideExtension(), intakeSubsystem.getOffset(),
+                intakeSubsystem.getTilt());
     }
 }

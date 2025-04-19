@@ -38,6 +38,8 @@ public class DriveToSample extends CommandBase {
         double cm = Math.tan(theta) * 25; // height
         double inches = cm / 2.54;
 
+        double xInches = Math.tan(Math.toRadians(buffer.center.x)) * inches;
+
         double tx = 1 - 0.8 * buffer.center.x;
         double ty = inches + 2.7;
 
