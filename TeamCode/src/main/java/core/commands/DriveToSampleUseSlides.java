@@ -57,7 +57,9 @@ public class DriveToSampleUseSlides extends CommandBase {
             newTy = -error / 0.03;
         }
 
-        double tx = 1 - 0.8 * buffer.center.x;
+        double xInches = Math.tan(Math.toRadians(buffer.center.x)) * inches;
+
+        double tx = xInches;
         double ty = newTy;
 
         intakeSubsystem.setOffset(buffer.slideOffset + slideMovement);

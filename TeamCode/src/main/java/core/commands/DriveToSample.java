@@ -40,7 +40,7 @@ public class DriveToSample extends CommandBase {
 
         double xInches = Math.tan(Math.toRadians(buffer.center.x)) * inches;
 
-        double tx = 1 - 0.8 * buffer.center.x;
+        double tx = xInches;
         double ty = inches + 2.7;
 
         double relativeX = ty * Math.cos(r) + tx * Math.cos(r - Math.toRadians(90));
