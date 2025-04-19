@@ -246,9 +246,9 @@ public class Outtake extends SubsystemBase {
                 break;
 
             case SpecimenOuttakeExit:
-                this.slides.setTarget(PositionalBounds.SlidePositions.OuttakePositions.specimenOuttake);
+                this.slides.setTarget(PositionalBounds.SlidePositions.OuttakePositions.specimenOuttake + 0.3);
                 this.claw.setState(Subsystems.ClawState.StrongGripClosed);
-                this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armDown + 0.15);
+                this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armDown);
                 this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.specimenEntry);
                 this.hasCycleOccured = false;
                 break;

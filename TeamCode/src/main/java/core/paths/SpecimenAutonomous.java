@@ -7,9 +7,9 @@ import com.pedropathing.pathgen.PathBuilder;
 import com.pedropathing.pathgen.PathChain;
 import com.pedropathing.pathgen.Point;
 
-public class SampleAutonomousV2 {
+public class SpecimenAutonomous {
     private static Point point(double x, double y) {
-        return new Point(y, x, Point.CARTESIAN);
+        return new Point(x, y, Point.CARTESIAN);
     }
 
     private static PathChain simpleLine(Point a, Point b, double h) {
@@ -44,40 +44,9 @@ public class SampleAutonomousV2 {
     }
 
     public static Point start = point(0, 0);
-    public static Point stageOne = point(19, 13);
-    public static Point stageTwo = point(22.5, 13);
-    public static Point stageThree = point(17, 12.5);
+    public static Point firstDump = point(31, 0);
 
-    public static Point submersible = point(5, 55);
-    public static Point basketToSubControl = point(15, 50);
-    public static Point subToBasketControl = point(10, 15);
-    public static Point cvStart = point(0, 53);
-
-    public static PathChain firstDumpAndPickup() {
-        return simpleLine(start, stageOne, -22.9);
-    }
-
-    public static PathChain secondDumpAndPickup() {
-        return simpleLine(stageOne, stageTwo, -8);
-    }
-
-    public static PathChain thirdDumpAndPickup() {
-        return simpleLine(stageTwo, stageThree, 27);
-    }
-
-    public static PathChain lastDump() {
-        return simpleLine(stageThree, stageOne, -22.9);
-    }
-
-    public static PathChain basketToSub() {
-        return simpleCurve(stageOne, basketToSubControl, submersible);
-    }
-
-    public static PathChain subToCV() {
-        return simpleLine(submersible, cvStart, -90);
-    }
-
-    public static PathChain subToBasket() {
-        return simpleReverseCurve(submersible, basketToSubControl, subToBasketControl, stageOne);
+    public static PathChain firstDump() {
+        return simpleLine(start, firstDump, 0);
     }
 }

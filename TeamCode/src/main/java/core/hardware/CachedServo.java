@@ -9,6 +9,8 @@ public class CachedServo {
     private double position;
     private boolean inverse;
     private final Timer timeSinceUpdate = new Timer();
+    public double cutPowerHere = -1;
+    private boolean isPWMOn;
 
     // Expose a constructor pulling a Servo of name from hardwaremap
     public CachedServo(HardwareMap hwmp, String name) {
@@ -16,6 +18,7 @@ public class CachedServo {
         this.inverse = false;
         this.servo.setPosition(0);
         this.position = -1;
+        this.isPWMOn = true;
     }
 
     // Allow construction of a servo starting at a specific position
@@ -24,6 +27,7 @@ public class CachedServo {
         this.position = position;
         this.inverse = false;
         this.servo.setPosition(this.position);
+        this.isPWMOn = true;
     }
 
     // Only set the position if it is not already at that position
@@ -33,6 +37,16 @@ public class CachedServo {
             if (this.inverse) servo.setPosition(1 - this.position);
             else servo.setPosition(this.position);
             timeSinceUpdate.resetTimer();
+        }
+
+        boolean considerPower = this.position == this.cutPowerHere && this.cutPowerHere != -1;
+
+        if (this.timeSinceUpdate.getElapsedTimeSeconds() > 0.5 && considerPower && this.isPWMOn) {
+            this.servo.getController().pwmDisable();
+            this.isPWMOn = false;
+        } else if (!this.isPWMOn) {
+            this.isPWMOn = true;
+            this.servo.getController().pwmEnable();
         }
     }
 

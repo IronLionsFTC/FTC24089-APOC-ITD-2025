@@ -65,8 +65,7 @@ public class CMD {
     }
 
     // Specimen Cycle
-    public static ReachForWallSpecimen reachForWallSpecimen(Outtake outtakeSubsystem) { return new ReachForWallSpecimen(outtakeSubsystem); }
-    public static GrabWallSpecimenAndFlip grabWallSpecimenAndFlip(Outtake outtakeSubsystem) { return new GrabWallSpecimenAndFlip(outtakeSubsystem); }
+    public static RaiseSlidesForSpecimen raiseSlidesForSpecimen(Outtake outtakeSubsystem) { return new RaiseSlidesForSpecimen(outtakeSubsystem); }
     public static ClipSpecimen clipSpecimen(Outtake outtakeSubsystem) { return new ClipSpecimen(outtakeSubsystem); }
 
     // PERMANENTLY perform automatic transfer, targetted for teleop but could be used in auto
@@ -140,12 +139,11 @@ public class CMD {
                 CMD.followPath(follower, core.paths.SampleAutonomousV2.subToCV()).setSpeed(1).alongWith(
                         CMD.sleep(500).andThen(CMD.extendIntake(intakeSubsystem))
                 ),
+                CMD.light(light, 0.28),
                 CMD.searchForever(follower).setSpeed(0.6).raceWith(
-                        CMD.light(light, 0.28).andThen(
-                            CMD.scanForSample(limelight, buffer, telemetry, follower)
-                        )
+                        CMD.scanForSample(limelight, buffer, telemetry, follower)
                 ),
-                CMD.light(light, 0.53),
+                CMD.light(light, 0.5),
                 CMD.driveToSample(follower, buffer),
                 CMD.light(light, 0.611),
                 CMD.alignClaw(intakeSubsystem, buffer),
@@ -154,10 +152,10 @@ public class CMD {
                 CMD.grabSample(intakeSubsystem),
                 CMD.light(light, 0.388),
                 CMD.sleep(300),
-                CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem),
-                CMD.light(light, 0.53),
                 CMD.followPath(follower, core.paths.SampleAutonomousV2.subToBasket()).setSpeed(1).alongWith(
-                        CMD.sleep(1500).andThen(CMD.raiseSlidesForSampleDump(outtakeSubsystem))
+                        CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem).andThen(
+                                CMD.raiseSlidesForSampleDump(outtakeSubsystem)
+                        )
                 ),
                 CMD.sleep(200),
                 CMD.slamDunkSample(outtakeSubsystem),

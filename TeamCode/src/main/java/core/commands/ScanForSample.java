@@ -32,6 +32,23 @@ public class ScanForSample extends CommandBase {
         Limelight.SampleState detection = limelight.query(telemetry, follower);
 
         if (detection != null) {
+
+            double x = detection.robotPosition.x;
+            double y = detection.robotPosition.y;
+            double r = detection.robotRotation;
+
+            double tx = 1 - 0.8 * detection.center.x;
+            double ty = 2.7 - detection.center.y;
+
+            double relativeX = ty * Math.cos(r) + tx * Math.cos(r - Math.toRadians(90));
+            double relativeY = ty * Math.sin(r) + tx * Math.sin(r - Math.toRadians(90));
+
+            double targetX = x + relativeX;
+            double targetY = y + relativeY;
+
+            if (targetY < -16) return;
+            if (targetX < 49) return;
+
             telemetry.addData("ANGLE", detection.angle);
             this.result.angle = detection.angle;
             this.result.center = detection.center;
