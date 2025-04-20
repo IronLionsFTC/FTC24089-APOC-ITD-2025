@@ -37,12 +37,12 @@ public class DriveToSampleUseSlides extends CommandBase {
         double cx = follower.getPose().getX();
         double cy = follower.getPose().getY();
 
-        double theta = Math.toRadians(90 - ((75- intakeSubsystem.getTilt() * 30) - buffer.center.y));
+        double theta = Math.toRadians(90 - ((75 - intakeSubsystem.getTilt() * 350) - buffer.center.y));
         double cm = Math.tan(theta) * 25; // height
         double inches = cm / 2.54;
 
         double slidePosition = buffer.slidePosition;
-        double slideMovement = (-inches - 2.7) * 0.03;
+        double slideMovement = -(inches + 1.4) * 0.05;
         double slideTarget   = slidePosition + slideMovement;
 
         double newTy = 0;
@@ -57,7 +57,7 @@ public class DriveToSampleUseSlides extends CommandBase {
             newTy = -error / 0.03;
         }
 
-        double xInches = Math.tan(Math.toRadians(buffer.center.x)) * inches;
+        double xInches = Math.tan(Math.toRadians(buffer.center.x)) * inches * 3;
 
         double tx = xInches;
         double ty = newTy;

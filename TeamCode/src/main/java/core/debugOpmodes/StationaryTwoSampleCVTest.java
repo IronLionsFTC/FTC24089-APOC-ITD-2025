@@ -22,13 +22,15 @@ import core.subsystems.Outtake;
 import pedroPathing.constants.FConstants;
 import pedroPathing.constants.LConstants;
 
-@Autonomous(name = "Stationary CV test")
-public class StationaryCVTest extends CommandOpMode {
+@Autonomous(name = "Stationary CV test, 2 samples")
+public class StationaryTwoSampleCVTest extends CommandOpMode {
     private Follower follower;
     private Intake intakeSubsystem;
     private Outtake outtakeSubsystem;
     private Limelight limelight;
-    private Limelight.SampleState buffer;
+
+    private Limelight.SampleState buffer1;
+    private Limelight.SampleState buffer2;
 
     @Override
     public void initialize() {
@@ -45,7 +47,8 @@ public class StationaryCVTest extends CommandOpMode {
         follower.setStartingPose(Vector.cartesian(0, 0).pose(0));
 
         this.limelight = new Limelight(hardwareMap, Limelight.Targets.YellowOnly);
-        this.buffer = new Limelight.SampleState();
+        this.buffer1 = new Limelight.SampleState();
+        this.buffer2 = new Limelight.SampleState();
 
         GamepadEx gamepad = new GamepadEx(gamepad1);
         GamepadButton button = gamepad.getGamepadButton(GamepadKeys.Button.X);
@@ -63,11 +66,18 @@ public class StationaryCVTest extends CommandOpMode {
 
                         new WaitUntilCommand(button::get),
 
-                        CMD.scanForSample(limelight, buffer, telemetry, follower, intakeSubsystem, false).tilt(0.1),
-                        CMD.driveToSampleUseSlides(follower, intakeSubsystem, buffer),
-                        CMD.alignClaw(intakeSubsystem, buffer),
+                        CMD.scanForTwoSamples(limelight, buffer1, buffer2, telemetry, follower, intakeSubsystem, false).tilt(0.1),
+                        CMD.driveToSampleUseSlides(follower, intakeSubsystem, buffer1),
+                        CMD.alignClaw(intakeSubsystem, buffer1),
                         CMD.setTilt(intakeSubsystem, 0),
-                        CMD.sleep(600),
+                        CMD.sleep(800),
+                        CMD.grabSample(intakeSubsystem),
+                        CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem),
+
+                        CMD.extendIntake(intakeSubsystem, 0.5, 0.3),
+                        CMD.driveToSampleUseSlides(follower, intakeSubsystem, buffer2),
+                        CMD.alignClaw(intakeSubsystem, buffer2),
+                        CMD.sleep(800),
                         CMD.grabSample(intakeSubsystem),
                         CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem),
                         CMD.moveAbsolute(follower, Vector.cartesian(0, 0), true)

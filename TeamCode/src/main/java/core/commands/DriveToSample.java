@@ -34,11 +34,11 @@ public class DriveToSample extends CommandBase {
         double cx = follower.getPose().getX();
         double cy = follower.getPose().getY();
 
-        double theta = Math.toRadians(90 - ((75 - 0.1 * 30) - buffer.center.y));
+        double theta = Math.toRadians(90 - (75 + buffer.center.y));
         double cm = Math.tan(theta) * 25; // height
         double inches = cm / 2.54;
 
-        double xInches = Math.tan(Math.toRadians(buffer.center.x)) * inches;
+        double xInches = Math.tan(Math.toRadians(buffer.center.x)) * inches * 3; // 3 is there because it no worky and scales it, not mathematically derived
 
         double tx = xInches;
         double ty = inches + 2.7;

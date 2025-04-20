@@ -174,4 +174,18 @@ public class CMD {
     public static InstantCommand setTilt(Intake intakeSubsystem, double tilt) {
         return new InstantCommand(()->intakeSubsystem.setTilt(tilt));
     }
+
+    public static ScanForTwoSamples scanForTwoSamples(
+            Limelight limelight,
+            Limelight.SampleState bufferA,
+            Limelight.SampleState bufferB,
+            Telemetry telemetry,
+            Follower follower,
+            Intake intakeSubsystem,
+            boolean isSub
+    ) {
+        return new ScanForTwoSamples(
+                limelight, bufferA, bufferB, telemetry, follower, intakeSubsystem, isSub
+        );
+    }
 }

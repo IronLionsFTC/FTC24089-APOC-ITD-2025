@@ -1,7 +1,5 @@
 package core.computerVision;
 
-import android.provider.Telephony;
-
 import com.pedropathing.follower.Follower;
 import com.pedropathing.localization.Pose;
 import com.qualcomm.hardware.limelightvision.LLResult;
@@ -12,6 +10,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import core.math.Vector;
 import core.subsystems.Intake;
+
+import java.util.AbstractMap.SimpleEntry;
 
 public class Limelight {
     private final Limelight3A hardware;
@@ -103,5 +103,39 @@ public class Limelight {
         return new SampleState(angle, center, Vector.cartesian(current.getX(),
                 current.getY()), current.getHeading(), intakeSubsystem.getSlideExtension(), intakeSubsystem.getOffset(),
                 intakeSubsystem.getTilt());
+    }
+
+    public SimpleEntry<SampleState, SampleState> query_two(Telemetry telemetry, Follower follower, Intake intakeSubsystem) {
+        LLResult result = hardware.getLatestResult();
+
+        telemetry.addData("SOMERESULT", result == null);
+        if (result == null) return null;
+
+        double[] result_array = result.getPythonOutput();
+        telemetry.addData("SOMEPYTHON", result_array == null);
+
+        if (result_array == null) return null;
+        if (result_array.length == 0) return null;
+
+        double angle = result_array[0];
+        // This is POSSIBLE, but so unlikely it can be treated as an error
+        if (angle == 0) return null;
+        Vector center = Vector.cartesian(result_array[1], result_array[2]);
+
+        double angle2 = result_array[3];
+        // This is POSSIBLE, but so unlikely it can be treated as an error
+        if (angle2 == 0) return null;
+        Vector center2 = Vector.cartesian(result_array[4], result_array[5]);
+
+        Pose current = follower.getPose();
+        return new SimpleEntry<>(
+                new SampleState(angle, center, Vector.cartesian(current.getX(),
+                    current.getY()), current.getHeading(), intakeSubsystem.getSlideExtension(), intakeSubsystem.getOffset(),
+                    intakeSubsystem.getTilt()),
+
+                new SampleState(angle2, center2, Vector.cartesian(current.getX(),
+                        current.getY()), current.getHeading(), intakeSubsystem.getSlideExtension(), intakeSubsystem.getOffset(),
+                        intakeSubsystem.getTilt())
+        );
     }
 }

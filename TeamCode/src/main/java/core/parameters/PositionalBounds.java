@@ -9,7 +9,7 @@ public final class PositionalBounds {
 
             // Claw positions
             public static final double strongGripPosition = 0;
-            public static final double weakGripPosition = 0.055;
+            public static final double weakGripPosition = 0.045;
             public static final double openPosition = 0.3;
             public static final double wideOpenPosition = 0.65;
 
