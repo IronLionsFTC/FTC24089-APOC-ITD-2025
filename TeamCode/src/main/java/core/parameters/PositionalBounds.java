@@ -10,7 +10,7 @@ public final class PositionalBounds {
             // Claw positions
             public static final double strongGripPosition = 0;
             public static final double weakGripPosition = 0.045;
-            public static final double openPosition = 0.3;
+            public static final double openPosition = 0.32;
             public static final double wideOpenPosition = 0.65;
 
             // Gimble positions
@@ -29,7 +29,7 @@ public final class PositionalBounds {
 
         public static final class Outtake {
             public static final double armDown = 0.0;
-            public static final double armSample = 0.2;
+            public static final double armSample = 0.23;
             public static final double armSpecimen = 0.5;
 
             public static final double pitchSampleOuttake = 0.05;
@@ -56,7 +56,7 @@ public final class PositionalBounds {
         }
 
         public static final class IntakePositions {
-            public static final double retracted = 0.63;
+            public static final double retracted = 0.59;
             public static final double extended = 0.05;
         }
     }

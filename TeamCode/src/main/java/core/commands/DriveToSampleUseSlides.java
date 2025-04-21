@@ -42,7 +42,7 @@ public class DriveToSampleUseSlides extends CommandBase {
         double inches = cm / 2.54;
 
         double slidePosition = buffer.slidePosition;
-        double slideMovement = -(inches + 1.4) * 0.05;
+        double slideMovement = -(inches + 3.7) * 0.04;
         double slideTarget   = slidePosition + slideMovement;
 
         double newTy = 0;
@@ -57,7 +57,7 @@ public class DriveToSampleUseSlides extends CommandBase {
             newTy = -error / 0.03;
         }
 
-        double xInches = Math.tan(Math.toRadians(buffer.center.x)) * inches * 3;
+        double xInches = Math.tan(Math.toRadians(buffer.center.x)) * inches * 4;
 
         double tx = xInches;
         double ty = newTy;
@@ -95,5 +95,8 @@ public class DriveToSampleUseSlides extends CommandBase {
         buffer.center = Vector.cartesian(0, 0);
         buffer.robotPosition = Vector.cartesian(0, 0);
         buffer.robotRotation = 0;
+        buffer.slideOffset = 0;
+        buffer.slidePosition = 0;
+        buffer.intakeTilt = 0;
     }
 }

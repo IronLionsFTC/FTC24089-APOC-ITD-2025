@@ -42,7 +42,7 @@ public class SampleAutonomousV2 extends CommandOpMode {
 
         Constants.setConstants(FConstants.class, LConstants.class);
         this.follower = new Follower(hardwareMap);
-        this.follower.setStartingPose(Vector.cartesian(0, 0).pose(0));
+        this.follower.setStartingPose(Vector.cartesian(-1, 0).pose(0));
 
         this.limelight = new Limelight(hardwareMap, Limelight.Targets.YellowOnly);
         this.buffer = new Limelight.SampleState();
@@ -62,7 +62,7 @@ public class SampleAutonomousV2 extends CommandOpMode {
                                 CMD.sleep(300)
                             )
                         ).alongWith(
-                            CMD.extendIntake(intakeSubsystem, 0.5, 0.05).andThen(CMD.grabSample(intakeSubsystem))
+                            CMD.extendIntake(intakeSubsystem).andThen(CMD.grabSample(intakeSubsystem))
                         ),
 
                         CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem),
@@ -75,7 +75,7 @@ public class SampleAutonomousV2 extends CommandOpMode {
                                         CMD.sleep(300)
                                 )
                         ).alongWith(
-                                CMD.extendIntake(intakeSubsystem, 0.5, 0.08).andThen(CMD.grabSample(intakeSubsystem))
+                                CMD.extendIntake(intakeSubsystem).andThen(CMD.grabSample(intakeSubsystem))
                         ),
 
                         CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem),
@@ -86,7 +86,7 @@ public class SampleAutonomousV2 extends CommandOpMode {
                         CMD.sleep(200),
 
                         CMD.followPath(follower, core.paths.SampleAutonomousV2.thirdDumpAndPickup()).alongWith(
-                                CMD.extendIntake(intakeSubsystem, 0.3, 0.03)
+                                CMD.extendIntake(intakeSubsystem, 0.4, 0)
                         ),
 
                         CMD.sleep(300),
@@ -101,6 +101,7 @@ public class SampleAutonomousV2 extends CommandOpMode {
                         CMD.slamDunkSample(outtakeSubsystem),
                         CMD.sleep(300),
 
+                        CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, light),
                         CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, light),
                         CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, light)
                 )

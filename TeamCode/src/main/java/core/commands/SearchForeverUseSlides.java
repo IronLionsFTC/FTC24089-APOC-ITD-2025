@@ -64,7 +64,7 @@ public class SearchForeverUseSlides extends CommandBase {
 
     @Override
     public void execute() {
-        this.intakeSubsystem.setOffset(1 - Math.cos(timer.getElapsedTimeSeconds() * 0.8));
+        this.intakeSubsystem.setOffset((1 - Math.cos(timer.getElapsedTimeSeconds() * 2)) * 0.125 + 0.25);
         if (follower.getCurrentTValue() > 0.95) {
             this.state += 1;
             if (this.state > 1) this.state = 0;
