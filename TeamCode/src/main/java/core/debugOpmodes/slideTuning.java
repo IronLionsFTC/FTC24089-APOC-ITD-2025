@@ -1,5 +1,7 @@
 package core.debugOpmodes;
 
+import android.transition.Slide;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -16,7 +18,10 @@ public class slideTuning extends LinearOpMode {
     private CachedMotor leftMotor;
     private CachedMotor rightMotor;
 
+    private CachedMotor intakeMotor;
+
     private PIDController outtakePID;
+    private PIDController intakePID;
 
     @Config
     public static class SlideParameters {
@@ -29,6 +34,12 @@ public class slideTuning extends LinearOpMode {
 
         public static double leftPower = 0.0;
         public static double rightPower = 0.0;
+
+        public static double aP = 0;
+        public static double bI = 0;
+        public static double cD = 0;
+
+        public static double intakeTarget = 0;
     }
 
     @Override
@@ -42,8 +53,16 @@ public class slideTuning extends LinearOpMode {
             SlideParameters.D
         );
 
+        intakePID = new PIDController(
+                SlideParameters.aP,
+                SlideParameters.bI,
+                SlideParameters.cD
+        );
+
         leftMotor = new CachedMotor(hardwareMap, HardwareParameters.Motors.HardwareMapNames.leftOuttakeSlide);
         rightMotor = new CachedMotor(hardwareMap, HardwareParameters.Motors.HardwareMapNames.rightOuttakeSlide);
+        intakeMotor = new CachedMotor(hardwareMap, "intakeSlide");
+        intakeMotor.setReversed(true);
         leftMotor.setReversed(false);
         rightMotor.setReversed(true);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
@@ -55,6 +74,12 @@ public class slideTuning extends LinearOpMode {
                 SlideParameters.D
             );
 
+            intakePID.setPID(
+                    SlideParameters.aP,
+                    SlideParameters.bI,
+                    SlideParameters.cD
+            );
+
             if (!SlideParameters.usePID) {
                 leftMotor.setPower(SlideParameters.leftPower);
                 rightMotor.setPower(SlideParameters.rightPower);
@@ -64,8 +89,12 @@ public class slideTuning extends LinearOpMode {
                 rightMotor.setPower(power);
             }
 
+            double power = intakePID.calculate(intakeMotor.getPosition(), SlideParameters.intakeTarget);
+            intakeMotor.setPower(power);
+
             telemetry.addData("leftPos", leftMotor.getPosition());
             telemetry.addData("rightPos", rightMotor.getPosition());
+            telemetry.addData("intakePos", intakeMotor.getPosition());
             telemetry.update();
         }
     }
