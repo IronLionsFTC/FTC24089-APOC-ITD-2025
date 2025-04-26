@@ -12,6 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 
 import core.hardware.CachedMotor;
 import core.hardware.CachedServo;
+import core.hardware.IndicatorLight;
 import core.parameters.HardwareParameters;
 import core.parameters.PositionalBounds;
 import core.state.Subsystems;
@@ -25,6 +26,9 @@ public class Intake extends SubsystemBase {
     private CachedServo latchServo;
     private Slides slides;
     private RevColorSensorV3 outtakeProximity;
+    private RevColorSensorV3 intakeProximity;
+
+    private IndicatorLight light;
 
     // Internal Subsystem State
     public IntakeState state;
@@ -67,8 +71,10 @@ public class Intake extends SubsystemBase {
         }
     }
 
-    public Intake(HardwareMap hwmp, Telemetry telemetry) {
+    public Intake(HardwareMap hwmp, Telemetry telemetry, IndicatorLight light) {
         this.outtakeProximity = hwmp.get(RevColorSensorV3.class, HardwareParameters.Sensors.HardwareMapNames.outtakeProximity);
+        this.intakeProximity = hwmp.get(RevColorSensorV3.class, HardwareParameters.Sensors.HardwareMapNames.intakeProximity);
+
         this.state = IntakeState.RetractedClawOpen;
         this.telemetry = telemetry;
         this.slides = new Slides(hwmp);
@@ -85,6 +91,30 @@ public class Intake extends SubsystemBase {
         // prevents developer error later by ensuring the subsystem is registered no matter what
         this.gimble.resetPosition();
         this.latchServo = new CachedServo(hwmp, HardwareParameters.Motors.HardwareMapNames.latchServo);
+        this.light = light;
+    }
+
+    public Intake(HardwareMap hwmp, Telemetry telemetry) {
+        this.outtakeProximity = hwmp.get(RevColorSensorV3.class, HardwareParameters.Sensors.HardwareMapNames.outtakeProximity);
+        this.intakeProximity = hwmp.get(RevColorSensorV3.class, HardwareParameters.Sensors.HardwareMapNames.intakeProximity);
+
+        this.state = IntakeState.RetractedClawOpen;
+        this.telemetry = telemetry;
+        this.slides = new Slides(hwmp);
+
+        // Claw and gimble do not need to be scheduled as they are servo abstractions and need no update
+        this.claw = new Claw(hwmp, HardwareParameters.Motors.HardwareMapNames.intakeClawServo);
+        this.claw.setState(Subsystems.ClawState.WideOpen);
+
+        this.gimble = new DualAxisGimbal(hwmp,
+                HardwareParameters.Motors.HardwareMapNames.intakeLiftServo,
+                HardwareParameters.Motors.HardwareMapNames.intakeYawServo);
+
+        // Schedule SLIDES, as they must constantly update as they contain a PID controller
+        // prevents developer error later by ensuring the subsystem is registered no matter what
+        this.gimble.resetPosition();
+        this.latchServo = new CachedServo(hwmp, HardwareParameters.Motors.HardwareMapNames.latchServo);
+        this.light = null;
     }
 
     public void nextState() {
@@ -142,6 +172,17 @@ public class Intake extends SubsystemBase {
     @Override
     public void periodic() {
         telemetry.addData("[PERIODIC] Intake: ", this.state.toString());
+
+        // Indicate transfer status if some light was given to the intake
+        // Do not give access to the light if trying to use it for other things
+        if (this.light != null) {
+            if (this.outtakeProximity.getDistance(DistanceUnit.MM) < PositionalBounds.Sensors.transferThreshold) {
+                this.light.setColour(0.5);
+            } else {
+                this.light.setColour(0.3);
+            }
+        }
+
         switch (this.state) {
             case RetractedClawOpen:
                 this.slides.setPosition(PositionalBounds.SlidePositions.IntakePositions.retracted);
@@ -226,4 +267,8 @@ public class Intake extends SubsystemBase {
     }
 
     public double getSlidePosition() { return this.slides.getPosition(); }
+
+    public boolean hasIntakeGotSample() {
+        return this.intakeProximity.getDistance(DistanceUnit.MM) < PositionalBounds.Sensors.intakeThreshold;
+    }
 }

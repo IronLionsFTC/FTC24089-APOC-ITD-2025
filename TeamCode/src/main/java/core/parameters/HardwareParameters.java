@@ -116,6 +116,7 @@ public final class HardwareParameters {
     public static final class Sensors {
         public static final class HardwareMapNames {
             public static final String outtakeProximity = "outtakeProximity";
+            public static final String intakeProximity = "intakeProximity";
         }
     }
 }

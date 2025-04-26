@@ -129,6 +129,13 @@ public class CMD {
         return new ConstantlyUpdateFollower(follower, drivebaseSubsystem);
     }
 
+    public static Command goToSubForCycles(Follower follower, Limelight.SampleState buffer) {
+        return new SequentialCommandGroup(
+                CMD.resetCV(buffer),
+                CMD.followPath(follower, core.paths.SampleAutonomousV2.basketToSub()).setSpeed(1)
+        );
+    }
+
     public static Command subCycle(
             Follower follower,
             Intake intakeSubsystem,
@@ -139,8 +146,29 @@ public class CMD {
             IndicatorLight light
     ) {
         return new SequentialCommandGroup(
-                CMD.resetCV(buffer),
-                CMD.followPath(follower, core.paths.SampleAutonomousV2.basketToSub()).setSpeed(1),
+                CMD.goToSubForCycles(follower, buffer),
+                CMD.grabSampleForSubCycles(
+                        follower,
+                        intakeSubsystem,
+                        outtakeSubsystem,
+                        limelight,
+                        buffer,
+                        telemetry,
+                        light
+                )
+        );
+    }
+
+    public static Command grabSampleForSubCycles(
+            Follower follower,
+            Intake intakeSubsystem,
+            Outtake outtakeSubsystem,
+            Limelight limelight,
+            Limelight.SampleState buffer,
+            Telemetry telemetry,
+            IndicatorLight light
+    ) {
+        return new SequentialCommandGroup(
                 CMD.followPath(follower, core.paths.SampleAutonomousV2.subToCV()).setSpeed(1).alongWith(
                         CMD.sleep(500).andThen(CMD.extendIntake(intakeSubsystem, 0.5, 0.4))
                 ),
@@ -156,6 +184,20 @@ public class CMD {
                 CMD.sleep(600),
                 CMD.grabSample(intakeSubsystem),
                 CMD.light(light, 0.388),
+                new RecursiveSubIntake(
+                        follower,
+                        intakeSubsystem,
+                        outtakeSubsystem,
+                        limelight,
+                        buffer,
+                        telemetry,
+                        light
+                )
+        );
+    }
+
+    public static Command goToBasketForSubCycles(Follower follower, Intake intakeSubsystem, Outtake outtakeSubsystem) {
+        return new SequentialCommandGroup(
                 CMD.sleep(500).andThen(CMD.followPath(follower, core.paths.SampleAutonomousV2.subToBasket())
                                 .setSpeed(1)).alongWith(
                         CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem).andThen(
