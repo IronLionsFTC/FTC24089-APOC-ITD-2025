@@ -56,19 +56,17 @@ public class Limelight {
         public Vector center;
 
         public Vector robotPosition;
-
         public double robotRotation;
+
         public double slidePosition;
-        public double slideOffset;
         public double intakeTilt;
 
-        public SampleState(double angle, Vector center, Vector robotPosition, double robotRotation, double slidePosition, double slideOffset, double intakeTilt) {
+        public SampleState(double angle, Vector center, Vector robotPosition, double robotRotation, double slidePosition, double intakeTilt) {
             this.angle = angle;
             this.center = center;
             this.robotPosition = robotPosition;
             this.robotRotation = robotRotation;
             this.slidePosition = slidePosition;
-            this.slideOffset = slideOffset;
             this.intakeTilt = intakeTilt;
         }
 
@@ -78,7 +76,6 @@ public class Limelight {
             this.robotPosition = Vector.cartesian(0, 0);
             this.robotRotation = 0;
             this.slidePosition = 0;
-            this.slideOffset = 0;
         }
     }
 
@@ -101,41 +98,7 @@ public class Limelight {
         Vector center = Vector.cartesian(result_array[1], result_array[2]);
         Pose current = follower.getPose();
         return new SampleState(angle, center, Vector.cartesian(current.getX(),
-                current.getY()), current.getHeading(), intakeSubsystem.getSlideExtension(), intakeSubsystem.getOffset(),
+                current.getY()), current.getHeading(), intakeSubsystem.getSlidePosition(),
                 intakeSubsystem.getTilt());
-    }
-
-    public SimpleEntry<SampleState, SampleState> query_two(Telemetry telemetry, Follower follower, Intake intakeSubsystem) {
-        LLResult result = hardware.getLatestResult();
-
-        telemetry.addData("SOMERESULT", result == null);
-        if (result == null) return null;
-
-        double[] result_array = result.getPythonOutput();
-        telemetry.addData("SOMEPYTHON", result_array == null);
-
-        if (result_array == null) return null;
-        if (result_array.length == 0) return null;
-
-        double angle = result_array[0];
-        // This is POSSIBLE, but so unlikely it can be treated as an error
-        if (angle == 0) return null;
-        Vector center = Vector.cartesian(result_array[1], result_array[2]);
-
-        double angle2 = result_array[3];
-        // This is POSSIBLE, but so unlikely it can be treated as an error
-        if (angle2 == 0) return null;
-        Vector center2 = Vector.cartesian(result_array[4], result_array[5]);
-
-        Pose current = follower.getPose();
-        return new SimpleEntry<>(
-                new SampleState(angle, center, Vector.cartesian(current.getX(),
-                    current.getY()), current.getHeading(), intakeSubsystem.getSlideExtension(), intakeSubsystem.getOffset(),
-                    intakeSubsystem.getTilt()),
-
-                new SampleState(angle2, center2, Vector.cartesian(current.getX(),
-                        current.getY()), current.getHeading(), intakeSubsystem.getSlideExtension(), intakeSubsystem.getOffset(),
-                        intakeSubsystem.getTilt())
-        );
     }
 }

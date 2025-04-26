@@ -86,7 +86,7 @@ public class SampleAutonomousV2 extends CommandOpMode {
                         CMD.sleep(200),
 
                         CMD.followPath(follower, core.paths.SampleAutonomousV2.thirdDumpAndPickup()).alongWith(
-                                CMD.extendIntake(intakeSubsystem, 0.4, 0)
+                                CMD.extendIntake(intakeSubsystem, 0.4, 390)
                         ),
 
                         CMD.sleep(300),

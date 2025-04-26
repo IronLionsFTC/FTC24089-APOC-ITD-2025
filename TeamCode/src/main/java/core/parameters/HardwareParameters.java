@@ -38,6 +38,8 @@ public final class HardwareParameters {
 
         public static final class Reversed {
 
+            public static final boolean intakeSlide = true;
+
             // Drivetrain
             public static final boolean frontLeft = false;
             public static final boolean backLeft = false;
@@ -45,7 +47,6 @@ public final class HardwareParameters {
             public static final boolean backRight = true;
 
             // Intake Slides
-            public static final boolean intakeSlide = true;
 
             // Outtake Slides
             public static final boolean leftOuttakeSlide = false;

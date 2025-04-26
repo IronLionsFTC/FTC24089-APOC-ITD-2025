@@ -109,7 +109,6 @@ public class CMD {
             sampleState.center = Vector.cartesian(0, 0);
             sampleState.intakeTilt = 0;
             sampleState.slidePosition = 0;
-            sampleState.slideOffset = 0;
             sampleState.robotRotation = 0;
             sampleState.robotPosition = Vector.cartesian(0, 0);
         });
@@ -179,24 +178,6 @@ public class CMD {
 
     public static InstantCommand setTilt(Intake intakeSubsystem, double tilt) {
         return new InstantCommand(()->intakeSubsystem.setTilt(tilt));
-    }
-
-    public static ScanForTwoSamples scanForTwoSamples(
-            Limelight limelight,
-            Limelight.SampleState bufferA,
-            Limelight.SampleState bufferB,
-            Telemetry telemetry,
-            Follower follower,
-            Intake intakeSubsystem,
-            boolean isSub
-    ) {
-        return new ScanForTwoSamples(
-                limelight, bufferA, bufferB, telemetry, follower, intakeSubsystem, isSub
-        );
-    }
-
-    public static SearchForeverUseSlides searchForeverUseSlides(Follower follower, Intake intakeSubsystem) {
-        return new SearchForeverUseSlides(follower, intakeSubsystem);
     }
 
     public static InstantCommand releaseSample(Intake intakeSubsystem) {

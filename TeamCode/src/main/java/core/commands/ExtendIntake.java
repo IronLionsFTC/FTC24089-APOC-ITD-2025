@@ -2,6 +2,7 @@ package core.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 
+import core.parameters.PositionalBounds;
 import core.state.Subsystems;
 import core.subsystems.Intake;
 
@@ -9,15 +10,15 @@ public class ExtendIntake extends CommandBase {
 
     private final Intake intakeSubsystem;
     private final double clawRotation;
-    private final double offset;
+    private final double extension;
 
-    public ExtendIntake(Intake intakeSubsystem, Double clawRotation, Double offset) {
+    public ExtendIntake(Intake intakeSubsystem, Double clawRotation, Double extension) {
         this.intakeSubsystem = intakeSubsystem;
 
-        if (offset.isNaN() || offset == null) {
-            this.offset = 0;
+        if (extension.isNaN() || extension == null) {
+            this.extension = PositionalBounds.SlidePositions.IntakePositions.extended;
         } else {
-            this.offset = offset;
+            this.extension = extension;
         }
 
         if (clawRotation.isNaN() || clawRotation == null) {
@@ -32,7 +33,7 @@ public class ExtendIntake extends CommandBase {
     @Override
     public void initialize() {
         this.intakeSubsystem.state = Subsystems.IntakeState.ExtendedClawUp;
-        this.intakeSubsystem.setOffset(offset);
+        this.intakeSubsystem.setExtension(extension);
     }
 
     @Override

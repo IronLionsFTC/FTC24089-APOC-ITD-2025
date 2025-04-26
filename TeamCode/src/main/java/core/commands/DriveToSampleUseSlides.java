@@ -7,6 +7,7 @@ import com.pedropathing.pathgen.PathBuilder;
 import com.pedropathing.pathgen.Point;
 
 import core.computerVision.Limelight;
+import core.math.Kinematics;
 import core.math.Vector;
 import core.subsystems.Intake;
 
@@ -14,79 +15,44 @@ public class DriveToSampleUseSlides extends CommandBase {
     private Follower follower;
     private Intake intakeSubsystem;
     private Limelight.SampleState buffer;
-    private boolean wasValid;
 
     public DriveToSampleUseSlides(Follower follower, Intake intakeSubsystem, Limelight.SampleState buffer) {
         this.follower = follower;
         this.intakeSubsystem = intakeSubsystem;
         this.buffer = buffer;
-        this.wasValid = false;
     }
 
     @Override
     public void initialize() {
-
-        this.wasValid = true;
         this.follower.setMaxPower(0.4);
 
-        // Calculate current position and rotation
-        double x = buffer.robotPosition.x;
-        double y = buffer.robotPosition.y;
-        double r = buffer.robotRotation;
+        /*
+            Calculates the following:
+            - Sample position on XZ plane regardless of limelight angle
+            -   ^ Center of sample, homography postcalculation dynamically
+            - Robot position at the time of seeing a sample, even if it has since moved
+            - Robot rotation at the time of seeing a sample
+            - The robot movement required to go from its position when it saw the sample to the position of the sample
+            - Figure out how much of that can be done without moving the robot, just using slides
+            - Calculate required slide, claw, and drivetrain movement
+        */
+        Kinematics kinematics = new Kinematics(buffer);
 
-        double cx = follower.getPose().getX();
-        double cy = follower.getPose().getY();
-
-        double theta = Math.toRadians(90 - ((75 - intakeSubsystem.getTilt() * 350) - buffer.center.y));
-        double cm = Math.tan(theta) * 25; // height
-        double inches = cm / 2.54;
-
-        double slidePosition = buffer.slidePosition;
-        double slideMovement = -(inches + 3.7) * 0.04;
-        double slideTarget   = slidePosition + slideMovement;
-
-        double newTy = 0;
-
-        if (slideTarget > 0.6) {
-            double error = slideTarget - 0.6;
-            slideMovement -= error;
-            newTy = error / 0.03;
-        } else if (slideTarget < 0) {
-            double error = -slideTarget;
-            slideMovement += error;
-            newTy = -error / 0.03;
-        }
-
-        double xInches = Math.tan(Math.toRadians(buffer.center.x)) * inches * 4;
-
-        double tx = xInches;
-        double ty = newTy;
-
-        intakeSubsystem.setOffset(buffer.slideOffset + slideMovement);
-
-        double relativeX = ty * Math.cos(r) + tx * Math.cos(r - Math.toRadians(90));
-        double relativeY = ty * Math.sin(r) + tx * Math.sin(r - Math.toRadians(90));
-
-        double targetX = x + relativeX;
-        double targetY = y + relativeY;
-
-        // End current path if applicable then path to new location
-        PathBuilder builder = new PathBuilder();
-        builder.addPath(
-                new BezierLine(
-                        new Point(cx, cy, Point.CARTESIAN),
-                        new Point(targetX, targetY, Point.CARTESIAN)
-                )
-        ).setConstantHeadingInterpolation(r);
-        follower.followPath(builder.build(), true);
+        /*
+            Calculate the path from the robots current position to that of the sample.
+        */
+        follower.followPath(kinematics.instantPath(follower), true);
+        intakeSubsystem.setExtension(kinematics.absoluteSlidePosition);
     }
 
     @Override
-    public void execute() { if (this.wasValid) follower.update(); }
+    public void execute() {
+        follower.update();
+    }
 
     @Override
     public boolean isFinished() {
-        return follower.getCurrentTValue() > 0.95 || !this.wasValid;
+        return follower.getCurrentTValue() > 0.95;
     }
 
     @Override
@@ -95,7 +61,6 @@ public class DriveToSampleUseSlides extends CommandBase {
         buffer.center = Vector.cartesian(0, 0);
         buffer.robotPosition = Vector.cartesian(0, 0);
         buffer.robotRotation = 0;
-        buffer.slideOffset = 0;
         buffer.slidePosition = 0;
         buffer.intakeTilt = 0;
     }

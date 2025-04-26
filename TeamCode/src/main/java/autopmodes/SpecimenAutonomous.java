@@ -67,7 +67,7 @@ public class SpecimenAutonomous extends CommandOpMode {
                         CMD.sleep(200),
 
                         CMD.followPath(follower, core.paths.SpecimenAutonomous.secondSpike(), true).setSpeed(1).alongWith(
-                                CMD.extendIntake(intakeSubsystem, 0.7, 0)
+                                CMD.extendIntake(intakeSubsystem, 0.7, 390)
                         ),
                         CMD.sleep(500),
                         CMD.grabSample(intakeSubsystem),
@@ -75,16 +75,14 @@ public class SpecimenAutonomous extends CommandOpMode {
                         CMD.releaseSample(intakeSubsystem),
                         CMD.sleep(200),
 
-                        /*
                         CMD.followPath(follower, core.paths.SpecimenAutonomous.thirdSpike(), true).setSpeed(1).alongWith(
-                                CMD.extendIntake(intakeSubsystem, 0.65, 0)
+                                CMD.extendIntake(intakeSubsystem, 0.65, 290)
                         ),
                         CMD.sleep(500),
                         CMD.grabSample(intakeSubsystem),
                         CMD.followPath(follower, core.paths.SpecimenAutonomous.thirdHp()),
                         CMD.releaseSample(intakeSubsystem),
                         CMD.sleep(200),
-                        */
 
                         CMD.followPath(follower, core.paths.SpecimenAutonomous.startCycling(), true),
                         CMD.setClawRotation(intakeSubsystem, 0.5),
@@ -129,9 +127,8 @@ public class SpecimenAutonomous extends CommandOpMode {
                                         CMD.extendIntake(intakeSubsystem)
                                 )
                         ),
-                        CMD.sleep(1000)
+                        CMD.sleep(1000),
 
-                        /*
                         CMD.grabSample(intakeSubsystem),
                         CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem),
                         CMD.followPath(follower, core.paths.SpecimenAutonomous.goDumpD(), true).setSpeed(1).alongWith(
@@ -143,7 +140,6 @@ public class SpecimenAutonomous extends CommandOpMode {
                                         CMD.extendIntake(intakeSubsystem)
                                 )
                         )
-                        */
                 )
         );
 
