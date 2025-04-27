@@ -198,10 +198,9 @@ public class CMD {
 
     public static Command goToBasketForSubCycles(Follower follower, Intake intakeSubsystem, Outtake outtakeSubsystem) {
         return new SequentialCommandGroup(
-                CMD.sleep(500).andThen(CMD.followPath(follower, core.paths.SampleAutonomousV2.subToBasket())
-                                .setSpeed(1)).alongWith(
+                CMD.followPath(follower, core.paths.SampleAutonomousV2.subToBasket()).setSpeed(1).alongWith(
                         CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem).andThen(
-                                CMD.sleep(500).andThen(CMD.raiseSlidesForSampleDump(outtakeSubsystem))
+                                CMD.sleep(900).andThen(CMD.raiseSlidesForSampleDump(outtakeSubsystem))
                         )
                 ),
                 CMD.sleep(200),

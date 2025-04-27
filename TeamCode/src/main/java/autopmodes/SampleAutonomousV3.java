@@ -67,27 +67,25 @@ public class SampleAutonomousV3 extends CommandOpMode {
 
                         CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem),
                         CMD.raiseSlidesForSampleDump(outtakeSubsystem).alongWith(
-                                CMD.followPath(follower, core.paths.SampleAutonomousV2.secondDumpAndPickup())
+                                CMD.followPath(follower, core.paths.SampleAutonomousV2.secondDumpAndPickup()).alongWith(
+                                        CMD.extendIntake(intakeSubsystem)
+                                )
                         ),
 
-                        CMD.sleep(200).andThen(
-                                CMD.slamDunkSample(outtakeSubsystem).andThen(
-                                        CMD.sleep(300)
-                                )
-                        ).alongWith(
-                                CMD.extendIntake(intakeSubsystem).andThen(CMD.grabSample(intakeSubsystem))
-                        ),
+                        CMD.sleep(200),
+                        CMD.slamDunkSample(outtakeSubsystem),
+                        CMD.sleep(300),
 
                         CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem),
-                        CMD.raiseSlidesForSampleDump(outtakeSubsystem),
+                        CMD.raiseSlidesForSampleDump(outtakeSubsystem).alongWith(
+                                CMD.extendIntake(intakeSubsystem)
+                        ),
 
                         CMD.sleep(200),
                         CMD.slamDunkSample(outtakeSubsystem),
                         CMD.sleep(200),
 
-                        CMD.followPath(follower, core.paths.SampleAutonomousV2.thirdDumpAndPickup()).alongWith(
-                                CMD.extendIntake(intakeSubsystem, 0.4, 390)
-                        ),
+                        CMD.followPath(follower, core.paths.SampleAutonomousV2.thirdDumpAndPickup()),
 
                         CMD.sleep(300),
                         CMD.grabSample(intakeSubsystem),
@@ -101,6 +99,7 @@ public class SampleAutonomousV3 extends CommandOpMode {
                         CMD.slamDunkSample(outtakeSubsystem),
                         CMD.sleep(300),
 
+                        CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, light),
                         CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, light),
                         CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, light),
                         CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, light)
