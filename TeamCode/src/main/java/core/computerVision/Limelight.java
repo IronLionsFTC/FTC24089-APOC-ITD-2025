@@ -26,13 +26,13 @@ public class Limelight {
         this.hardware = hwmp.get(Limelight3A.class, "limelight");
         switch (targets) {
             case YellowOnly:
-                this.hardware.pipelineSwitch(0);
-                break;
-            case RedAndYellow:
                 this.hardware.pipelineSwitch(1);
                 break;
+            case RedAndYellow:
+                this.hardware.pipelineSwitch(0);
+                break;
             case BlueAndYellow:
-                this.hardware.pipelineSwitch(2);
+                this.hardware.pipelineSwitch(0);
                 break;
         }
         this.hardware.updatePythonInputs(0, 0, 0, 0, 0, 0, 0, 0);

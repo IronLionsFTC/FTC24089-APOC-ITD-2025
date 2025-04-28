@@ -67,6 +67,8 @@ public class slideTuning extends LinearOpMode {
         rightMotor.setReversed(true);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
+        intakeMotor.resetEncoder();
+
         while (opModeIsActive()) {
             outtakePID.setPID(
                 SlideParameters.P,

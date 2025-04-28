@@ -47,6 +47,7 @@ public class Intake extends SubsystemBase {
             this.controller = new PIDController(0.075, 0, 0);
             this.motor = new CachedMotor(hwmp, HardwareParameters.Motors.HardwareMapNames.intakeSlide);
             this.motor.setReversed(HardwareParameters.Motors.Reversed.intakeSlide);
+            this.motor.resetEncoder();
             this.setPosition(PositionalBounds.SlidePositions.IntakePositions.retracted);
         }
 
@@ -63,7 +64,7 @@ public class Intake extends SubsystemBase {
         }
 
         private boolean isExtended() {
-            return this.getPosition() > extension;
+            return this.getPosition() > extension * 0.8;
         }
 
         private boolean isRetracted() {
@@ -241,7 +242,7 @@ public class Intake extends SubsystemBase {
     }
 
     public boolean isSlidesPartiallyExtended() {
-        return this.slides.getPosition() >= 200;
+        return this.slides.getPosition() >= this.extension * 0.5;
     }
 
     public void setExtension(double extension) { this.extension = extension; }
