@@ -37,7 +37,7 @@ public class FourSample extends CommandOpMode {
 
         Constants.setConstants(FConstants.class, LConstants.class);
         this.follower = new Follower(hardwareMap);
-        this.follower.setStartingPose(Vector.cartesian(-1, 0).pose(0));
+        this.follower.setStartingPose(Vector.cartesian(-4, 0).pose(0));
 
         schedule(
                 new RunCommand(follower::update),
