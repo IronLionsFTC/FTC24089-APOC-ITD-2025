@@ -44,10 +44,10 @@ public class Intake extends SubsystemBase {
         private double target = 0;
         private PIDController controller;
         private Slides(HardwareMap hwmp) {
-            this.controller = new PIDController(0.075, 0, 0);
+            this.controller = new PIDController(0.03, 0, 0.00001);
             this.motor = new CachedMotor(hwmp, HardwareParameters.Motors.HardwareMapNames.intakeSlide);
-            this.motor.setReversed(HardwareParameters.Motors.Reversed.intakeSlide);
             this.motor.resetEncoder();
+            this.motor.setReversed(HardwareParameters.Motors.Reversed.intakeSlide);
             this.setPosition(PositionalBounds.SlidePositions.IntakePositions.retracted);
         }
 
@@ -56,7 +56,12 @@ public class Intake extends SubsystemBase {
         }
 
         private void update() {
-            this.motor.setPower(this.controller.calculate(this.getPosition(), this.target));
+            double power = this.controller.calculate(this.getPosition(), this.target);
+            if (Math.abs(power) < 0.05) power = 0;
+            if (this.target == 0 && this.getPosition() < 80) power = 0;
+            this.motor.setPower(power);
+            telemetry.addData("INTAKE POWER", power);
+            telemetry.addData("INTAKE POS", this.getPosition());
         }
 
         private double getPosition() {
@@ -96,6 +101,9 @@ public class Intake extends SubsystemBase {
     }
 
     public Intake(HardwareMap hwmp, Telemetry telemetry) {
+        if (this.slides != null) telemetry.addData("intakePos", getSlideExtension());
+        telemetry.addData("intakeExt", extension);
+
         this.outtakeProximity = hwmp.get(RevColorSensorV3.class, HardwareParameters.Sensors.HardwareMapNames.outtakeProximity);
         this.intakeProximity = hwmp.get(RevColorSensorV3.class, HardwareParameters.Sensors.HardwareMapNames.intakeProximity);
 
@@ -234,7 +242,7 @@ public class Intake extends SubsystemBase {
 
     public boolean isSlideLatched() {
         return (this.state == IntakeState.RetractedClawClosed || this.state == IntakeState.RetractedClawOpen)
-                && (this.outtakeProximity.getDistance(DistanceUnit.MM) < PositionalBounds.Sensors.transferThreshold || this.slides.isRetracted());
+                && (this.outtakeProximity.getDistance(DistanceUnit.MM) < PositionalBounds.Sensors.transferThreshold);
     }
 
     public boolean isSlidesExtended() {

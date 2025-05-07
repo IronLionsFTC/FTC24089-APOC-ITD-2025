@@ -62,7 +62,7 @@ public class slideTuning extends LinearOpMode {
         leftMotor = new CachedMotor(hardwareMap, HardwareParameters.Motors.HardwareMapNames.leftOuttakeSlide);
         rightMotor = new CachedMotor(hardwareMap, HardwareParameters.Motors.HardwareMapNames.rightOuttakeSlide);
         intakeMotor = new CachedMotor(hardwareMap, "intakeSlide");
-        intakeMotor.setReversed(true);
+        intakeMotor.setReversed(HardwareParameters.Motors.Reversed.intakeSlide);
         leftMotor.setReversed(false);
         rightMotor.setReversed(true);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());

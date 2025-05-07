@@ -38,7 +38,7 @@ public final class HardwareParameters {
 
         public static final class Reversed {
 
-            public static final boolean intakeSlide = true;
+            public static final boolean intakeSlide = false;
 
             // Drivetrain
             public static final boolean frontLeft = false;

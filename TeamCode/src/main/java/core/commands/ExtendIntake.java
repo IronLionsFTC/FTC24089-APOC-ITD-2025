@@ -33,14 +33,14 @@ public class ExtendIntake extends CommandBase {
     @Override
     public void initialize() {
         this.intakeSubsystem.state = Subsystems.IntakeState.ExtendedClawUp;
-        this.intakeSubsystem.setExtension(extension);
+        // this.intakeSubsystem.setExtension(extension);
     }
 
     @Override
     public void execute() {
         // If the intake has begun moving, and is nearly at full extension, fold down the claw
         if (intakeSubsystem.isSlidesPartiallyExtended() && intakeSubsystem.state == Subsystems.IntakeState.ExtendedClawUp) {
-            intakeSubsystem.nextState();
+            intakeSubsystem.state = Subsystems.IntakeState.ExtendedClawDown;
         }
 
         if (intakeSubsystem.state == Subsystems.IntakeState.ExtendedClawDown) this.intakeSubsystem.setIntakeClawRotation(this.clawRotation);
@@ -48,11 +48,7 @@ public class ExtendIntake extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        // If the subsystem is not in the correct states, immediately exit
-        if (intakeSubsystem.state != Subsystems.IntakeState.ExtendedClawUp && intakeSubsystem.state != Subsystems.IntakeState.ExtendedClawDown) {
-            return true;
-        }
         // If the slides are 70% extended, finish command
-        return intakeSubsystem.isSlidesExtended() && intakeSubsystem.gimblePitchDown();
+        return intakeSubsystem.isSlidesExtended();
     }
 }
