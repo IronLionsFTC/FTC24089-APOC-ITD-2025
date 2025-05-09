@@ -232,4 +232,12 @@ public class CMD {
                 ()->intakeSubsystem.setIntakeClawRotation(angle)
         );
     }
+
+    public static RaiseLimelight raiseLimelight(Limelight limelight) {
+        return new RaiseLimelight(limelight);
+    }
+
+    public static HideLimelight hideLimelight(Limelight limelight) {
+        return new HideLimelight(limelight);
+    }
 }

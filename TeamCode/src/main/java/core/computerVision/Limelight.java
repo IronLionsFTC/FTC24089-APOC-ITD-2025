@@ -8,13 +8,19 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import core.hardware.CachedServo;
 import core.math.Vector;
+import core.parameters.HardwareParameters;
+import core.parameters.PositionalBounds;
 import core.subsystems.Intake;
 
 import java.util.AbstractMap.SimpleEntry;
 
 public class Limelight {
     private final Limelight3A hardware;
+    private CachedServo arm;
+
+    private double position = 0;
 
     public enum Targets {
         YellowOnly,
@@ -23,6 +29,7 @@ public class Limelight {
     }
 
     public Limelight(HardwareMap hwmp, Targets targets) {
+        this.hide();
         this.hardware = hwmp.get(Limelight3A.class, "limelight");
         switch (targets) {
             case YellowOnly:
@@ -36,6 +43,7 @@ public class Limelight {
                 break;
         }
         this.hardware.updatePythonInputs(0, 0, 0, 0, 0, 0, 0, 0);
+        this.arm = new CachedServo(hwmp, "limelightServo");
     }
 
     public void enable() {
@@ -100,5 +108,16 @@ public class Limelight {
         return new SampleState(angle, center, Vector.cartesian(current.getX(),
                 current.getY()), current.getHeading(), intakeSubsystem.getSlidePosition(),
                 intakeSubsystem.getTilt());
+    }
+
+    public void raise() { this.arm.setPosition(PositionalBounds.ServoPositions.limelightUp); }
+    public void hide() { this.arm.setPosition(PositionalBounds.ServoPositions.limelightDown); }
+
+    public boolean isRaised() {
+        return this.arm.elapsedTime() > 0.3;
+    }
+
+    public boolean isHidden() {
+        return this.arm.elapsedTime() > 0.3;
     }
 }

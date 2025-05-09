@@ -97,12 +97,13 @@ public class SampleAutonomousV3 extends CommandOpMode {
 
                         CMD.sleep(200),
                         CMD.slamDunkSample(outtakeSubsystem),
-                        CMD.sleep(300),
+                        CMD.raiseLimelight(limelight),
 
                         CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, light),
                         CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, light),
                         CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, light),
-                        CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, light)
+                        CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, light),
+                        CMD.hideLimelight(limelight)
                 )
         );
     }

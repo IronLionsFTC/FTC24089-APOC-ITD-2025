@@ -5,6 +5,9 @@ public final class PositionalBounds {
     // Servo positions, 0-1.
     public static final class ServoPositions {
 
+        public static final double limelightDown = 1;
+        public static final double limelightUp = 0.46;
+
         public static final class ClawPositions {
 
             // Claw positions
