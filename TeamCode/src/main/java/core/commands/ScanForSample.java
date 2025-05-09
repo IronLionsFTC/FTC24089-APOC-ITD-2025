@@ -67,8 +67,7 @@ public class ScanForSample extends CommandBase {
             this.result.center = detection.center;
             this.result.robotPosition = detection.robotPosition;
             this.result.robotRotation = detection.robotRotation;
-            this.result.slidePosition = intakeSubsystem.getSlideExtension();
-            this.result.slideOffset = intakeSubsystem.getOffset();
+            this.result.slidePosition = intakeSubsystem.getSlidePosition();
         }
         else telemetry.addLine("IS NULL");
     }

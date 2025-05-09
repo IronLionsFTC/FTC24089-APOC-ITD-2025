@@ -8,13 +8,19 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import core.hardware.CachedServo;
 import core.math.Vector;
+import core.parameters.HardwareParameters;
+import core.parameters.PositionalBounds;
 import core.subsystems.Intake;
 
 import java.util.AbstractMap.SimpleEntry;
 
 public class Limelight {
     private final Limelight3A hardware;
+    private CachedServo arm;
+
+    private double position = 0;
 
     public enum Targets {
         YellowOnly,
@@ -23,19 +29,21 @@ public class Limelight {
     }
 
     public Limelight(HardwareMap hwmp, Targets targets) {
+        this.hide();
         this.hardware = hwmp.get(Limelight3A.class, "limelight");
         switch (targets) {
             case YellowOnly:
-                this.hardware.pipelineSwitch(0);
-                break;
-            case RedAndYellow:
                 this.hardware.pipelineSwitch(1);
                 break;
+            case RedAndYellow:
+                this.hardware.pipelineSwitch(0);
+                break;
             case BlueAndYellow:
-                this.hardware.pipelineSwitch(2);
+                this.hardware.pipelineSwitch(0);
                 break;
         }
         this.hardware.updatePythonInputs(0, 0, 0, 0, 0, 0, 0, 0);
+        this.arm = new CachedServo(hwmp, "limelightServo");
     }
 
     public void enable() {
@@ -56,19 +64,17 @@ public class Limelight {
         public Vector center;
 
         public Vector robotPosition;
-
         public double robotRotation;
+
         public double slidePosition;
-        public double slideOffset;
         public double intakeTilt;
 
-        public SampleState(double angle, Vector center, Vector robotPosition, double robotRotation, double slidePosition, double slideOffset, double intakeTilt) {
+        public SampleState(double angle, Vector center, Vector robotPosition, double robotRotation, double slidePosition, double intakeTilt) {
             this.angle = angle;
             this.center = center;
             this.robotPosition = robotPosition;
             this.robotRotation = robotRotation;
             this.slidePosition = slidePosition;
-            this.slideOffset = slideOffset;
             this.intakeTilt = intakeTilt;
         }
 
@@ -78,7 +84,6 @@ public class Limelight {
             this.robotPosition = Vector.cartesian(0, 0);
             this.robotRotation = 0;
             this.slidePosition = 0;
-            this.slideOffset = 0;
         }
     }
 
@@ -101,41 +106,18 @@ public class Limelight {
         Vector center = Vector.cartesian(result_array[1], result_array[2]);
         Pose current = follower.getPose();
         return new SampleState(angle, center, Vector.cartesian(current.getX(),
-                current.getY()), current.getHeading(), intakeSubsystem.getSlideExtension(), intakeSubsystem.getOffset(),
+                current.getY()), current.getHeading(), intakeSubsystem.getSlidePosition(),
                 intakeSubsystem.getTilt());
     }
 
-    public SimpleEntry<SampleState, SampleState> query_two(Telemetry telemetry, Follower follower, Intake intakeSubsystem) {
-        LLResult result = hardware.getLatestResult();
+    public void raise() { this.arm.setPosition(PositionalBounds.ServoPositions.limelightUp); }
+    public void hide() { this.arm.setPosition(PositionalBounds.ServoPositions.limelightDown); }
 
-        telemetry.addData("SOMERESULT", result == null);
-        if (result == null) return null;
+    public boolean isRaised() {
+        return this.arm.elapsedTime() > 0.3;
+    }
 
-        double[] result_array = result.getPythonOutput();
-        telemetry.addData("SOMEPYTHON", result_array == null);
-
-        if (result_array == null) return null;
-        if (result_array.length == 0) return null;
-
-        double angle = result_array[0];
-        // This is POSSIBLE, but so unlikely it can be treated as an error
-        if (angle == 0) return null;
-        Vector center = Vector.cartesian(result_array[1], result_array[2]);
-
-        double angle2 = result_array[3];
-        // This is POSSIBLE, but so unlikely it can be treated as an error
-        if (angle2 == 0) return null;
-        Vector center2 = Vector.cartesian(result_array[4], result_array[5]);
-
-        Pose current = follower.getPose();
-        return new SimpleEntry<>(
-                new SampleState(angle, center, Vector.cartesian(current.getX(),
-                    current.getY()), current.getHeading(), intakeSubsystem.getSlideExtension(), intakeSubsystem.getOffset(),
-                    intakeSubsystem.getTilt()),
-
-                new SampleState(angle2, center2, Vector.cartesian(current.getX(),
-                        current.getY()), current.getHeading(), intakeSubsystem.getSlideExtension(), intakeSubsystem.getOffset(),
-                        intakeSubsystem.getTilt())
-        );
+    public boolean isHidden() {
+        return this.arm.elapsedTime() > 0.3;
     }
 }

@@ -58,7 +58,7 @@ public class StationaryCVTest extends CommandOpMode {
 
                         new WaitUntilCommand(button::get),
 
-                        CMD.extendIntake(intakeSubsystem, 0.5, 0.3),
+                        CMD.extendIntake(intakeSubsystem, 0.5, 100),
                         CMD.setTilt(intakeSubsystem, 0.1),
 
                         new WaitUntilCommand(button::get),

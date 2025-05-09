@@ -10,9 +10,12 @@ public class ClipSpecimen extends CommandBase {
     private Outtake outtakeSubsystem;
     private Timer timer;
 
-    public ClipSpecimen(Outtake outtakeSubsystem) {
+    private double time;
+
+    public ClipSpecimen(Outtake outtakeSubsystem, double time) {
         this.outtakeSubsystem = outtakeSubsystem;
         timer = new Timer();
+        this.time = time;
     }
 
     @Override
@@ -23,11 +26,11 @@ public class ClipSpecimen extends CommandBase {
 
     @Override
     public void execute() {
-        if (timer.getElapsedTimeSeconds() > 0.5) this.outtakeSubsystem.state = Subsystems.OuttakeState.DownClawOpen;
+        if (timer.getElapsedTimeSeconds() > time) this.outtakeSubsystem.state = Subsystems.OuttakeState.DownClawOpen;
     }
 
     @Override
     public boolean isFinished() {
-        return this.timer.getElapsedTimeSeconds() > 0.6;
+        return this.timer.getElapsedTimeSeconds() > time + 0.2;
     }
 }

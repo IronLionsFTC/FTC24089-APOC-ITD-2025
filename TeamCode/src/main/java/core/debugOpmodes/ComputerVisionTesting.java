@@ -53,13 +53,12 @@ public class ComputerVisionTesting extends CommandOpMode {
                 new SequentialCommandGroup (
                         CMD.sleepUntil(this::opModeIsActive),
                         CMD.moveAbsolute(follower, Vector.cartesian(0, 14), false),
-                        CMD.extendIntake(intakeSubsystem),
-                        CMD.searchForever(follower).raceWith(
-                            CMD.scanForSample(limelight, buffer, telemetry, follower, intakeSubsystem, false)
+                        CMD.extendIntake(intakeSubsystem, 0.5, 0.3).andThen(
+                                CMD.setTilt(intakeSubsystem, 0.1)
                         ),
-                        CMD.driveToSample(follower, buffer),
+                        CMD.driveToSampleUseSlides(follower, intakeSubsystem, buffer),
                         CMD.alignClaw(intakeSubsystem, buffer),
-                        CMD.sleep(300),
+                        CMD.sleep(600),
                         CMD.grabSample(intakeSubsystem),
                         CMD.sleep(300),
                         CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem),

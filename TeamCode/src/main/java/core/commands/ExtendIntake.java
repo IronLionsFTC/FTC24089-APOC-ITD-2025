@@ -2,6 +2,7 @@ package core.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 
+import core.parameters.PositionalBounds;
 import core.state.Subsystems;
 import core.subsystems.Intake;
 
@@ -9,15 +10,15 @@ public class ExtendIntake extends CommandBase {
 
     private final Intake intakeSubsystem;
     private final double clawRotation;
-    private final double offset;
+    private final double extension;
 
-    public ExtendIntake(Intake intakeSubsystem, Double clawRotation, Double offset) {
+    public ExtendIntake(Intake intakeSubsystem, Double clawRotation, Double extension) {
         this.intakeSubsystem = intakeSubsystem;
 
-        if (offset.isNaN() || offset == null) {
-            this.offset = 0;
+        if (extension.isNaN() || extension == null) {
+            this.extension = PositionalBounds.SlidePositions.IntakePositions.extended;
         } else {
-            this.offset = offset;
+            this.extension = extension;
         }
 
         if (clawRotation.isNaN() || clawRotation == null) {
@@ -32,14 +33,14 @@ public class ExtendIntake extends CommandBase {
     @Override
     public void initialize() {
         this.intakeSubsystem.state = Subsystems.IntakeState.ExtendedClawUp;
-        this.intakeSubsystem.setOffset(offset);
+        // this.intakeSubsystem.setExtension(extension);
     }
 
     @Override
     public void execute() {
         // If the intake has begun moving, and is nearly at full extension, fold down the claw
         if (intakeSubsystem.isSlidesPartiallyExtended() && intakeSubsystem.state == Subsystems.IntakeState.ExtendedClawUp) {
-            intakeSubsystem.nextState();
+            intakeSubsystem.state = Subsystems.IntakeState.ExtendedClawDown;
         }
 
         if (intakeSubsystem.state == Subsystems.IntakeState.ExtendedClawDown) this.intakeSubsystem.setIntakeClawRotation(this.clawRotation);
@@ -47,11 +48,7 @@ public class ExtendIntake extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        // If the subsystem is not in the correct states, immediately exit
-        if (intakeSubsystem.state != Subsystems.IntakeState.ExtendedClawUp && intakeSubsystem.state != Subsystems.IntakeState.ExtendedClawDown) {
-            return true;
-        }
         // If the slides are 70% extended, finish command
-        return intakeSubsystem.isSlidesExtended() && intakeSubsystem.gimblePitchDown();
+        return intakeSubsystem.isSlidesExtended();
     }
 }

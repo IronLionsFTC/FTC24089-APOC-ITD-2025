@@ -32,6 +32,8 @@ public class servoTuning extends LinearOpMode {
     private Servo leftIntakeServo;
     private Servo rightIntakeServo;
 
+    private Servo lls;
+
     private RevColorSensorV3 outtakeProximity;
 
     private IndicatorLight indicator;
@@ -47,6 +49,7 @@ public class servoTuning extends LinearOpMode {
         public static double latch = 0;
         public static double intakeServo = 0;
         public static double outtakeGimble = 0.3;
+        public static double limelightArmPos = 0;
 
         public static double colour = 0;
 
@@ -64,6 +67,7 @@ public class servoTuning extends LinearOpMode {
         intakeClawServo = hardwareMap.get(Servo.class, HardwareParameters.Motors.HardwareMapNames.intakeClawServo);
 
         outtakeGimble = hardwareMap.get(Servo.class, HardwareParameters.Motors.HardwareMapNames.outtakePitchServo);
+        lls = hardwareMap.get(Servo.class, "limelightServo");
 
         leftOuttakePitchServo = hardwareMap.get(Servo.class, HardwareParameters.Motors.HardwareMapNames.leftArmServo);
         rightOuttakePitchServo = hardwareMap.get(Servo.class, HardwareParameters.Motors.HardwareMapNames.rightArmServo);
@@ -83,6 +87,7 @@ public class servoTuning extends LinearOpMode {
 
             telemetry.addData("distanceThreshold", outtakeProximity.getDistance(DistanceUnit.MM));
 
+            lls.setPosition(ServoPositions.limelightArmPos);
             intakeYawServo.setPosition(ServoPositions.intakeYaw);
             intakePitchServo.setPosition(ServoPositions.intakePitch);
             intakeClawServo.setPosition(ServoPositions.intakeClaw);

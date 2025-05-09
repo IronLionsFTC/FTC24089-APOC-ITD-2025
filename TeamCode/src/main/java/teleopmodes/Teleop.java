@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 // Packages from within TeamCode
 import core.computerVision.Limelight;
 import core.controls.Controls.Buttons;
+import core.hardware.IndicatorLight;
 import core.math.Vector;
 import core.subsystems.Drivebase;
 import core.subsystems.Intake;
@@ -36,6 +37,8 @@ public class Teleop extends CommandOpMode {
     private Limelight limelight;
     private Limelight.SampleState sampleState;
 
+    private IndicatorLight light;
+
     @Override
     public void initialize() {
 
@@ -45,11 +48,12 @@ public class Teleop extends CommandOpMode {
         // initialize follower
         this.follower = new Follower(hardwareMap);
         this.follower.setStartingPose(Vector.cartesian(0, 0).pose(0));
+        this.light = new IndicatorLight(hardwareMap, "light");
 
         // Intialize the rest of subsystems
         this.telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         this.buttons = new Buttons(gamepad1, gamepad2);
-        this.intakeSubsystem = new Intake(hardwareMap, this.telemetry);
+        this.intakeSubsystem = new Intake(hardwareMap, this.telemetry, this.light);
         this.outtakeSubsystem = new Outtake(hardwareMap, this.telemetry);
         this.drivebaseSubsystem = new Drivebase(hardwareMap, this.telemetry);
 

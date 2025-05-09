@@ -1,13 +1,18 @@
 package core.subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.arcrobotics.ftclib.controller.PIDController;
+import com.pedropathing.localization.Pose;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
 
+import core.hardware.CachedMotor;
 import core.hardware.CachedServo;
+import core.hardware.IndicatorLight;
 import core.parameters.HardwareParameters;
 import core.parameters.PositionalBounds;
 import core.state.Subsystems;
@@ -21,48 +26,62 @@ public class Intake extends SubsystemBase {
     private CachedServo latchServo;
     private Slides slides;
     private RevColorSensorV3 outtakeProximity;
+    private RevColorSensorV3 intakeProximity;
+
+    private IndicatorLight light;
 
     // Internal Subsystem State
     public IntakeState state;
-    private int retractionCounter;
-    private double offset = 0;
+    private double extension = PositionalBounds.SlidePositions.IntakePositions.extended;
     private double tilt = 0;
 
     // Telemetry
     private Telemetry telemetry;
 
     private class Slides {
-        private CachedServo leftSlide;
-        private CachedServo rightSlide;
 
+        private CachedMotor motor;
+        private double target = 0;
+        private PIDController controller;
         private Slides(HardwareMap hwmp) {
-            this.leftSlide = new CachedServo(hwmp, HardwareParameters.Motors.HardwareMapNames.leftIntakeServo);
-            this.rightSlide = new CachedServo(hwmp, HardwareParameters.Motors.HardwareMapNames.rightIntakeServo);
+            this.controller = new PIDController(0.03, 0, 0.00001);
+            this.motor = new CachedMotor(hwmp, HardwareParameters.Motors.HardwareMapNames.intakeSlide);
+            this.motor.resetEncoder();
+            this.motor.setReversed(HardwareParameters.Motors.Reversed.intakeSlide);
             this.setPosition(PositionalBounds.SlidePositions.IntakePositions.retracted);
         }
 
         private void setPosition(double position) {
-            this.leftSlide.setPosition(position);
-            this.rightSlide.setPosition(1 - position);
+            this.target = position;
+        }
+
+        private void update() {
+            double power = this.controller.calculate(this.getPosition(), this.target);
+            if (Math.abs(power) < 0.05) power = 0;
+            if (this.target == 0 && this.getPosition() < 80) power = 0;
+            this.motor.setPower(power);
+            telemetry.addData("INTAKE POWER", power);
+            telemetry.addData("INTAKE POS", this.getPosition());
         }
 
         private double getPosition() {
-            return this.leftSlide.getPosition();
+            return this.motor.getPosition();
         }
 
         private boolean isExtended() {
-            return this.getPosition() != PositionalBounds.SlidePositions.IntakePositions.retracted && this.leftSlide.secondsSinceMovement() > 0.5;
+            return this.getPosition() > extension * 0.8;
         }
 
         private boolean isRetracted() {
-            return this.getPosition() == PositionalBounds.SlidePositions.IntakePositions.retracted && this.leftSlide.secondsSinceMovement() > 1.5;
+            return this.getPosition() < 50;
         }
     }
 
-    public Intake(HardwareMap hwmp, Telemetry telemetry) {
+    public Intake(HardwareMap hwmp, Telemetry telemetry, IndicatorLight light) {
         this.outtakeProximity = hwmp.get(RevColorSensorV3.class, HardwareParameters.Sensors.HardwareMapNames.outtakeProximity);
+        this.intakeProximity = hwmp.get(RevColorSensorV3.class, HardwareParameters.Sensors.HardwareMapNames.intakeProximity);
+
         this.state = IntakeState.RetractedClawOpen;
-        this.retractionCounter = 0;
         this.telemetry = telemetry;
         this.slides = new Slides(hwmp);
 
@@ -78,6 +97,33 @@ public class Intake extends SubsystemBase {
         // prevents developer error later by ensuring the subsystem is registered no matter what
         this.gimble.resetPosition();
         this.latchServo = new CachedServo(hwmp, HardwareParameters.Motors.HardwareMapNames.latchServo);
+        this.light = light;
+    }
+
+    public Intake(HardwareMap hwmp, Telemetry telemetry) {
+        if (this.slides != null) telemetry.addData("intakePos", getSlideExtension());
+        telemetry.addData("intakeExt", extension);
+
+        this.outtakeProximity = hwmp.get(RevColorSensorV3.class, HardwareParameters.Sensors.HardwareMapNames.outtakeProximity);
+        this.intakeProximity = hwmp.get(RevColorSensorV3.class, HardwareParameters.Sensors.HardwareMapNames.intakeProximity);
+
+        this.state = IntakeState.RetractedClawOpen;
+        this.telemetry = telemetry;
+        this.slides = new Slides(hwmp);
+
+        // Claw and gimble do not need to be scheduled as they are servo abstractions and need no update
+        this.claw = new Claw(hwmp, HardwareParameters.Motors.HardwareMapNames.intakeClawServo);
+        this.claw.setState(Subsystems.ClawState.WideOpen);
+
+        this.gimble = new DualAxisGimbal(hwmp,
+                HardwareParameters.Motors.HardwareMapNames.intakeLiftServo,
+                HardwareParameters.Motors.HardwareMapNames.intakeYawServo);
+
+        // Schedule SLIDES, as they must constantly update as they contain a PID controller
+        // prevents developer error later by ensuring the subsystem is registered no matter what
+        this.gimble.resetPosition();
+        this.latchServo = new CachedServo(hwmp, HardwareParameters.Motors.HardwareMapNames.latchServo);
+        this.light = null;
     }
 
     public void nextState() {
@@ -135,6 +181,17 @@ public class Intake extends SubsystemBase {
     @Override
     public void periodic() {
         telemetry.addData("[PERIODIC] Intake: ", this.state.toString());
+
+        // Indicate transfer status if some light was given to the intake
+        // Do not give access to the light if trying to use it for other things
+        if (this.light != null) {
+            if (this.outtakeProximity.getDistance(DistanceUnit.MM) < PositionalBounds.Sensors.transferThreshold) {
+                this.light.setColour(0.5);
+            } else {
+                this.light.setColour(0.3);
+            }
+        }
+
         switch (this.state) {
             case RetractedClawOpen:
                 this.slides.setPosition(PositionalBounds.SlidePositions.IntakePositions.retracted);
@@ -142,17 +199,17 @@ public class Intake extends SubsystemBase {
                 this.gimble.resetPosition();
                 break;
             case ExtendedClawUp:
-                this.slides.setPosition(PositionalBounds.SlidePositions.IntakePositions.extended + offset);
+                this.slides.setPosition(extension);
                 this.claw.setState(Subsystems.ClawState.WideOpen);
                 this.gimble.resetPosition();
                 break;
             case ExtendedClawDown:
-                this.slides.setPosition(PositionalBounds.SlidePositions.IntakePositions.extended + offset);
+                this.slides.setPosition(extension);
                 this.gimble.extendPitch();
                 this.claw.setState(Subsystems.ClawState.WideOpen);
                 break;
             case ExtendedClawGrabbing:
-                this.slides.setPosition(PositionalBounds.SlidePositions.IntakePositions.extended + offset);
+                this.slides.setPosition(extension);
                 this.gimble.extendPitch();
                 this.claw.setState(Subsystems.ClawState.WeakGripClosed);
                 break;
@@ -166,7 +223,7 @@ public class Intake extends SubsystemBase {
                     this.slides.setPosition(PositionalBounds.SlidePositions.IntakePositions.retracted);
                 }
                 else {
-                    this.slides.setPosition(PositionalBounds.SlidePositions.IntakePositions.extended + offset);
+                    this.slides.setPosition(extension);
                 }
                 this.gimble.resetPosition();
                 break;
@@ -175,7 +232,9 @@ public class Intake extends SubsystemBase {
         if (this.state == IntakeState.RetractedClawOpen || this.state == IntakeState.RetractedClawClosed) {
             if (this.slides.isRetracted()) this.latchServo.setPosition(PositionalBounds.ServoPositions.LatchPositions.closed);
             else this.latchServo.setPosition(PositionalBounds.ServoPositions.LatchPositions.open);
-        } else this.latchServo.setPosition(PositionalBounds.ServoPositions.LatchPositions.open); }
+        } else this.latchServo.setPosition(PositionalBounds.ServoPositions.LatchPositions.open);
+        this.slides.update();
+    }
 
     public boolean hasClawClosed() {
         return this.claw.hasClawPhysicallyClosed();
@@ -183,7 +242,7 @@ public class Intake extends SubsystemBase {
 
     public boolean isSlideLatched() {
         return (this.state == IntakeState.RetractedClawClosed || this.state == IntakeState.RetractedClawOpen)
-                && (this.outtakeProximity.getDistance(DistanceUnit.MM) < PositionalBounds.Sensors.transferThreshold || this.slides.isRetracted());
+                && (this.outtakeProximity.getDistance(DistanceUnit.MM) < PositionalBounds.Sensors.transferThreshold);
     }
 
     public boolean isSlidesExtended() {
@@ -191,10 +250,11 @@ public class Intake extends SubsystemBase {
     }
 
     public boolean isSlidesPartiallyExtended() {
-        return this.slides.getPosition() >= PositionalBounds.SlidePositions.IntakePositions.extended && this.slides.leftSlide.secondsSinceMovement() > 0.25;
+        return this.slides.getPosition() >= this.extension * 0.5;
     }
 
-    public void setOffset(double newOffset) { this.offset = newOffset; }
+    public void setExtension(double extension) { this.extension = extension; }
+    public void resetExtension(double extension) { this.extension = PositionalBounds.SlidePositions.IntakePositions.extended; }
 
     public boolean gimblePitchDown() { return this.gimble.foldedDown(); }
     public boolean clawOpen() {
@@ -204,9 +264,7 @@ public class Intake extends SubsystemBase {
         return this.slides.getPosition();
     }
 
-    public double getOffset() {
-        return this.offset;
-    }
+    public double getExtension() { return this.extension; }
 
     public void setTilt(double newTilt) {
         this.tilt = newTilt;
@@ -215,5 +273,11 @@ public class Intake extends SubsystemBase {
 
     public double getTilt() {
         return this.tilt;
+    }
+
+    public double getSlidePosition() { return this.slides.getPosition(); }
+
+    public boolean hasIntakeGotSample() {
+        return this.intakeProximity.getDistance(DistanceUnit.MM) < PositionalBounds.Sensors.intakeThreshold;
     }
 }

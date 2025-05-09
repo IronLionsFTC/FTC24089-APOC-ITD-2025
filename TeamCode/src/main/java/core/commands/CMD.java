@@ -66,7 +66,7 @@ public class CMD {
 
     // Specimen Cycle
     public static RaiseSlidesForSpecimen raiseSlidesForSpecimen(Outtake outtakeSubsystem) { return new RaiseSlidesForSpecimen(outtakeSubsystem); }
-    public static ClipSpecimen clipSpecimen(Outtake outtakeSubsystem) { return new ClipSpecimen(outtakeSubsystem); }
+    public static ClipSpecimen clipSpecimen(Outtake outtakeSubsystem, double time) { return new ClipSpecimen(outtakeSubsystem, time); }
 
     // PERMANENTLY perform automatic transfer, targetted for teleop but could be used in auto
     public static Command teleopAutomaticTransfer(Intake intakeSubsystem, Outtake outtakeSubsystem) { return new TeleopAutomaticTransfer(intakeSubsystem, outtakeSubsystem); }
@@ -107,6 +107,10 @@ public class CMD {
         return new InstantCommand(() -> {
             sampleState.angle = 0;
             sampleState.center = Vector.cartesian(0, 0);
+            sampleState.intakeTilt = 0;
+            sampleState.slidePosition = 0;
+            sampleState.robotRotation = 0;
+            sampleState.robotPosition = Vector.cartesian(0, 0);
         });
     }
     public static InstantCommand disableDrivebase(Drivebase drivebaseSubsystem) {
@@ -125,6 +129,13 @@ public class CMD {
         return new ConstantlyUpdateFollower(follower, drivebaseSubsystem);
     }
 
+    public static Command goToSubForCycles(Follower follower, Limelight.SampleState buffer) {
+        return new SequentialCommandGroup(
+                CMD.resetCV(buffer),
+                CMD.followPath(follower, core.paths.SampleAutonomousV2.basketToSub()).setSpeed(1)
+        );
+    }
+
     public static Command subCycle(
             Follower follower,
             Intake intakeSubsystem,
@@ -135,26 +146,61 @@ public class CMD {
             IndicatorLight light
     ) {
         return new SequentialCommandGroup(
-                CMD.followPath(follower, core.paths.SampleAutonomousV2.basketToSub()).setSpeed(1),
+                CMD.goToSubForCycles(follower, buffer),
+                CMD.grabSampleForSubCycles(
+                        follower,
+                        intakeSubsystem,
+                        outtakeSubsystem,
+                        limelight,
+                        buffer,
+                        telemetry,
+                        light
+                )
+        );
+    }
+
+    public static Command grabSampleForSubCycles(
+            Follower follower,
+            Intake intakeSubsystem,
+            Outtake outtakeSubsystem,
+            Limelight limelight,
+            Limelight.SampleState buffer,
+            Telemetry telemetry,
+            IndicatorLight light
+    ) {
+        return new SequentialCommandGroup(
                 CMD.followPath(follower, core.paths.SampleAutonomousV2.subToCV()).setSpeed(1).alongWith(
-                        CMD.sleep(500).andThen(CMD.extendIntake(intakeSubsystem))
+                        CMD.sleep(500).andThen(CMD.extendIntake(intakeSubsystem, 0.5, 0.4))
                 ),
+                CMD.setTilt(intakeSubsystem, 0.1),
+                CMD.sleep(500),
                 CMD.light(light, 0.28),
-                CMD.searchForever(follower).setSpeed(0.6).raceWith(
-                        CMD.scanForSample(limelight, buffer, telemetry, follower, intakeSubsystem, true)
-                ),
+                CMD.scanForSample(limelight, buffer, telemetry, follower, intakeSubsystem, false).tilt(0.1),
                 CMD.light(light, 0.5),
-                CMD.driveToSample(follower, buffer),
+                CMD.driveToSampleUseSlides(follower, intakeSubsystem, buffer),
                 CMD.light(light, 0.611),
                 CMD.alignClaw(intakeSubsystem, buffer),
                 CMD.light(light, 0.333),
-                CMD.sleep(300),
+                CMD.sleep(600),
                 CMD.grabSample(intakeSubsystem),
                 CMD.light(light, 0.388),
-                CMD.sleep(300),
+                new RecursiveSubIntake(
+                        follower,
+                        intakeSubsystem,
+                        outtakeSubsystem,
+                        limelight,
+                        buffer,
+                        telemetry,
+                        light
+                )
+        );
+    }
+
+    public static Command goToBasketForSubCycles(Follower follower, Intake intakeSubsystem, Outtake outtakeSubsystem) {
+        return new SequentialCommandGroup(
                 CMD.followPath(follower, core.paths.SampleAutonomousV2.subToBasket()).setSpeed(1).alongWith(
                         CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem).andThen(
-                                CMD.raiseSlidesForSampleDump(outtakeSubsystem)
+                                CMD.sleep(900).andThen(CMD.raiseSlidesForSampleDump(outtakeSubsystem))
                         )
                 ),
                 CMD.sleep(200),
@@ -175,17 +221,23 @@ public class CMD {
         return new InstantCommand(()->intakeSubsystem.setTilt(tilt));
     }
 
-    public static ScanForTwoSamples scanForTwoSamples(
-            Limelight limelight,
-            Limelight.SampleState bufferA,
-            Limelight.SampleState bufferB,
-            Telemetry telemetry,
-            Follower follower,
-            Intake intakeSubsystem,
-            boolean isSub
-    ) {
-        return new ScanForTwoSamples(
-                limelight, bufferA, bufferB, telemetry, follower, intakeSubsystem, isSub
+    public static InstantCommand releaseSample(Intake intakeSubsystem) {
+        return new InstantCommand(
+                intakeSubsystem::cancelGrab
         );
+    }
+
+    public static InstantCommand setClawRotation(Intake intakeSubsystem, double angle) {
+        return new InstantCommand(
+                ()->intakeSubsystem.setIntakeClawRotation(angle)
+        );
+    }
+
+    public static RaiseLimelight raiseLimelight(Limelight limelight) {
+        return new RaiseLimelight(limelight);
+    }
+
+    public static HideLimelight hideLimelight(Limelight limelight) {
+        return new HideLimelight(limelight);
     }
 }

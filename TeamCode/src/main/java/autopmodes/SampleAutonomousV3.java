@@ -19,8 +19,8 @@ import core.subsystems.Outtake;
 import pedroPathing.constants.FConstants;
 import pedroPathing.constants.LConstants;
 
-@Autonomous ( name = "SAMPLE AUTONOMOUS V2" )
-public class SampleAutonomousV2 extends CommandOpMode {
+@Autonomous ( name = "SAMPLE AUTONOMOUS V3" )
+public class SampleAutonomousV3 extends CommandOpMode {
 
     private Intake intakeSubsystem;
     private Outtake outtakeSubsystem;
@@ -42,7 +42,7 @@ public class SampleAutonomousV2 extends CommandOpMode {
 
         Constants.setConstants(FConstants.class, LConstants.class);
         this.follower = new Follower(hardwareMap);
-        this.follower.setStartingPose(Vector.cartesian(-1, 0).pose(0));
+        this.follower.setStartingPose(Vector.cartesian(-4, 0).pose(0));
 
         this.limelight = new Limelight(hardwareMap, Limelight.Targets.YellowOnly);
         this.buffer = new Limelight.SampleState();
@@ -67,27 +67,25 @@ public class SampleAutonomousV2 extends CommandOpMode {
 
                         CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem),
                         CMD.raiseSlidesForSampleDump(outtakeSubsystem).alongWith(
-                                CMD.followPath(follower, core.paths.SampleAutonomousV2.secondDumpAndPickup())
+                                CMD.followPath(follower, core.paths.SampleAutonomousV2.secondDumpAndPickup()).alongWith(
+                                        CMD.extendIntake(intakeSubsystem)
+                                )
                         ),
 
-                        CMD.sleep(200).andThen(
-                                CMD.slamDunkSample(outtakeSubsystem).andThen(
-                                        CMD.sleep(300)
-                                )
-                        ).alongWith(
-                                CMD.extendIntake(intakeSubsystem).andThen(CMD.grabSample(intakeSubsystem))
-                        ),
+                        CMD.sleep(200),
+                        CMD.slamDunkSample(outtakeSubsystem),
+                        CMD.sleep(300),
 
                         CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem),
-                        CMD.raiseSlidesForSampleDump(outtakeSubsystem),
+                        CMD.raiseSlidesForSampleDump(outtakeSubsystem).alongWith(
+                                CMD.extendIntake(intakeSubsystem)
+                        ),
 
                         CMD.sleep(200),
                         CMD.slamDunkSample(outtakeSubsystem),
                         CMD.sleep(200),
 
-                        CMD.followPath(follower, core.paths.SampleAutonomousV2.thirdDumpAndPickup()).alongWith(
-                                CMD.extendIntake(intakeSubsystem, 0.4, 390)
-                        ),
+                        CMD.followPath(follower, core.paths.SampleAutonomousV2.thirdDumpAndPickup()),
 
                         CMD.sleep(300),
                         CMD.grabSample(intakeSubsystem),
@@ -99,11 +97,13 @@ public class SampleAutonomousV2 extends CommandOpMode {
 
                         CMD.sleep(200),
                         CMD.slamDunkSample(outtakeSubsystem),
-                        CMD.sleep(300),
+                        CMD.raiseLimelight(limelight),
 
                         CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, light),
                         CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, light),
-                        CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, light)
+                        CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, light),
+                        CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, light),
+                        CMD.hideLimelight(limelight)
                 )
         );
     }
