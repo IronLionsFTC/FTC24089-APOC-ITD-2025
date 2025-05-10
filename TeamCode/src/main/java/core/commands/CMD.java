@@ -177,7 +177,7 @@ public class CMD {
                 CMD.light(light, 0.28),
                 CMD.scanForSample(limelight, buffer, telemetry, follower, intakeSubsystem, false).tilt(0.1),
                 CMD.light(light, 0.5),
-                CMD.driveToSampleUseSlides(follower, intakeSubsystem, buffer),
+                CMD.driveToSampleUseSlides(follower, intakeSubsystem, buffer, telemetry),
                 CMD.light(light, 0.611),
                 CMD.alignClaw(intakeSubsystem, buffer),
                 CMD.light(light, 0.333),
@@ -213,8 +213,8 @@ public class CMD {
         return new InstantCommand(()->light.setColour(colour));
     }
 
-    public static DriveToSampleUseSlides driveToSampleUseSlides(Follower follower, Intake intakeSubsystem, Limelight.SampleState buffer) {
-        return new DriveToSampleUseSlides(follower, intakeSubsystem, buffer);
+    public static DriveToSampleUseSlides driveToSampleUseSlides(Follower follower, Intake intakeSubsystem, Limelight.SampleState buffer, Telemetry telemetry) {
+        return new DriveToSampleUseSlides(follower, intakeSubsystem, buffer, telemetry);
     }
 
     public static InstantCommand setTilt(Intake intakeSubsystem, double tilt) {

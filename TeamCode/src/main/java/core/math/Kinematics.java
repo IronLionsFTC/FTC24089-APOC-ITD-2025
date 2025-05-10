@@ -17,11 +17,10 @@ public class Kinematics {
     public Kinematics(Limelight.SampleState buffer) {
 
         //                              Normal  hardstop pos             scale to axon   limelight angle
-        double altitude = Math.toRadians(90 - ((75 - buffer.intakeTilt * 350) - buffer.center.y));
-        double forward = (Math.tan(altitude) * 25) / 2.54;
+        double altitude = Math.toRadians(90 - (60 - buffer.center.y));
+        double forward = (Math.tan(altitude) * 25) / 2.54 + 7;
 
-        double slidePosition = buffer.slidePosition;
-        double newSlidePosition = slidePosition + forward * 20;
+        double newSlidePosition = forward * 20;
 
         double ty = 0;
 
@@ -31,7 +30,7 @@ public class Kinematics {
             ty = error / 20;
         }
 
-        double tx = Math.tan(Math.toRadians(buffer.center.x)) * forward * 4;
+        double tx = Math.tan(Math.toRadians(-buffer.center.x * 0.75)) * forward * 2 - 5.5;
 
         this.absoluteRobotTarget = RobotPosition.relativePosition(
                 new RobotPosition(

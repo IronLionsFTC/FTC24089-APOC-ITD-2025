@@ -1,25 +1,32 @@
 package core.commands;
 
+import android.sax.StartElementListener;
+
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.pathgen.BezierLine;
 import com.pedropathing.pathgen.PathBuilder;
 import com.pedropathing.pathgen.Point;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 import core.computerVision.Limelight;
 import core.math.Kinematics;
 import core.math.Vector;
+import core.state.Subsystems;
 import core.subsystems.Intake;
 
 public class DriveToSampleUseSlides extends CommandBase {
     private Follower follower;
     private Intake intakeSubsystem;
     private Limelight.SampleState buffer;
+    private final Telemetry telemetry;
 
-    public DriveToSampleUseSlides(Follower follower, Intake intakeSubsystem, Limelight.SampleState buffer) {
+    public DriveToSampleUseSlides(Follower follower, Intake intakeSubsystem, Limelight.SampleState buffer, Telemetry telemetry) {
         this.follower = follower;
         this.intakeSubsystem = intakeSubsystem;
         this.buffer = buffer;
+        this.telemetry = telemetry;
     }
 
     @Override
@@ -43,6 +50,9 @@ public class DriveToSampleUseSlides extends CommandBase {
         */
         follower.followPath(kinematics.instantPath(follower), true);
         intakeSubsystem.setExtension(kinematics.absoluteSlidePosition);
+        intakeSubsystem.setIntakeClawRotation(kinematics.absoluteClawRotation);
+
+        telemetry.addData("targetSlideExtension", kinematics.absoluteSlidePosition);
     }
 
     @Override
@@ -52,7 +62,7 @@ public class DriveToSampleUseSlides extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return follower.getCurrentTValue() > 0.95;
+        return follower.getCurrentTValue() > 0.95 && this.intakeSubsystem.isSlidesExtended();
     }
 
     @Override

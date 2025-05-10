@@ -33,7 +33,7 @@ public class ExtendIntake extends CommandBase {
     @Override
     public void initialize() {
         this.intakeSubsystem.state = Subsystems.IntakeState.ExtendedClawUp;
-        // this.intakeSubsystem.setExtension(extension);
+        this.intakeSubsystem.setExtension(extension);
     }
 
     @Override

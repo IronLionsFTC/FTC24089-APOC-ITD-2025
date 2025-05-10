@@ -56,7 +56,7 @@ public class ComputerVisionTesting extends CommandOpMode {
                         CMD.extendIntake(intakeSubsystem, 0.5, 0.3).andThen(
                                 CMD.setTilt(intakeSubsystem, 0.1)
                         ),
-                        CMD.driveToSampleUseSlides(follower, intakeSubsystem, buffer),
+                        CMD.driveToSampleUseSlides(follower, intakeSubsystem, buffer, telemetry),
                         CMD.alignClaw(intakeSubsystem, buffer),
                         CMD.sleep(600),
                         CMD.grabSample(intakeSubsystem),

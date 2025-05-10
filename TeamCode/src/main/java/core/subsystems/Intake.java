@@ -44,7 +44,7 @@ public class Intake extends SubsystemBase {
         private double target = 0;
         private PIDController controller;
         private Slides(HardwareMap hwmp) {
-            this.controller = new PIDController(0.03, 0, 0.00001);
+            this.controller = new PIDController(0.01, 0, 0.00001);
             this.motor = new CachedMotor(hwmp, HardwareParameters.Motors.HardwareMapNames.intakeSlide);
             this.motor.resetEncoder();
             this.motor.setReversed(HardwareParameters.Motors.Reversed.intakeSlide);
@@ -59,6 +59,8 @@ public class Intake extends SubsystemBase {
             double power = this.controller.calculate(this.getPosition(), this.target);
             if (Math.abs(power) < 0.05) power = 0;
             if (this.target == 0 && this.getPosition() < 80) power = 0;
+            if (this.target < 0) power = 0;
+            if (this.target > 600) power = 0;
             this.motor.setPower(power);
             telemetry.addData("INTAKE POWER", power);
             telemetry.addData("INTAKE POS", this.getPosition());

@@ -18,7 +18,7 @@ import java.util.AbstractMap.SimpleEntry;
 
 public class Limelight {
     private final Limelight3A hardware;
-    private CachedServo arm;
+    private final CachedServo arm;
 
     private double position = 0;
 
@@ -29,7 +29,6 @@ public class Limelight {
     }
 
     public Limelight(HardwareMap hwmp, Targets targets) {
-        this.hide();
         this.hardware = hwmp.get(Limelight3A.class, "limelight");
         switch (targets) {
             case YellowOnly:
@@ -44,6 +43,7 @@ public class Limelight {
         }
         this.hardware.updatePythonInputs(0, 0, 0, 0, 0, 0, 0, 0);
         this.arm = new CachedServo(hwmp, "limelightServo");
+        this.hide();
     }
 
     public void enable() {
