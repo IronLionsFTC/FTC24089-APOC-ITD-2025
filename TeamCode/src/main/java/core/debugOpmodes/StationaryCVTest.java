@@ -63,12 +63,26 @@ public class StationaryCVTest extends CommandOpMode {
                         new WaitUntilCommand(button::get),
 
                         CMD.scanForSample(limelight, buffer, telemetry, follower, intakeSubsystem, false),
-                        CMD.extendIntake(intakeSubsystem, 0.5, 100),
+
+                        CMD.sleep(1000),
                         CMD.hideLimelight(limelight),
-                        CMD.driveToSampleUseSlides(follower, intakeSubsystem, buffer, telemetry),
-                        CMD.alignClaw(intakeSubsystem, buffer),
+                        CMD.sleep(1000),
+
+                        CMD.driveToSampleUseSlides(follower, intakeSubsystem, buffer, telemetry).alongWith(
+                                CMD.alignClaw(intakeSubsystem, buffer)
+                        ),
+
                         CMD.sleep(1000),
                         CMD.grabSample(intakeSubsystem),
+                        CMD.sleep(1000),
+                        CMD.grabSampleAbortIfEmpty(
+                                intakeSubsystem,
+                                outtakeSubsystem,
+                                limelight,
+                                buffer,
+                                telemetry,
+                                follower
+                        ),
                         CMD.moveAbsolute(follower, Vector.cartesian(0, 0), true)
                 )
         );

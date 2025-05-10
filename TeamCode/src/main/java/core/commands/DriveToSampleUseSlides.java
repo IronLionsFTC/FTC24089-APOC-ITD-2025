@@ -49,10 +49,8 @@ public class DriveToSampleUseSlides extends CommandBase {
             Calculate the path from the robots current position to that of the sample.
         */
         follower.followPath(kinematics.instantPath(follower), true);
+        intakeSubsystem.state = Subsystems.IntakeState.ExtendedClawDown;
         intakeSubsystem.setExtension(kinematics.absoluteSlidePosition);
-        intakeSubsystem.setIntakeClawRotation(kinematics.absoluteClawRotation);
-
-        telemetry.addData("targetSlideExtension", kinematics.absoluteSlidePosition);
     }
 
     @Override

@@ -240,4 +240,26 @@ public class CMD {
     public static HideLimelight hideLimelight(Limelight limelight) {
         return new HideLimelight(limelight);
     }
+
+    public static RetractIntake retractIntake(Intake intakeSubsystem) {
+        return new RetractIntake(intakeSubsystem);
+    }
+
+    public static GrabSampleAbortIfEmpty grabSampleAbortIfEmpty(
+        Intake intakeSubsystem,
+        Outtake outtakeSubsystem,
+        Limelight limelight,
+        Limelight.SampleState buffer,
+        Telemetry telemetry,
+        Follower follower
+    ) {
+        return new GrabSampleAbortIfEmpty(
+                intakeSubsystem,
+                outtakeSubsystem,
+                limelight,
+                buffer,
+                telemetry,
+                follower
+        );
+    }
 }

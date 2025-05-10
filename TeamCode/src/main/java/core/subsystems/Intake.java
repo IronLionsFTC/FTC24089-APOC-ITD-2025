@@ -282,4 +282,8 @@ public class Intake extends SubsystemBase {
     public boolean hasIntakeGotSample() {
         return this.intakeProximity.getDistance(DistanceUnit.MM) < PositionalBounds.Sensors.intakeThreshold;
     }
+
+    public boolean isSlidesRetracted() {
+        return this.slides.isRetracted();
+    }
 }
