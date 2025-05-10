@@ -13,6 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import core.hardware.IndicatorLight;
 import core.parameters.HardwareParameters;
+import core.parameters.PositionalBounds;
 
 @TeleOp(name = "<--- SERVO TUNING OPMODE --->")
 public class servoTuning extends LinearOpMode {
@@ -49,7 +50,7 @@ public class servoTuning extends LinearOpMode {
         public static double latch = 0;
         public static double intakeServo = 0;
         public static double outtakeGimble = 0.3;
-        public static double limelightArmPos = 0;
+        public static double limelightArmPos = PositionalBounds.ServoPositions.limelightUp;
 
         public static double colour = 0;
 
