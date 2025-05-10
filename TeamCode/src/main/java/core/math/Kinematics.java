@@ -33,7 +33,7 @@ public class Kinematics {
                 / (Math.tan(Math.toRadians(LimelightInformation.limelightAngle - buffer.center.y)))
                 + LimelightInformation.forwardOffset;
 
-        double lateral = (LimelightInformation.forwardScalarForLateral * forwards + LimelightInformation.forwardOffsetForLateral) * 0.8 // Derived from experiments not maths
+        double lateral = (LimelightInformation.forwardScalarForLateral * forwards + LimelightInformation.forwardOffsetForLateral) * 0.9 // Derived from experiments not maths
                 * buffer.center.x + LimelightInformation.constantXOffset;
 
         double newSlidePosition = (forwards + 3) * 25;

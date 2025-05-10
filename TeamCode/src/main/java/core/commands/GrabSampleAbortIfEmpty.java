@@ -2,6 +2,7 @@ package core.commands;
 
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandBase;
+import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.SelectCommand;
 import com.pedropathing.follower.Follower;
 
@@ -14,7 +15,7 @@ import core.state.Subsystems;
 import core.subsystems.Intake;
 import core.subsystems.Outtake;
 
-public class GrabSampleAbortIfEmpty extends SelectCommand {
+public class GrabSampleAbortIfEmpty extends ConditionalCommand {
 
     private Intake intakeSubsystem;
 
@@ -26,27 +27,28 @@ public class GrabSampleAbortIfEmpty extends SelectCommand {
             Telemetry telemetry,
             Follower follower
     ) {
-        super(new HashMap<Object, Command>() {{
-            put(
-                    true,
-                    CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem)
-            );
-            put(
-                    false,
-                    CMD.retractIntake(intakeSubsystem).alongWith(CMD.raiseLimelight(limelight)).andThen(
-                            CMD.scanForSample(limelight, buffer, telemetry, follower, intakeSubsystem, false)
-                    ).andThen(
-                            CMD.driveToSampleUseSlides(follower, intakeSubsystem, buffer, telemetry)
-                    ).andThen(
-                            CMD.sleep(300)
-                    ).andThen(
-                            CMD.grabSample(intakeSubsystem)
-                    ).andThen(
-                            CMD.sleep(100)
-                    ).andThen(
-                            CMD.grabSampleAbortIfEmpty(intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, follower)
-                    )
-            );
-        }}, intakeSubsystem::hasIntakeGotSample);
+        super(
+                CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem),
+
+                CMD.retractIntake(intakeSubsystem).alongWith(CMD.raiseLimelight(limelight)).andThen(
+                        CMD.sleep(500)
+                ).andThen(
+                        CMD.scanForSample(limelight, buffer, telemetry, follower, intakeSubsystem, false)
+                ).andThen(
+                        CMD.driveToSampleUseSlides(follower, intakeSubsystem, buffer, telemetry).alongWith(
+                                CMD.alignClaw(intakeSubsystem, buffer)
+                        )
+                ).andThen(
+                        CMD.sleep(500)
+                ).andThen(
+                        CMD.grabSample(intakeSubsystem)
+                ).andThen(
+                        CMD.sleep(100)
+                ).andThen(
+                        CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem)
+                ),
+
+                intakeSubsystem::hasIntakeGotSample
+        );
     }
 }

@@ -24,7 +24,7 @@ public class RotateIntakeClaw extends CommandBase {
     // Run forever, rotating the claw by the left and right inputs
     public void execute() {
         if (intakeSubsystem.state == Subsystems.IntakeState.ExtendedClawDown || intakeSubsystem.state == Subsystems.IntakeState.ExtendedClawGrabbing) {
-            this.intakeSubsystem.rotateIntakeClaw((right.getAsDouble() - left.getAsDouble()) / 10); // Scale speed down
+            this.intakeSubsystem.rotateIntakeClaw((right.getAsDouble() - left.getAsDouble()) / -5); // Scale speed down
         } else {
             this.intakeSubsystem.setIntakeClawRotation(PositionalBounds.ServoPositions.ClawPositions.yawRest);
         }

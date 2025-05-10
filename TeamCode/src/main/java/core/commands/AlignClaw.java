@@ -18,7 +18,7 @@ public class AlignClaw extends CommandBase {
     @Override
     public void initialize() {
         if (this.buffer == null) return;
-        this.intakeSubsystem.setIntakeClawRotation(PositionalBounds.ServoPositions.ClawPositions.yawRest - buffer.angle / 305);
+        this.intakeSubsystem.setIntakeClawRotation(PositionalBounds.ServoPositions.ClawPositions.yawRest - buffer.angle / 180);
     }
 
     @Override
