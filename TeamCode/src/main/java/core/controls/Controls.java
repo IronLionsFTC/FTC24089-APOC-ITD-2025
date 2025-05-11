@@ -21,6 +21,7 @@ public class Controls {
         public GamepadButton rotateLeft;
         public GamepadButton rotateRight;
         public GamepadButton override;
+        public GamepadButton emergencyIntakeRetract;
 
         // Controls to be constantly read
         public DoubleSupplier rotateClawLeft;
@@ -54,7 +55,10 @@ public class Controls {
             this.yaw = this.gamepad1::getRightX;
 
             // Computer vision
-            this.useCV = this.gamepad1.getGamepadButton(GamepadKeys.Button.B);
+            this.useCV = this.gamepad1.getGamepadButton(GamepadKeys.Button.DPAD_UP);
+
+            // Overrides
+            this.emergencyIntakeRetract = this.gamepad1.getGamepadButton(GamepadKeys.Button.DPAD_DOWN);
         }
     }
 }

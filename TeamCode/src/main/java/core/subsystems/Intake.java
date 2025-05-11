@@ -13,6 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import core.hardware.CachedMotor;
 import core.hardware.CachedServo;
 import core.hardware.IndicatorLight;
+import core.math.Colour;
 import core.parameters.HardwareParameters;
 import core.parameters.PositionalBounds;
 import core.state.Subsystems;
@@ -187,10 +188,20 @@ public class Intake extends SubsystemBase {
         // Indicate transfer status if some light was given to the intake
         // Do not give access to the light if trying to use it for other things
         if (this.light != null) {
-            if (this.outtakeProximity.getDistance(DistanceUnit.MM) < PositionalBounds.Sensors.transferThreshold) {
-                this.light.setColour(0.5);
-            } else {
-                this.light.setColour(0.3);
+            Colour.SampleColour sampleColour = Colour.analyse(intakeProximity);
+            switch (sampleColour) {
+                case Red:
+                    light.setColour(0.28);
+                    break;
+                case Blue:
+                    light.setColour(0.611);
+                    break;
+                case Yellow:
+                    light.setColour(0.388);
+                    break;
+                case None:
+                    light.setColour(0);
+                    break;
             }
         }
 
@@ -285,5 +296,9 @@ public class Intake extends SubsystemBase {
 
     public boolean isSlidesRetracted() {
         return this.slides.isRetracted();
+    }
+
+    public boolean isClawHoveringOverSample() {
+        return this.intakeProximity.getDistance(DistanceUnit.MM) < PositionalBounds.Sensors.intakeHovering;
     }
 }

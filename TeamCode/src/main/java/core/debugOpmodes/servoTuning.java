@@ -36,6 +36,7 @@ public class servoTuning extends LinearOpMode {
     private Servo lls;
 
     private RevColorSensorV3 outtakeProximity;
+    private RevColorSensorV3 intakeProximity;
 
     private IndicatorLight indicator;
 
@@ -62,6 +63,7 @@ public class servoTuning extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
+        intakeProximity = hardwareMap.get(RevColorSensorV3.class, HardwareParameters.Sensors.HardwareMapNames.intakeProximity);
         outtakeProximity = hardwareMap.get(RevColorSensorV3.class, HardwareParameters.Sensors.HardwareMapNames.outtakeProximity);
         indicator = new IndicatorLight(hardwareMap, "light");
 
@@ -106,6 +108,11 @@ public class servoTuning extends LinearOpMode {
 
             indicator.setColour(ServoPositions.colour);
             indicator.setPower(ServoPositions.enableLight);
+
+            telemetry.addData("br", intakeProximity.red());
+            telemetry.addData("cg", intakeProximity.green());
+            telemetry.addData("ab", intakeProximity.blue());
+            telemetry.addData("distance", intakeProximity.getDistance(DistanceUnit.MM));
 
             telemetry.update();
         }

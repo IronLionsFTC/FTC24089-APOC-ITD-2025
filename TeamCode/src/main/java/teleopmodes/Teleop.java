@@ -74,11 +74,21 @@ public class Teleop extends CommandOpMode {
 
         // Spawn a command sequence to rotate the claw to align with a sample
         buttons.useCV.whenPressed(
-            CMD.resetCV(sampleState).andThen(
-                CMD.scanForSample(limelight, sampleState, telemetry, follower, intakeSubsystem, false).andThen(
-                    CMD.alignClaw(intakeSubsystem, sampleState)
+                CMD.raiseLimelight(limelight).andThen(
+                        CMD.sleep(500)
+                ).andThen(
+                        CMD.scanForSample(limelight, sampleState, telemetry, follower, intakeSubsystem, false)
+                ).andThen(
+                        CMD.extendSlidesForSample(intakeSubsystem, sampleState)
+                        CMD.alignClaw(intakeSubsystem, sampleState)
+                ).andThen(
+                        CMD.hideLimelight(limelight)
                 )
-            )
+        );
+
+        // Emergency retract the intake
+        buttons.emergencyIntakeRetract.whenPressed(
+                CMD.retractIntake(intakeSubsystem)
         );
 
         // Schedule the command based opmode
@@ -112,7 +122,10 @@ public class Teleop extends CommandOpMode {
                         // Optionally scheduled command that uses proximity sensors and encoders to confidently attempt transfer automatically
                         // If this is not scheduled driver is in control. During comp, if something fails and we can't fix it in time, this could
                         // be removed so that driver can control it. (IE if outtake sensor breaks or cable breaks, or physical alignment is changed)
-                        CMD.teleopAutomaticTransfer(intakeSubsystem, outtakeSubsystem)
+                        CMD.teleopAutomaticTransfer(intakeSubsystem, outtakeSubsystem),
+
+                        // Automatically open the claw when it grabs and nothing is there.
+                        CMD.autoRejectionRunCommand(intakeSubsystem, telemetry)
                 )
         );
     }

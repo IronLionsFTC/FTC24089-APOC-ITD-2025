@@ -262,4 +262,8 @@ public class CMD {
                 follower
         );
     }
+
+    public static AutoRejectionRunCommand autoRejectionRunCommand(Intake intakeSubsystem, Telemetry telemetry) {
+        return new AutoRejectionRunCommand(intakeSubsystem, telemetry);
+    }
 }

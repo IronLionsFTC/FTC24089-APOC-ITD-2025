@@ -25,7 +25,14 @@ public class SetDriveVector extends CommandBase {
     }
 
     private void calculateDriveVector() {
-        this.driveVector = Vector.cartesian(this.x.getAsDouble(), -this.y.getAsDouble());
+
+        double xVal = this.x.getAsDouble();
+        double yVal = this.y.getAsDouble();
+
+        this.driveVector = Vector.cartesian(
+                Math.pow(xVal, 3) * 1.1,
+                Math.pow(yVal, 3) * -1.1
+        );
     }
 
     @Override
@@ -36,8 +43,7 @@ public class SetDriveVector extends CommandBase {
     @Override
     public void execute() {
 
-        if (this.intakeSubsystem.isSlideLatched()) { this.power = 1; }
-        else { this.power = 0.7; }
+        this.power = 1;
 
         this.calculateDriveVector();
         this.drivebaseSubsystem.setDriveVector(this.driveVector.mul(this.power));
