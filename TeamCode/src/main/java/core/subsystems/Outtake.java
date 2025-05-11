@@ -167,9 +167,9 @@ public class Outtake extends SubsystemBase {
         switch (this.state) {
             case DownClawOpen:
                 this.transferComplete = false;
-                if ((this.arm.armPhysicallyDown() || !hasCycleOccured) && this.clawOpened()) this.slides.setTarget(0);
+                if (((this.arm.armPhysicallyDown() || !hasCycleOccured) && this.clawOpened()) || this.slides.getRelative() < 0.2) this.slides.setTarget(0);
                 else {
-                    if (this.useHighBasket && this.slides.getRelative() > 0.3) this.slides.setTarget(PositionalBounds.SlidePositions.OuttakePositions.highBasket);
+                    if (this.useHighBasket) this.slides.setTarget(PositionalBounds.SlidePositions.OuttakePositions.highBasket);
                     else this.slides.setTarget(PositionalBounds.SlidePositions.OuttakePositions.lowBasket);
                 }
 

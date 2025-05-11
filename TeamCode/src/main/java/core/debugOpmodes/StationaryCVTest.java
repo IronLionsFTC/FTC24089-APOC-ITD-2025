@@ -67,8 +67,6 @@ public class StationaryCVTest extends CommandOpMode {
 
                         CMD.driveToSampleUseSlides(follower, intakeSubsystem, buffer, telemetry).alongWith(
                                 CMD.alignClaw(intakeSubsystem, buffer)
-                        ).alongWith(
-                                CMD.hideLimelight(limelight)
                         ),
 
                         CMD.sleep(500),
