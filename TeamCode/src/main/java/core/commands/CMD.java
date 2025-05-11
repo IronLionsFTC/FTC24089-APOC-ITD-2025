@@ -169,39 +169,23 @@ public class CMD {
             IndicatorLight light
     ) {
         return new SequentialCommandGroup(
-                CMD.followPath(follower, core.paths.SampleAutonomousV2.subToCV()).setSpeed(1).alongWith(
-                        CMD.sleep(500).andThen(CMD.extendIntake(intakeSubsystem, 0.5, 0.4))
-                ),
-                CMD.setTilt(intakeSubsystem, 0.1),
+                CMD.followPath(follower, core.paths.SampleAutonomousV2.subToCV()).setSpeed(1),
                 CMD.sleep(500),
-                CMD.light(light, 0.28),
-                CMD.scanForSample(limelight, buffer, telemetry, follower, intakeSubsystem, false).tilt(0.1),
-                CMD.light(light, 0.5),
-                CMD.driveToSampleUseSlides(follower, intakeSubsystem, buffer, telemetry),
-                CMD.light(light, 0.611),
-                CMD.alignClaw(intakeSubsystem, buffer),
-                CMD.light(light, 0.333),
-                CMD.sleep(600),
+                CMD.scanForSample(limelight, buffer, telemetry, follower, intakeSubsystem, false),
+                CMD.driveToSampleUseSlides(follower, intakeSubsystem, buffer, telemetry).alongWith(
+                        CMD.alignClaw(intakeSubsystem, buffer)
+                ),
+                CMD.sleep(500),
                 CMD.grabSample(intakeSubsystem),
-                CMD.light(light, 0.388),
-                new RecursiveSubIntake(
-                        follower,
-                        intakeSubsystem,
-                        outtakeSubsystem,
-                        limelight,
-                        buffer,
-                        telemetry,
-                        light
-                )
+                CMD.grabSampleAbortIfEmpty(intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, follower),
+                CMD.goToBasketForSubCycles(follower, intakeSubsystem, outtakeSubsystem)
         );
     }
 
     public static Command goToBasketForSubCycles(Follower follower, Intake intakeSubsystem, Outtake outtakeSubsystem) {
         return new SequentialCommandGroup(
                 CMD.followPath(follower, core.paths.SampleAutonomousV2.subToBasket()).setSpeed(1).alongWith(
-                        CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem).andThen(
-                                CMD.sleep(900).andThen(CMD.raiseSlidesForSampleDump(outtakeSubsystem))
-                        )
+                        CMD.sleep(900).andThen(CMD.raiseSlidesForSampleDump(outtakeSubsystem))
                 ),
                 CMD.sleep(200),
                 CMD.slamDunkSample(outtakeSubsystem),

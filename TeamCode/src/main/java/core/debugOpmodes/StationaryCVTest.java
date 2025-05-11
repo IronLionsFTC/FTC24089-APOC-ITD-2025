@@ -56,11 +56,11 @@ public class StationaryCVTest extends CommandOpMode {
                 new SequentialCommandGroup (
                         CMD.sleepUntil(this::opModeIsActive),
 
-                        new WaitUntilCommand(button::get),
+                        CMD.sleep(1000),
 
                         CMD.raiseLimelight(limelight),
 
-                        new WaitUntilCommand(button::get),
+                        CMD.sleep(1000),
 
                         CMD.scanForSample(limelight, buffer, telemetry, follower, intakeSubsystem, false),
 
