@@ -47,7 +47,7 @@ public class SetDriveVector extends CommandBase {
 
         this.calculateDriveVector();
         this.drivebaseSubsystem.setDriveVector(this.driveVector.mul(this.power));
-        this.drivebaseSubsystem.setYawInput(this.r.getAsDouble());
+        this.drivebaseSubsystem.setYawInput(Math.pow(this.r.getAsDouble(), 3));
     }
 
     @Override

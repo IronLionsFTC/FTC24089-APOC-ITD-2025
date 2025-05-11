@@ -6,7 +6,7 @@ public class pidfCoefficients {
 
     @Config
     public static class Drivetrain {
-        public static double p = 0.05;
+        public static double p = 0.04;
         public static double i = 0;
         public static double d = 0.002;
         public static double f = 0;

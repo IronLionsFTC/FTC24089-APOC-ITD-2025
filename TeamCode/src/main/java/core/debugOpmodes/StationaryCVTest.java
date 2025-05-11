@@ -71,7 +71,7 @@ public class StationaryCVTest extends CommandOpMode {
                                 CMD.hideLimelight(limelight)
                         ),
 
-                        CMD.sleep(300),
+                        CMD.sleep(500),
                         CMD.grabSample(intakeSubsystem),
                         CMD.sleep(100),
                         CMD.grabSampleAbortIfEmpty(

@@ -266,4 +266,8 @@ public class CMD {
     public static AutoRejectionRunCommand autoRejectionRunCommand(Intake intakeSubsystem, Telemetry telemetry) {
         return new AutoRejectionRunCommand(intakeSubsystem, telemetry);
     }
+
+    public static ExtendSlidesForSample extendSlidesForSample(Intake intakeSubsystem, Limelight.SampleState buffer) {
+        return new ExtendSlidesForSample(intakeSubsystem, buffer);
+    }
 }

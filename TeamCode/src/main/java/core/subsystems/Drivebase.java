@@ -118,8 +118,6 @@ public class Drivebase extends SubsystemBase {
 
     public void setYaw(double newYaw) {
         this.targetYaw = newYaw;
-        while (this.targetYaw > 180) { this.targetYaw -= 360; }
-        while (this.targetYaw < -180) { this.targetYaw += 360; }
     }
 
     public void rotate45DegreesCCW() {
@@ -156,6 +154,7 @@ public class Drivebase extends SubsystemBase {
 
         // PID (position, target)
         double r = this.yawInput;
+
         if (this.lastYawActionWasManual) { this.targetYaw = this.yaw; }
         else { r = this.yawCorrectionController.calculate(this.yaw, this.targetYaw); }
 

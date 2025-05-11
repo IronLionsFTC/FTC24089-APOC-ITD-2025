@@ -39,9 +39,9 @@ public class Kinematics {
         double newSlidePosition = (forwards + 3) * 25;
         double ty = 0;
 
-        if (newSlidePosition > 400) {
-            double error = newSlidePosition - 400;
-            newSlidePosition = 400;
+        if (newSlidePosition > 550) {
+            double error = newSlidePosition - 550;
+            newSlidePosition = 550;
             ty = error / 20;
         }
 

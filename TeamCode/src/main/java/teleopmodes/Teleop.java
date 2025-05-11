@@ -57,7 +57,7 @@ public class Teleop extends CommandOpMode {
         this.outtakeSubsystem = new Outtake(hardwareMap, this.telemetry);
         this.drivebaseSubsystem = new Drivebase(hardwareMap, this.telemetry);
 
-        this.limelight = new Limelight(hardwareMap, Limelight.Targets.RedAndYellow);
+        this.limelight = new Limelight(hardwareMap, Limelight.Targets.YellowOnly);
         this.sampleState = new Limelight.SampleState();
 
         // IMPORTANT - Register SUBSYSTEMS that implement periodic
@@ -79,10 +79,11 @@ public class Teleop extends CommandOpMode {
                 ).andThen(
                         CMD.scanForSample(limelight, sampleState, telemetry, follower, intakeSubsystem, false)
                 ).andThen(
-                        CMD.extendSlidesForSample(intakeSubsystem, sampleState)
-                        CMD.alignClaw(intakeSubsystem, sampleState)
-                ).andThen(
-                        CMD.hideLimelight(limelight)
+                        CMD.extendSlidesForSample(intakeSubsystem, sampleState).alongWith(
+                                CMD.alignClaw(intakeSubsystem, sampleState)
+                        ).alongWith(
+                                CMD.hideLimelight(limelight)
+                        )
                 )
         );
 
