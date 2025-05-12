@@ -146,7 +146,9 @@ public class CMD {
             IndicatorLight light
     ) {
         return new SequentialCommandGroup(
-                CMD.goToSubForCycles(follower, buffer),
+                CMD.goToSubForCycles(follower, buffer).alongWith(
+                        CMD.raiseLimelight(limelight)
+                ),
                 CMD.grabSampleForSubCycles(
                         follower,
                         intakeSubsystem,
@@ -170,7 +172,7 @@ public class CMD {
     ) {
         return new SequentialCommandGroup(
                 CMD.followPath(follower, core.paths.SampleAutonomousV2.subToCV()).setSpeed(1),
-                CMD.sleep(500),
+                CMD.sleep(200),
                 CMD.scanForSample(limelight, buffer, telemetry, follower, intakeSubsystem, false),
                 CMD.driveToSampleUseSlides(follower, intakeSubsystem, buffer, telemetry).alongWith(
                         CMD.alignClaw(intakeSubsystem, buffer)
@@ -184,7 +186,9 @@ public class CMD {
 
     public static Command goToBasketForSubCycles(Follower follower, Intake intakeSubsystem, Outtake outtakeSubsystem) {
         return new SequentialCommandGroup(
-                CMD.followPath(follower, core.paths.SampleAutonomousV2.subToBasket()).setSpeed(1).alongWith(
+                CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem).alongWith(
+                        CMD.followPath(follower, core.paths.SampleAutonomousV2.subToBasket()).setSpeed(1)
+                ).alongWith(
                         CMD.sleep(900).andThen(CMD.raiseSlidesForSampleDump(outtakeSubsystem))
                 ),
                 CMD.sleep(200),

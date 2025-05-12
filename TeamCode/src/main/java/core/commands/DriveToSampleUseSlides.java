@@ -31,7 +31,7 @@ public class DriveToSampleUseSlides extends CommandBase {
 
     @Override
     public void initialize() {
-        this.follower.setMaxPower(0.4);
+        this.follower.setMaxPower(0.8);
 
         /*
             Calculates the following:

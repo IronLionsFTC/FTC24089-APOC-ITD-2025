@@ -22,6 +22,11 @@ public class Kinematics {
         public static double forwardOffsetForLateral = 0.2661;
 
         public static double constantXOffset = 4.9;
+
+        public static double a = 24.32983;
+        public static double b = 0.0310553;
+        public static double c = -8.773041;
+        public static double e = Math.E;
     }
     public RobotPosition absoluteRobotTarget;
     public double absoluteSlidePosition;
@@ -29,14 +34,14 @@ public class Kinematics {
 
     public Kinematics(Limelight.SampleState buffer) {
 
-        double forwards = LimelightInformation.limelightHeight
-                / (Math.tan(Math.toRadians(LimelightInformation.limelightAngle - buffer.center.y)))
-                + LimelightInformation.forwardOffset;
+        double forwards = (LimelightInformation.a * (
+                Math.pow(LimelightInformation.e, LimelightInformation.b * buffer.center.y)
+        ) + LimelightInformation.c) / 2.54;
 
         double lateral = (LimelightInformation.forwardScalarForLateral * forwards + LimelightInformation.forwardOffsetForLateral) * 0.9 // Derived from experiments not maths
                 * buffer.center.x + LimelightInformation.constantXOffset;
 
-        double newSlidePosition = (forwards + 3) * 25;
+        double newSlidePosition = (forwards * 2.54) * 11.6285 + 56.67181;
         double ty = 0;
 
         if (newSlidePosition > 550) {

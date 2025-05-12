@@ -28,7 +28,7 @@ public class GrabSampleAbortIfEmpty extends ConditionalCommand {
             Follower follower
     ) {
         super(
-                CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem),
+                CMD.resetCV(buffer),
 
                 CMD.retractIntake(intakeSubsystem).alongWith(CMD.raiseLimelight(limelight)).andThen(
                         CMD.sleep(500)
@@ -44,8 +44,6 @@ public class GrabSampleAbortIfEmpty extends ConditionalCommand {
                         CMD.grabSample(intakeSubsystem)
                 ).andThen(
                         CMD.sleep(100)
-                ).andThen(
-                        CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem)
                 ),
 
                 intakeSubsystem::hasIntakeGotSample

@@ -75,7 +75,7 @@ public class ScanForSample extends CommandBase {
     @Override
     public boolean isFinished() {
         telemetry.addData("ANGLE2", result.angle);
-        return this.result.angle != 0;
+        return this.result.angle != 0 && this.result.angle != 90;
     }
 
     @Override
