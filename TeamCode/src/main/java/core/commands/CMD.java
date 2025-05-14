@@ -16,6 +16,7 @@ import java.util.function.DoubleSupplier;
 import core.computerVision.Limelight;
 import core.hardware.IndicatorLight;
 import core.math.Vector;
+import core.parameters.PositionalBounds;
 import core.subsystems.Drivebase;
 import core.subsystems.Intake;
 import core.subsystems.Outtake;
@@ -35,7 +36,7 @@ public class CMD {
     }
 
     // Extends the intake, automatically folding down the claw and rotating to 0 or x degrees.
-    public static ExtendIntake extendIntake(Intake intakeSubsystem) { return new ExtendIntake(intakeSubsystem, 0.5, 0.0); }
+    public static ExtendIntake extendIntake(Intake intakeSubsystem) { return new ExtendIntake(intakeSubsystem, 0.5, PositionalBounds.SlidePositions.IntakePositions.extended); }
     public static ExtendIntake extendIntake(Intake intakeSubsystem, double r, double e) { return new ExtendIntake(intakeSubsystem, r, e); }
 
     // Assumes intake is extended and claw is down and ready to grab.
@@ -186,10 +187,10 @@ public class CMD {
 
     public static Command goToBasketForSubCycles(Follower follower, Intake intakeSubsystem, Outtake outtakeSubsystem) {
         return new SequentialCommandGroup(
-                CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem).alongWith(
-                        CMD.followPath(follower, core.paths.SampleAutonomousV2.subToBasket()).setSpeed(1)
+                CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem).andThen(
+                        CMD.raiseSlidesForSampleDump(outtakeSubsystem)
                 ).alongWith(
-                        CMD.sleep(900).andThen(CMD.raiseSlidesForSampleDump(outtakeSubsystem))
+                        CMD.followPath(follower, core.paths.SampleAutonomousV2.subToBasket()).setSpeed(1)
                 ),
                 CMD.sleep(200),
                 CMD.slamDunkSample(outtakeSubsystem),

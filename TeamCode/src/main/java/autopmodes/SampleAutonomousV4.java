@@ -19,7 +19,7 @@ import core.subsystems.Outtake;
 import pedroPathing.constants.FConstants;
 import pedroPathing.constants.LConstants;
 
-@Autonomous ( name = "Sample Autonomous V4" )
+@Autonomous ( name = "SAMPLE AUTONOMOUS V4" )
 public class SampleAutonomousV4 extends CommandOpMode {
 
     private Intake intakeSubsystem;
@@ -54,8 +54,8 @@ public class SampleAutonomousV4 extends CommandOpMode {
                 new SequentialCommandGroup(
                         CMD.sleepUntil(this::opModeIsActive),
 
-                        CMD.followPath(follower, core.paths.SampleAutonomousV2.firstDumpAndPickup()).setSpeed(1).andThen(
-                                CMD.extendIntake(intakeSubsystem).andThen(
+                        CMD.followPath(follower, core.paths.SampleAutonomousV2.firstDumpAndPickup()).setSpeed(1).alongWith(
+                                CMD.extendIntake(intakeSubsystem, 0.4, 520).andThen(
                                     CMD.sleep(300)
                                 ).andThen(
                                         CMD.grabSample(intakeSubsystem)
@@ -84,7 +84,7 @@ public class SampleAutonomousV4 extends CommandOpMode {
                                 )
                         ).alongWith(
                                 CMD.followPath(follower, core.paths.SampleAutonomousV2.secondDumpAndPickup()).alongWith(
-                                        CMD.extendIntake(intakeSubsystem).andThen(
+                                        CMD.extendIntake(intakeSubsystem, 0.5, 520).andThen(
                                                 CMD.sleep(300)
                                         ).andThen(
                                                 CMD.grabSample(intakeSubsystem)
@@ -100,7 +100,7 @@ public class SampleAutonomousV4 extends CommandOpMode {
                                 CMD.slamDunkSample(outtakeSubsystem),
                                 CMD.followPath(follower, core.paths.SampleAutonomousV2.thirdDumpAndPickup())
                         ).alongWith(
-                                CMD.extendIntake(intakeSubsystem)
+                                CMD.extendIntake(intakeSubsystem, 0.6, 440)
                         ),
 
                         CMD.sleep(300),
@@ -116,6 +116,7 @@ public class SampleAutonomousV4 extends CommandOpMode {
                         CMD.slamDunkSample(outtakeSubsystem),
                         CMD.raiseLimelight(limelight),
 
+                        CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, light),
                         CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, light),
                         CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, light),
                         CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, light)

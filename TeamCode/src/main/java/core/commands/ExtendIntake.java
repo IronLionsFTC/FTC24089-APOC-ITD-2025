@@ -33,11 +33,11 @@ public class ExtendIntake extends CommandBase {
     @Override
     public void initialize() {
         this.intakeSubsystem.state = Subsystems.IntakeState.ExtendedClawUp;
-        this.intakeSubsystem.setExtension(extension);
     }
 
     @Override
     public void execute() {
+        this.intakeSubsystem.setExtension(extension);
         // If the intake has begun moving, and is nearly at full extension, fold down the claw
         if (intakeSubsystem.isSlidesPartiallyExtended() && intakeSubsystem.state == Subsystems.IntakeState.ExtendedClawUp) {
             intakeSubsystem.state = Subsystems.IntakeState.ExtendedClawDown;
