@@ -18,7 +18,7 @@ public class Kinematics {
         public static double limelightAngle = 65;
         public static double forwardOffset = 0.5;
 
-        public static double forwardScalarForLateral = 0.01143;
+        public static double forwardScalarForLateral = 0.01;
         public static double forwardOffsetForLateral = 0.2661;
 
         public static double constantXOffset = 4.9;
