@@ -60,8 +60,6 @@ public class SampleAutonomousV4 extends CommandOpMode {
                                 ).andThen(
                                         CMD.grabSample(intakeSubsystem)
                                 ).andThen(
-                                        CMD.sleep(300)
-                                ).andThen(
                                         CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem)
                                 )
                         ).alongWith(
@@ -71,19 +69,15 @@ public class SampleAutonomousV4 extends CommandOpMode {
                                         CMD.sleep(300)
                                 ).andThen(
                                         CMD.slamDunkSample(outtakeSubsystem)
-                                ).andThen(
-                                        CMD.sleep(300)
                                 )
                         ),
 
                         CMD.raiseSlidesForSampleDump(outtakeSubsystem).andThen(
                                 CMD.sleep(200).andThen(
                                         CMD.slamDunkSample(outtakeSubsystem)
-                                ).andThen(
-                                        CMD.sleep(300)
                                 )
                         ).alongWith(
-                                CMD.followPath(follower, core.paths.SampleAutonomousV2.secondDumpAndPickup()).alongWith(
+                                CMD.followPath(follower, core.paths.SampleAutonomousV2.secondDumpAndPickup()).setSpeed(1).alongWith(
                                         CMD.extendIntake(intakeSubsystem, 0.5, 520).andThen(
                                                 CMD.sleep(300)
                                         ).andThen(
@@ -98,7 +92,7 @@ public class SampleAutonomousV4 extends CommandOpMode {
                         CMD.raiseSlidesForSampleDump(outtakeSubsystem).andThen(
                                 CMD.sleep(200),
                                 CMD.slamDunkSample(outtakeSubsystem),
-                                CMD.followPath(follower, core.paths.SampleAutonomousV2.thirdDumpAndPickup())
+                                CMD.followPath(follower, core.paths.SampleAutonomousV2.thirdDumpAndPickup()).setSpeed(1)
                         ).alongWith(
                                 CMD.extendIntake(intakeSubsystem, 0.6, 440)
                         ),
@@ -112,9 +106,8 @@ public class SampleAutonomousV4 extends CommandOpMode {
                                 CMD.followPath(follower, core.paths.SampleAutonomousV2.lastDump()).setSpeed(1)
                         ),
 
-                        CMD.sleep(200),
-                        CMD.slamDunkSample(outtakeSubsystem),
                         CMD.raiseLimelight(limelight),
+                        CMD.slamDunkSample(outtakeSubsystem),
 
                         CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, light),
                         CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, light),

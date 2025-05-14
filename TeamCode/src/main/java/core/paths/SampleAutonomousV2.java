@@ -51,7 +51,7 @@ public class SampleAutonomousV2 {
 
     public static Point submersible = point(-10, 53);
     public static Point basketToSubControl = point(15, 50);
-    public static Point subToBasketControl = point(16, 15);
+    public static Point subToBasketControl = point(13, 15);
     public static Point cvStart = point(-14, 53);
 
     public static PathChain firstDumpAndPickup() {

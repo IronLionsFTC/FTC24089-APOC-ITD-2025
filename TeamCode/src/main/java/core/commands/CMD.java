@@ -178,7 +178,7 @@ public class CMD {
                 CMD.driveToSampleUseSlides(follower, intakeSubsystem, buffer, telemetry).alongWith(
                         CMD.alignClaw(intakeSubsystem, buffer)
                 ),
-                CMD.sleep(500),
+                CMD.sleep(300),
                 CMD.grabSample(intakeSubsystem),
                 CMD.grabSampleAbortIfEmpty(intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, follower),
                 CMD.goToBasketForSubCycles(follower, intakeSubsystem, outtakeSubsystem)
@@ -192,9 +192,7 @@ public class CMD {
                 ).alongWith(
                         CMD.followPath(follower, core.paths.SampleAutonomousV2.subToBasket()).setSpeed(1)
                 ),
-                CMD.sleep(200),
-                CMD.slamDunkSample(outtakeSubsystem),
-                CMD.sleep(200)
+                CMD.slamDunkSample(outtakeSubsystem)
         );
     }
 
