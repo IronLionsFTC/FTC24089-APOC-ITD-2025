@@ -18,8 +18,8 @@ public final class PositionalBounds {
 
             // Gimble positions
             public static final double pitchRest = 0;
-            public static final double pitchExtended = 0.74;
-            public static final double yawRest = 0.57;
+            public static final double pitchExtended = 0.48;
+            public static final double yawRest = 0.6;
             // How far in each direction can the servo turn from the
             // yaw rest
             public static final double yawRange = 0.5;
@@ -50,7 +50,7 @@ public final class PositionalBounds {
         // Positions expressed as relative 0-1 so that they are consistent
         // Across motors and ratios
 
-        public static final double outtakeMaximumExtension = 1000;
+        public static final double outtakeMaximumExtension = 780;
 
         public static final class OuttakePositions {
             public static final double highBasket = 1;

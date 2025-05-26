@@ -21,13 +21,11 @@ public final class HardwareParameters {
             public static final String latchServo = "latchServo";
 
             // Intake Servos
-            public static final String intakeLiftServo = "intakeLiftServo"; // Port c0
-            public static final String intakeYawServo = "intakeYawServo"; // Port c1
-            public static final String intakeClawServo = "intakeClawServo"; // Port c2
+            public static final String leftIntakeLiftServo = "leftIntakeLiftServo";
+            public static final String rightIntakeLiftServo = "rightIntakeLiftServo";
 
-            // Intake Retraction and Extension
-            public static final String leftIntakeServo = "leftIntakeServo"; // Port s3
-            public static final String rightIntakeServo = "rightIntakeServo"; // Port s4
+            public static final String intakeYawServo = "intakeYawServo";
+            public static final String intakeClawServo = "intakeClawServo";
 
             // Outtake Servos
             public static final String outtakeClawServo = "outtakeClaw";
@@ -49,8 +47,8 @@ public final class HardwareParameters {
             // Intake Slides
 
             // Outtake Slides
-            public static final boolean leftOuttakeSlide = false;
-            public static final boolean rightOuttakeSlide = true;
+            public static final boolean leftOuttakeSlide = true;
+            public static final boolean rightOuttakeSlide = false;
         }
 
 

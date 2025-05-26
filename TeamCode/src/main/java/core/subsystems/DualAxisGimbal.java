@@ -12,26 +12,32 @@ public class DualAxisGimbal extends SubsystemBase {
 
     // Servo / hardware interface
     // assume pitch and yaw, such that the yaw is ON the pitch
-    private CachedServo pitchServo;
+    private CachedServo leftPitchServo;
+    private CachedServo rightPitchServo;
     // Assume 0.5 is the resting position for the yaw servo so that it can rotate in either direction
+
     private CachedServo yawServo;
 
     private double tilt = 0;
 
-    public DualAxisGimbal(HardwareMap hwmp, String pitchServoName, String yawServoName) {
-        this.pitchServo = new CachedServo(hwmp, pitchServoName);
+    public DualAxisGimbal(HardwareMap hwmp, String leftPitchServoName, String rightPitchServoName, String yawServoName) {
+        this.leftPitchServo = new CachedServo(hwmp, leftPitchServoName);
+        this.rightPitchServo = new CachedServo(hwmp, rightPitchServoName);
         this.yawServo = new CachedServo(hwmp, yawServoName, ClawPositions.yawRest);
         this.yawServo.setPosition(ClawPositions.yawRest);
-        this.pitchServo.setPosition(0);
+        this.leftPitchServo.setPosition(0);
     }
 
     public void resetPosition() {
         this.yawServo.setPosition(ClawPositions.yawRest);
-        this.pitchServo.setPosition(ClawPositions.pitchRest);
+
+        this.leftPitchServo.setPosition(ClawPositions.pitchRest);
+        this.rightPitchServo.setPosition(1 - ClawPositions.pitchRest);
     }
 
     public void extendPitch() {
-        this.pitchServo.setPosition(ClawPositions.pitchExtended - this.tilt);
+        this.leftPitchServo.setPosition(ClawPositions.pitchExtended - this.tilt);
+        this.rightPitchServo.setPosition(1 - ClawPositions.pitchExtended - this.tilt);
     }
 
     public void rotateYaw(double speed) {
@@ -44,11 +50,11 @@ public class DualAxisGimbal extends SubsystemBase {
     }
 
     public boolean foldedUp() {
-        return this.pitchServo.secondsSinceMovement() > Timings.clawFoldUpTime && this.pitchServo.getPosition() == ClawPositions.pitchRest;
+        return this.leftPitchServo.secondsSinceMovement() > Timings.clawFoldUpTime && this.leftPitchServo.getPosition() == ClawPositions.pitchRest;
     }
 
     public boolean foldedDown() {
-        return this.pitchServo.secondsSinceMovement() > Timings.clawFoldDownTime && this.pitchServo.getPosition() == ClawPositions.pitchExtended;
+        return this.leftPitchServo.secondsSinceMovement() > Timings.clawFoldDownTime && this.leftPitchServo.getPosition() == ClawPositions.pitchExtended;
     }
 
     public boolean doneFolding() {

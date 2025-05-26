@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.ftccommon.internal.manualcontrol.exceptions.UserOpModeRunningException;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import core.hardware.IndicatorLight;
@@ -19,7 +18,10 @@ import core.parameters.PositionalBounds;
 public class servoTuning extends LinearOpMode {
 
     private Servo intakeYawServo;
-    private Servo intakePitchServo;
+
+    private Servo leftIntakePitchServo;
+    private Servo rightIntakePitchServo;
+
     private Servo intakeClawServo;
 
     private Servo leftOuttakePitchServo;
@@ -30,8 +32,6 @@ public class servoTuning extends LinearOpMode {
     private Servo flagServo;
     private Servo latchServo;
 
-    private Servo leftIntakeServo;
-    private Servo rightIntakeServo;
 
     private Servo lls;
 
@@ -46,12 +46,11 @@ public class servoTuning extends LinearOpMode {
     public static class ServoPositions {
         public static double intakeYaw = 0.5;
         public static double intakePitch = 0;
-        public static double intakeClaw = 0.1;
+        public static double otherIntakePitch = 0;
+        public static double intakeClaw = 1;
         public static double outtakePitch = 0;
         public static double outtakeClaw = 0.1;
-        public static double flag = 0;
         public static double latch = 0;
-        public static double intakeServo = 0;
         public static double outtakeGimble = 0.3;
         public static double limelightArmPos = PositionalBounds.ServoPositions.limelightUp;
 
@@ -68,7 +67,10 @@ public class servoTuning extends LinearOpMode {
         indicator = new IndicatorLight(hardwareMap, "light");
 
         intakeYawServo = hardwareMap.get(Servo.class, HardwareParameters.Motors.HardwareMapNames.intakeYawServo);
-        intakePitchServo = hardwareMap.get(Servo.class, HardwareParameters.Motors.HardwareMapNames.intakeLiftServo);
+
+        leftIntakePitchServo = hardwareMap.get(Servo.class, HardwareParameters.Motors.HardwareMapNames.leftIntakeLiftServo);
+        rightIntakePitchServo = hardwareMap.get(Servo.class, HardwareParameters.Motors.HardwareMapNames.rightIntakeLiftServo);
+
         intakeClawServo = hardwareMap.get(Servo.class, HardwareParameters.Motors.HardwareMapNames.intakeClawServo);
 
         outtakeGimble = hardwareMap.get(Servo.class, HardwareParameters.Motors.HardwareMapNames.outtakePitchServo);
@@ -80,8 +82,6 @@ public class servoTuning extends LinearOpMode {
 
         latchServo = hardwareMap.get(Servo.class, HardwareParameters.Motors.HardwareMapNames.latchServo);
 
-        leftIntakeServo = hardwareMap.get(Servo.class, HardwareParameters.Motors.HardwareMapNames.leftIntakeServo);
-        rightIntakeServo = hardwareMap.get(Servo.class, HardwareParameters.Motors.HardwareMapNames.rightIntakeServo);
 
         if (isStopRequested()) { return; }
         waitForStart();
@@ -94,16 +94,16 @@ public class servoTuning extends LinearOpMode {
 
             lls.setPosition(ServoPositions.limelightArmPos);
             intakeYawServo.setPosition(ServoPositions.intakeYaw);
-            intakePitchServo.setPosition(ServoPositions.intakePitch);
+
+            leftIntakePitchServo.setPosition(ServoPositions.intakePitch);
+            rightIntakePitchServo.setPosition(1 - ServoPositions.intakePitch);
+
             intakeClawServo.setPosition(ServoPositions.intakeClaw);
             leftOuttakePitchServo.setPosition(ServoPositions.outtakePitch);
             rightOuttakePitchServo.setPosition(1 - ServoPositions.outtakePitch);
             outtakeClawServo.setPosition(ServoPositions.outtakeClaw);
-            //flagServo.setPosition(ServoPositions.flag);
             latchServo.setPosition(ServoPositions.latch);
 
-            leftIntakeServo.setPosition(ServoPositions.intakeServo);
-            rightIntakeServo.setPosition(1 - ServoPositions.intakeServo);
             outtakeGimble.setPosition(ServoPositions.outtakeGimble);
 
             indicator.setColour(ServoPositions.colour);
