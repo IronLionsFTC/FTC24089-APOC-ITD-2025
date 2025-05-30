@@ -257,4 +257,8 @@ public class CMD {
     public static ExtendSlidesForSample extendSlidesForSample(Intake intakeSubsystem, Limelight.SampleState buffer) {
         return new ExtendSlidesForSample(intakeSubsystem, buffer);
     }
+
+    public static WaitAndGrabSample waitAndGrabSample(Intake intakeSubsystem) {
+        return new WaitAndGrabSample(intakeSubsystem);
+    }
 }

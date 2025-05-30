@@ -15,7 +15,7 @@ public class pidfCoefficients {
 
     @Config
     public static class IntakeSlides {
-        public static double p = 0.1;
+        public static double p = 0.01;
         public static double i = 0;
         public static double d = 0;
         public static double f = 0;
@@ -24,7 +24,7 @@ public class pidfCoefficients {
 
     @Config
     public static class OuttakeSlides {
-        public static double p = 0.03;
+        public static double p = 0.005;
         public static double i = 0;
         public static double d = 0;
         public static double feedforward = 0;

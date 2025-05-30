@@ -2,9 +2,11 @@ package core.subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.PIDController;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.pedropathing.localization.Pose;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -45,10 +47,12 @@ public class Intake extends SubsystemBase {
         private double target = 0;
         private PIDController controller;
         private Slides(HardwareMap hwmp) {
-            this.controller = new PIDController(0.01, 0, 0.00001);
+            this.controller = new PIDController(
+                    0.01, 0, 0.00001);
             this.motor = new CachedMotor(hwmp, HardwareParameters.Motors.HardwareMapNames.intakeSlide);
             this.motor.resetEncoder();
             this.motor.setReversed(HardwareParameters.Motors.Reversed.intakeSlide);
+            this.motor.setZeroPowerBehaviour(Motor.ZeroPowerBehavior.BRAKE);
             this.setPosition(PositionalBounds.SlidePositions.IntakePositions.retracted);
         }
 
@@ -59,9 +63,10 @@ public class Intake extends SubsystemBase {
         private void update() {
             double power = this.controller.calculate(this.getPosition(), this.target);
             if (Math.abs(power) < 0.05) power = 0;
-            if (this.target == 0 && this.getPosition() < 80) power = 0;
+            if (this.target == 0 && this.getPosition() < 50) power = 0;
             if (this.target < 0) power = 0;
-            if (this.target > 600) power = 0;
+            if (this.target > 650) power = 0;
+            if (Math.abs(power) < 0.1) power = 0;
             this.motor.setPower(power);
             telemetry.addData("INTAKE POWER", power);
             telemetry.addData("INTAKE POS", this.getPosition());
@@ -92,8 +97,6 @@ public class Intake extends SubsystemBase {
         this.claw = new Claw(hwmp, HardwareParameters.Motors.HardwareMapNames.intakeClawServo);
         this.claw.setState(Subsystems.ClawState.WideOpen);
 
-        this.claw.setReversed(true);
-
         this.gimble = new DualAxisGimbal(hwmp,
                 HardwareParameters.Motors.HardwareMapNames.leftIntakeLiftServo,
                 HardwareParameters.Motors.HardwareMapNames.rightIntakeLiftServo,
@@ -120,7 +123,6 @@ public class Intake extends SubsystemBase {
         // Claw and gimble do not need to be scheduled as they are servo abstractions and need no update
         this.claw = new Claw(hwmp, HardwareParameters.Motors.HardwareMapNames.intakeClawServo);
         this.claw.setState(Subsystems.ClawState.WideOpen);
-        this.claw.setReversed(true);
 
         this.gimble = new DualAxisGimbal(hwmp,
                 HardwareParameters.Motors.HardwareMapNames.leftIntakeLiftServo,
@@ -229,7 +231,7 @@ public class Intake extends SubsystemBase {
             case ExtendedClawGrabbing:
                 this.slides.setPosition(extension);
                 this.gimble.extendPitch();
-                this.claw.setState(Subsystems.ClawState.WeakGripClosed);
+                if (this.gimblePitchDown()) this.claw.setState(Subsystems.ClawState.WeakGripClosed);
                 break;
             case RetractedClawClosed:
                 if (this.isSlideLatched()) {

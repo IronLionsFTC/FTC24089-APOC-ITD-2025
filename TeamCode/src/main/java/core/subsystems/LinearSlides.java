@@ -25,7 +25,7 @@ public class LinearSlides extends SubsystemBase {
     // Option to completely disable the entire subsystem
     private boolean enabled = true;
     // When retracting slides, if they are within this threshold (0-1), then cut power
-    private double cutPowerOnNegativeThreshold = 0.05;
+    private double cutPowerOnNegativeThreshold = 0.01;
     private double maximumExtension;
     private boolean powerOnRetraction = true;
     private double target = 0;
