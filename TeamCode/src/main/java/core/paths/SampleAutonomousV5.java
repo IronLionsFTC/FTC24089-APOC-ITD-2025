@@ -7,7 +7,7 @@ import com.pedropathing.pathgen.PathBuilder;
 import com.pedropathing.pathgen.PathChain;
 import com.pedropathing.pathgen.Point;
 
-public class SampleAutonomousV2 {
+public class SampleAutonomousV5 {
     private static Point point(double x, double y) {
         return new Point(y, x, Point.CARTESIAN);
     }
@@ -44,10 +44,12 @@ public class SampleAutonomousV2 {
     }
 
     public static Point start = point(0, 0);
-    public static Point stageOne = point(18.75, 10);
+
+    public static Point stageOne = point(20.7, 9.7);
+
     public static Point cvDump = point(17, 9);
-    public static Point stageTwo = point(22.5, 10);
-    public static Point stageThree = point(10, 22.25);
+    public static Point stageTwo = point(22.5, 11.15);
+    public static Point stageThree = point(10.5, 25.56);
 
     public static Point submersible = point(-10, 53);
     public static Point basketToSubControl = point(15, 50);
@@ -55,7 +57,7 @@ public class SampleAutonomousV2 {
     public static Point cvStart = point(-12, 53);
 
     public static PathChain firstDumpAndPickup() {
-        return simpleLine(start, stageOne, -21.4859);
+        return simpleLine(start, stageOne, -20.9);
     }
 
     public static PathChain secondDumpAndPickup() {
@@ -63,11 +65,11 @@ public class SampleAutonomousV2 {
     }
 
     public static PathChain thirdDumpAndPickup() {
-        return simpleLine(stageTwo, stageThree, 60.22);
+        return simpleLine(stageTwo, stageThree, 59.3);
     }
 
     public static PathChain lastDump() {
-        return simpleLine(stageThree, stageOne, -22.9);
+        return simpleLine(stageThree, stageOne, -20.9);
     }
 
     public static PathChain basketToSub() {

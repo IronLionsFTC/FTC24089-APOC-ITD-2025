@@ -32,7 +32,7 @@ public final class PositionalBounds {
 
         public static final class Outtake {
             public static final double armDown = 0.0;
-            public static final double armSample = 0.23;
+            public static final double armSample = 0.2;
             public static final double armSpecimen = 0.5;
 
             public static final double pitchSampleOuttake = 0.05;
@@ -59,8 +59,8 @@ public final class PositionalBounds {
         }
 
         public static final class IntakePositions {
-            public static final double retracted = 5;
-            public static final double extended = 550;
+            public static final double retracted = 0;
+            public static final double extended = 697;
         }
     }
 

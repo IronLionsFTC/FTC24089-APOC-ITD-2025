@@ -54,8 +54,8 @@ public class SampleAutonomousV4 extends CommandOpMode {
                 new SequentialCommandGroup(
                         CMD.sleepUntil(this::opModeIsActive),
 
-                        CMD.followPath(follower, core.paths.SampleAutonomousV2.firstDumpAndPickup()).setSpeed(1).alongWith(
-                                CMD.sleep(500).andThen(CMD.extendIntake(intakeSubsystem, 0.4, 520)).andThen(
+                        CMD.followPath(follower, core.paths.SampleAutonomousV5.firstDumpAndPickup()).setSpeed(1).alongWith(
+                                CMD.sleep(500).andThen(CMD.extendIntake(intakeSubsystem, 0.4, 697)).andThen(
                                         CMD.waitAndGrabSample(intakeSubsystem)
                                 ).andThen(
                                         CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem)
@@ -65,8 +65,8 @@ public class SampleAutonomousV4 extends CommandOpMode {
                                                         CMD.slamDunkSample(outtakeSubsystem)
                                                 )
                                         ).alongWith(
-                                                CMD.followPath(follower, core.paths.SampleAutonomousV2.secondDumpAndPickup()).setSpeed(1).alongWith(
-                                                        CMD.extendIntake(intakeSubsystem, 0.5, 520).andThen(
+                                                CMD.followPath(follower, core.paths.SampleAutonomousV5.secondDumpAndPickup()).setSpeed(1).alongWith(
+                                                        CMD.extendIntake(intakeSubsystem, 0.5, 590).andThen(
                                                                 CMD.waitAndGrabSample(intakeSubsystem)
                                                         ).andThen(
                                                                 CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem)
@@ -75,10 +75,10 @@ public class SampleAutonomousV4 extends CommandOpMode {
                                         )
                                 )
                         ).alongWith(
-                                CMD.sleep(100).andThen(
+                                CMD.sleep(500).andThen(
                                         CMD.raiseSlidesForSampleDump(outtakeSubsystem)
                                 ).andThen(
-                                        CMD.sleep(100)
+                                        CMD.sleep(300)
                                 ).andThen(
                                         CMD.slamDunkSample(outtakeSubsystem)
                                 )
@@ -87,9 +87,9 @@ public class SampleAutonomousV4 extends CommandOpMode {
                         CMD.raiseSlidesForSampleDump(outtakeSubsystem).andThen(
                                 CMD.sleep(200),
                                 CMD.slamDunkSample(outtakeSubsystem),
-                                CMD.followPath(follower, core.paths.SampleAutonomousV2.thirdDumpAndPickup()).setSpeed(1)
+                                CMD.followPath(follower, core.paths.SampleAutonomousV5.thirdDumpAndPickup()).setSpeed(1)
                         ).alongWith(
-                                CMD.extendIntake(intakeSubsystem, 0.6, 440)
+                                CMD.extendIntake(intakeSubsystem, 0.6, 463)
                         ),
 
                         CMD.waitAndGrabSample(intakeSubsystem),
@@ -97,7 +97,7 @@ public class SampleAutonomousV4 extends CommandOpMode {
                         CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem).andThen(
                                 CMD.raiseSlidesForSampleDump(outtakeSubsystem)
                         ).alongWith(
-                                CMD.followPath(follower, core.paths.SampleAutonomousV2.lastDump()).setSpeed(1)
+                                CMD.followPath(follower, core.paths.SampleAutonomousV5.lastDump()).setSpeed(1)
                         ),
 
                         CMD.raiseLimelight(limelight),

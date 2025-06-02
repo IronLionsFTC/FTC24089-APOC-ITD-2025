@@ -65,7 +65,7 @@ public class Intake extends SubsystemBase {
             if (Math.abs(power) < 0.05) power = 0;
             if (this.target == 0 && this.getPosition() < 50) power = 0;
             if (this.target < 0) power = 0;
-            if (this.target > 650) power = 0;
+            if (this.target > 700) power = 0;
             if (Math.abs(power) < 0.1) power = 0;
             this.motor.setPower(power);
             telemetry.addData("INTAKE POWER", power);
@@ -221,7 +221,7 @@ public class Intake extends SubsystemBase {
             case ExtendedClawUp:
                 this.slides.setPosition(extension);
                 this.claw.setState(Subsystems.ClawState.WideOpen);
-                this.gimble.resetPosition();
+                this.gimble.extendPitch();
                 break;
             case ExtendedClawDown:
                 this.slides.setPosition(extension);
