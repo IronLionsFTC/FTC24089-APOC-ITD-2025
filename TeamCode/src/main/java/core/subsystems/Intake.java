@@ -18,6 +18,7 @@ import core.hardware.IndicatorLight;
 import core.math.Colour;
 import core.parameters.HardwareParameters;
 import core.parameters.PositionalBounds;
+import core.parameters.pidfCoefficients;
 import core.state.Subsystems;
 import core.state.Subsystems.IntakeState;
 
@@ -48,12 +49,19 @@ public class Intake extends SubsystemBase {
         private PIDController controller;
         private Slides(HardwareMap hwmp) {
             this.controller = new PIDController(
-                    0.01, 0, 0.00001);
+                    core.parameters.pidfCoefficients.IntakeSlides.p,
+                    core.parameters.pidfCoefficients.IntakeSlides.i,
+                    core.parameters.pidfCoefficients.IntakeSlides.d
+            );
+            this.controller.setPID(
+                    core.parameters.pidfCoefficients.IntakeSlides.p,
+                    core.parameters.pidfCoefficients.IntakeSlides.i,
+                    core.parameters.pidfCoefficients.IntakeSlides.d
+            );
             this.motor = new CachedMotor(hwmp, HardwareParameters.Motors.HardwareMapNames.intakeSlide);
-            this.motor.resetEncoder();
             this.motor.setReversed(HardwareParameters.Motors.Reversed.intakeSlide);
-            this.motor.setZeroPowerBehaviour(Motor.ZeroPowerBehavior.BRAKE);
             this.setPosition(PositionalBounds.SlidePositions.IntakePositions.retracted);
+            this.motor.resetEncoder();
         }
 
         private void setPosition(double position) {
@@ -62,14 +70,7 @@ public class Intake extends SubsystemBase {
 
         private void update() {
             double power = this.controller.calculate(this.getPosition(), this.target);
-            if (Math.abs(power) < 0.05) power = 0;
-            if (this.target == 0 && this.getPosition() < 50) power = 0;
-            if (this.target < 0) power = 0;
-            if (this.target > 700) power = 0;
-            if (Math.abs(power) < 0.1) power = 0;
             this.motor.setPower(power);
-            telemetry.addData("INTAKE POWER", power);
-            telemetry.addData("INTAKE POS", this.getPosition());
         }
 
         private double getPosition() {
@@ -191,6 +192,14 @@ public class Intake extends SubsystemBase {
     @Override
     public void periodic() {
         telemetry.addData("[PERIODIC] Intake: ", this.state.toString());
+
+        if (pidfCoefficients.IntakeSlides.tuning) {
+            this.slides.controller.setPID(
+                    pidfCoefficients.IntakeSlides.p,
+                    pidfCoefficients.IntakeSlides.i,
+                    pidfCoefficients.IntakeSlides.d
+            );
+        }
 
         // Indicate transfer status if some light was given to the intake
         // Do not give access to the light if trying to use it for other things

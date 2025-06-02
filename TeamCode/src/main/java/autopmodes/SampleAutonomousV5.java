@@ -42,8 +42,8 @@ public class SampleAutonomousV5 extends CommandOpMode {
         );
     }
 
-    private Command extendAllAndMove(PathChain path, double r, double e, long delay) {
-        return (CMD.followPath(follower, path).alongWith(
+    private Command extendAllAndMove(PathChain path, double r, double e, long delay, double speed) {
+        return (CMD.followPath(follower, path).setSpeed(speed).alongWith(
                 CMD.sleep(delay).andThen(CMD.raiseSlidesForSampleDump(outtakeSubsystem))
         )).alongWith(
                 CMD.sleep(delay).andThen(CMD.extendIntake(intakeSubsystem, r, e))
@@ -73,14 +73,14 @@ public class SampleAutonomousV5 extends CommandOpMode {
                 new SequentialCommandGroup(
                         CMD.sleepUntil(this::opModeIsActive),
 
-                        extendAllAndMove(core.paths.SampleAutonomousV5.firstDumpAndPickup(), 0.35, 697, 100),
-                        grabTransferDump(800),
-                        extendAllAndMove(core.paths.SampleAutonomousV5.secondDumpAndPickup(), 0.5, 610, 0),
+                        extendAllAndMove(core.paths.SampleAutonomousV5.firstDumpAndPickup(), 0.35, 677, 100, 0.7),
+                        grabTransferDump(200),
+                        extendAllAndMove(core.paths.SampleAutonomousV5.secondDumpAndPickup(), 0.5, 610, 0, 1),
                         grabTransferDump(200),
 
 
                         CMD.raiseSlidesForSampleDump(outtakeSubsystem),
-                        CMD.sleep(300),
+                        CMD.sleep(200),
                         CMD.slamDunkSample(outtakeSubsystem),
 
                         CMD.followPath(follower, core.paths.SampleAutonomousV5.thirdDumpAndPickup()).alongWith(

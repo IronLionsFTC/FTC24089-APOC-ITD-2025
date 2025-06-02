@@ -41,12 +41,12 @@ public class Kinematics {
         double lateral = (LimelightInformation.forwardScalarForLateral * forwards + LimelightInformation.forwardOffsetForLateral) * 0.9 // Derived from experiments not maths
                 * buffer.center.x + LimelightInformation.constantXOffset;
 
-        double newSlidePosition = (forwards * 2.54) * 11.6285 + 56.67181;
+        double newSlidePosition = (forwards * 2.54) * 11.6285 + 66.67181;
         double ty = 0;
 
-        if (newSlidePosition > 550) {
-            double error = newSlidePosition - 550;
-            newSlidePosition = 550;
+        if (newSlidePosition > 700) {
+            double error = newSlidePosition - 700;
+            newSlidePosition = 700;
             ty = error / 20;
         }
 

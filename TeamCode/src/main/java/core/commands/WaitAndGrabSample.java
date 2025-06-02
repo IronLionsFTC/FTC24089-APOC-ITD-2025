@@ -28,7 +28,7 @@ public class WaitAndGrabSample extends CommandBase {
             this.intakeSubsystem.state = Subsystems.IntakeState.ExtendedClawDown;
         }
 
-        if (this.timer.getElapsedTimeSeconds() > 1) this.intakeSubsystem.state = Subsystems.IntakeState.ExtendedClawGrabbing;
+        if (this.timer.getElapsedTimeSeconds() > 1.5) this.intakeSubsystem.state = Subsystems.IntakeState.ExtendedClawGrabbing;
     }
 
     @Override
