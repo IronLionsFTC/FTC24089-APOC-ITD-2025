@@ -34,19 +34,19 @@ public class SampleAutonomousV5 extends CommandOpMode {
 
     private IndicatorLight light;
 
-    private Command grabTransferDump() {
-        return (CMD.sleep(500).andThen(CMD.grabSample(intakeSubsystem)).andThen(
+    private Command grabTransferDump(long delay) {
+        return CMD.waitAndGrabSample(intakeSubsystem).andThen(
                 CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem)
-        )).alongWith(
-                CMD.sleep(300).andThen(CMD.slamDunkSample(outtakeSubsystem))
+        ).alongWith(
+                CMD.sleep(delay).andThen(CMD.slamDunkSample(outtakeSubsystem))
         );
     }
 
-    private Command extendAllAndMove(PathChain path, double r, double e) {
+    private Command extendAllAndMove(PathChain path, double r, double e, long delay) {
         return (CMD.followPath(follower, path).alongWith(
-                CMD.raiseSlidesForSampleDump(outtakeSubsystem)
+                CMD.sleep(delay).andThen(CMD.raiseSlidesForSampleDump(outtakeSubsystem))
         )).alongWith(
-                CMD.extendIntake(intakeSubsystem, r, e)
+                CMD.sleep(delay).andThen(CMD.extendIntake(intakeSubsystem, r, e))
         );
     }
 
@@ -73,10 +73,10 @@ public class SampleAutonomousV5 extends CommandOpMode {
                 new SequentialCommandGroup(
                         CMD.sleepUntil(this::opModeIsActive),
 
-                        extendAllAndMove(core.paths.SampleAutonomousV5.firstDumpAndPickup(), 0.35, 697),
-                        grabTransferDump(),
-                        extendAllAndMove(core.paths.SampleAutonomousV5.secondDumpAndPickup(), 0.5, 590),
-                        grabTransferDump(),
+                        extendAllAndMove(core.paths.SampleAutonomousV5.firstDumpAndPickup(), 0.35, 697, 100),
+                        grabTransferDump(800),
+                        extendAllAndMove(core.paths.SampleAutonomousV5.secondDumpAndPickup(), 0.5, 610, 0),
+                        grabTransferDump(200),
 
 
                         CMD.raiseSlidesForSampleDump(outtakeSubsystem),
@@ -84,9 +84,9 @@ public class SampleAutonomousV5 extends CommandOpMode {
                         CMD.slamDunkSample(outtakeSubsystem),
 
                         CMD.followPath(follower, core.paths.SampleAutonomousV5.thirdDumpAndPickup()).alongWith(
-                                CMD.extendIntake(intakeSubsystem, 0.7, 463)
+                                CMD.sleep(1000).andThen(CMD.extendIntake(intakeSubsystem, 0.8, 450))
                         ),
-                        CMD.grabSample(intakeSubsystem),
+                        CMD.waitAndGrabSample(intakeSubsystem),
 
                         CMD.followPath(follower, core.paths.SampleAutonomousV5.lastDump()).alongWith(
                                 CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem).andThen(

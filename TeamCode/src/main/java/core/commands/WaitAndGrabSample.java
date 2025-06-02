@@ -1,15 +1,23 @@
 package core.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
+import com.pedropathing.util.Timer;
 
 import core.state.Subsystems;
 import core.subsystems.Intake;
 
 public class WaitAndGrabSample extends CommandBase {
     private Intake intakeSubsystem;
+    private Timer timer;
 
     public WaitAndGrabSample(Intake intakeSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
+        this.timer = new Timer();
+    }
+
+    @Override
+    public void initialize() {
+        this.timer.resetTimer();
     }
 
     @Override
@@ -19,6 +27,8 @@ public class WaitAndGrabSample extends CommandBase {
         } else {
             this.intakeSubsystem.state = Subsystems.IntakeState.ExtendedClawDown;
         }
+
+        if (this.timer.getElapsedTimeSeconds() > 1) this.intakeSubsystem.state = Subsystems.IntakeState.ExtendedClawGrabbing;
     }
 
     @Override
