@@ -70,6 +70,7 @@ public class Intake extends SubsystemBase {
 
         private void update() {
             double power = this.controller.calculate(this.getPosition(), this.target);
+            if (this.target < 10 && this.getPosition() < 10) power = 0;
             this.motor.setPower(power);
         }
 
