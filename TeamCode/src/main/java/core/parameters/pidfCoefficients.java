@@ -17,7 +17,7 @@ public class pidfCoefficients {
     public static class IntakeSlides {
         public static double p = 0.01;
         public static double i = 0;
-        public static double d = 0.00055;
+        public static double d = 0.00045;
         public static double f = 0;
         public static boolean tuning = false;
     }

@@ -13,12 +13,12 @@ public final class PositionalBounds {
             // Claw positions
             public static final double strongGripPosition = 0;
             public static final double weakGripPosition = 0.05;
-            public static final double openPosition = 0.32;
+            public static final double openPosition = 0.5;
             public static final double wideOpenPosition = 0.65;
 
             // Gimble positions
             public static final double pitchRest = 0;
-            public static final double pitchExtended = 0.48;
+            public static final double pitchExtended = 0.45;
             public static final double yawRest = 0.465;
             // How far in each direction can the servo turn from the
             // yaw rest
@@ -66,7 +66,7 @@ public final class PositionalBounds {
 
     public static final class Sensors {
         public static final double transferThreshold = 18;
-        public static final double intakeThreshold = 10;
-        public static final double intakeHovering = 18;
+        public static final double intakeThreshold = 9;
+        public static final double intakeHovering = 20;
     }
 }
