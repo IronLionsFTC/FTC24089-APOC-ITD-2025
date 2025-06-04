@@ -50,9 +50,9 @@ public class Kinematics {
         double x = forwards * 2.54;
 
         double m = -0.0119154 * x - 0.487525;
-        double c = -12.56;
+        double c = -8.06;
 
-        double lateralCM = m * x + c;
+        double lateralCM = m * buffer.center.x + c;
 
         this.absoluteRobotTarget = RobotPosition.relativePosition(
                 new RobotPosition(

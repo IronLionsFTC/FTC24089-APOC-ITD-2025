@@ -79,12 +79,12 @@ public class CVPositionLogger extends LinearOpMode {
                     Math.pow(LimelightInformation.e, LimelightInformation.b * buffer.center.y)
             ) + LimelightInformation.c);
 
-            double x = forwards;
+            double x = forwards / 2.54;
 
             double m = -0.0119154 * x - 0.487525;
-            double c = -12.56;
+            double c = -8.06;
 
-            double lateral = m * x + c;
+            double lateral = m * buffer.center.x + c;
 
             telemetry.addData("m", m);
             telemetry.addData("c", c);
