@@ -38,10 +38,7 @@ public class Kinematics {
                 Math.pow(LimelightInformation.e, LimelightInformation.b * buffer.center.y)
         ) + LimelightInformation.c) / 2.54;
 
-        double lateral = (LimelightInformation.forwardScalarForLateral * forwards + LimelightInformation.forwardOffsetForLateral) * 0.9 // Derived from experiments not maths
-                * buffer.center.x + LimelightInformation.constantXOffset;
-
-        double newSlidePosition = (forwards * 2.54) * 11.6285 + 66.67181;
+        double newSlidePosition = (forwards * 2.54) * 11.6285 + 80.67181;
         double ty = 0;
 
         if (newSlidePosition > 700) {
@@ -50,13 +47,20 @@ public class Kinematics {
             ty = error / 20;
         }
 
+        double x = forwards * 2.54;
+
+        double m = -0.0119154 * x - 0.487525;
+        double c = -12.56;
+
+        double lateralCM = m * x + c;
+
         this.absoluteRobotTarget = RobotPosition.relativePosition(
                 new RobotPosition(
                         buffer.robotPosition,
                         buffer.robotRotation
                 ),
                 Vector.cartesian(
-                        lateral * -1, ty
+                        lateralCM / 2.54, ty
                 )
         );
         this.absoluteSlidePosition = newSlidePosition;

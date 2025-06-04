@@ -79,11 +79,18 @@ public class CVPositionLogger extends LinearOpMode {
                     Math.pow(LimelightInformation.e, LimelightInformation.b * buffer.center.y)
             ) + LimelightInformation.c);
 
-            double lateral = (LimelightInformation.forwardScalarForLateral * forwards / 2.54 + LimelightInformation.forwardOffsetForLateral) * 0.9 // Derived from experiments not maths
-                    * buffer.center.x;
+            double x = forwards;
 
-            telemetry.addData("forwardsInches", forwards);
-            telemetry.addData("lateralInches", lateral);
+            double m = -0.0119154 * x - 0.487525;
+            double c = -12.56;
+
+            double lateral = m * x + c;
+
+            telemetry.addData("m", m);
+            telemetry.addData("c", c);
+
+            telemetry.addData("forwardsCM", forwards);
+            telemetry.addData("lateralCM", lateral);
         }
     }
 }

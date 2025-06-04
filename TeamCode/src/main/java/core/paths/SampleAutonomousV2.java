@@ -46,7 +46,7 @@ public class SampleAutonomousV2 {
     public static Point start = point(0, 0);
     public static Point stageOne = point(18.75, 10);
     public static Point cvDump = point(17, 9);
-    public static Point stageTwo = point(22.5, 10);
+    public static Point stageTwo = point(22.5, 10.5);
     public static Point stageThree = point(10, 22.25);
 
     public static Point submersible = point(-10, 53);

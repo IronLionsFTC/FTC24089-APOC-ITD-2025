@@ -78,7 +78,7 @@ public class SampleAutonomousV5 extends CommandOpMode {
                                         CMD.sleep(300).andThen(CMD.slamDunkSample(outtakeSubsystem))
                                 ))
                         ).alongWith(
-                                CMD.sleep(500).andThen(CMD.extendIntake(intakeSubsystem, 0.35, 677).andThen(
+                                CMD.sleep(800).andThen(CMD.extendIntake(intakeSubsystem, 0.35, 700).andThen(
                                         CMD.waitAndGrabSample(intakeSubsystem).andThen(
                                                 CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem)
                                         )
@@ -87,7 +87,7 @@ public class SampleAutonomousV5 extends CommandOpMode {
 
                         CMD.followPath(follower, core.paths.SampleAutonomousV5.secondDumpAndPickup()).alongWith(
                                 CMD.raiseSlidesForSampleDump(outtakeSubsystem).andThen(
-                                        CMD.sleep(200).andThen(CMD.slamDunkSample(outtakeSubsystem))
+                                        CMD.sleep(300).andThen(CMD.slamDunkSample(outtakeSubsystem))
                                 )
                         ).alongWith(
                                 CMD.extendIntake(intakeSubsystem, 0.5, 600).andThen(
@@ -98,7 +98,7 @@ public class SampleAutonomousV5 extends CommandOpMode {
                         ),
 
                         CMD.raiseSlidesForSampleDump(outtakeSubsystem),
-                        CMD.sleep(500),
+                        CMD.sleep(300),
                         CMD.slamDunkSample(outtakeSubsystem),
 
                         CMD.followPath(follower, core.paths.SampleAutonomousV5.thirdDumpAndPickup()).alongWith(
@@ -107,9 +107,9 @@ public class SampleAutonomousV5 extends CommandOpMode {
                         CMD.waitAndGrabSample(intakeSubsystem),
 
                         CMD.followPath(follower, core.paths.SampleAutonomousV5.lastDump()).alongWith(
-                                CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem).andThen(
+                                CMD.sleep(500).andThen(CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem).andThen(
                                         CMD.raiseSlidesForSampleDump(outtakeSubsystem)
-                                )
+                                ))
                         ),
                         CMD.sleep(300),
                         CMD.slamDunkSample(outtakeSubsystem),
