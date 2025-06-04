@@ -261,4 +261,22 @@ public class CMD {
     public static WaitAndGrabSample waitAndGrabSample(Intake intakeSubsystem) {
         return new WaitAndGrabSample(intakeSubsystem);
     }
+
+    public static RetryAndRepeat retryAndRepeat(
+            Intake intakeSubsystem,
+            Outtake outtakeSubsystem,
+            Limelight limelight,
+            Limelight.SampleState buffer,
+            Telemetry telemetry,
+            Follower follower
+    ) {
+        return new RetryAndRepeat(
+                intakeSubsystem,
+                outtakeSubsystem,
+                follower,
+                telemetry,
+                limelight,
+                buffer
+        );
+    }
 }

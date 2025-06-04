@@ -85,6 +85,14 @@ public class Limelight {
             this.robotRotation = 0;
             this.slidePosition = 0;
         }
+
+        public void reset() {
+            this.angle = 0;
+            this.center = Vector.cartesian(0, 0);
+            this.robotPosition = Vector.cartesian(0, 0);
+            this.robotRotation = 0;
+            this.slidePosition = 0;
+        }
     }
 
     public SampleState query(Telemetry telemetry, Follower follower, Intake intakeSubsystem) {

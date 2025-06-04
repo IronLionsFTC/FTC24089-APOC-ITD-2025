@@ -231,6 +231,7 @@ public class Intake extends SubsystemBase {
             case ExtendedClawUp:
                 this.slides.setPosition(extension);
                 this.claw.setState(Subsystems.ClawState.WideOpen);
+                if (this.isSlidesPartiallyExtended()) this.nextState();
                 this.gimble.extendPitch();
                 break;
             case ExtendedClawDown:
@@ -241,7 +242,7 @@ public class Intake extends SubsystemBase {
             case ExtendedClawGrabbing:
                 this.slides.setPosition(extension);
                 this.gimble.extendPitch();
-                if (this.gimblePitchDown()) this.claw.setState(Subsystems.ClawState.WeakGripClosed);
+                if (this.gimblePitchDown()) this.claw.setState(Subsystems.ClawState.StrongGripClosed);
                 break;
             case RetractedClawClosed:
                 if (this.isSlideLatched()) {

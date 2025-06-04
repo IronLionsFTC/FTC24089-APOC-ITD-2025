@@ -18,7 +18,7 @@ public final class PositionalBounds {
 
             // Gimble positions
             public static final double pitchRest = 0;
-            public static final double pitchExtended = 0.485;
+            public static final double pitchExtended = 0.5;
             public static final double yawRest = 0.465;
             // How far in each direction can the servo turn from the
             // yaw rest
@@ -66,7 +66,7 @@ public final class PositionalBounds {
 
     public static final class Sensors {
         public static final double transferThreshold = 18;
-        public static final double intakeThreshold = 9;
-        public static final double intakeHovering = 20;
+        public static final double intakeThreshold = 15;
+        public static final double intakeHovering = 28;
     }
 }

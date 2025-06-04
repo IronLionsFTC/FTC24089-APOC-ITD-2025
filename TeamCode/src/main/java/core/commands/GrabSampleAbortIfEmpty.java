@@ -30,20 +30,13 @@ public class GrabSampleAbortIfEmpty extends ConditionalCommand {
         super(
                 CMD.resetCV(buffer),
 
-                CMD.retractIntake(intakeSubsystem).alongWith(CMD.raiseLimelight(limelight)).andThen(
-                        CMD.sleep(500)
-                ).andThen(
-                        CMD.scanForSample(limelight, buffer, telemetry, follower, intakeSubsystem, false)
-                ).andThen(
-                        CMD.driveToSampleUseSlides(follower, intakeSubsystem, buffer, telemetry).alongWith(
-                                CMD.alignClaw(intakeSubsystem, buffer)
-                        )
-                ).andThen(
-                        CMD.sleep(500)
-                ).andThen(
-                        CMD.grabSample(intakeSubsystem)
-                ).andThen(
-                        CMD.sleep(100)
+                CMD.retryAndRepeat(
+                        intakeSubsystem,
+                        outtakeSubsystem,
+                        limelight,
+                        buffer,
+                        telemetry,
+                        follower
                 ),
 
                 intakeSubsystem::hasIntakeGotSample
