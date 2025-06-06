@@ -45,11 +45,13 @@ public class SampleAutonomousV5 {
 
     public static Point start = point(0, 0);
 
-    public static Point stageOne = point(19, 5);
+    public static Point stageOne = point(17.5, 6);
+    public static Point lastDump = point(18.5, 5.5);
 
-    public static Point cvDump = point(17, 9);
-    public static Point stageTwo = point(22.7, 6);
-    public static Point stageThree = point(10.5, 21);
+    public static Point cvDump = point(17, 8.5);
+    public static Point stageTwo = point(22.5, 8.5);
+    public static Point dumpTwo = point(21.5, 7.5);
+    public static Point stageThree = point(20.69, 7.5);
 
     public static Point submersible = point(-10, 53);
     public static Point basketToSubControl = point(15, 50);
@@ -61,15 +63,19 @@ public class SampleAutonomousV5 {
     }
 
     public static PathChain secondDumpAndPickup() {
-        return simpleLine(stageOne, stageTwo, -6);
+        return simpleLine(stageOne, stageTwo, -9.5);
+    }
+
+    public static PathChain SecondPreplacedDump() {
+        return simpleLine(stageTwo, dumpTwo, -13);
     }
 
     public static PathChain thirdDumpAndPickup() {
-        return simpleLine(stageTwo, stageThree, 59.3);
+        return simpleLine(stageTwo, stageThree, 17.37);
     }
 
     public static PathChain lastDump() {
-        return simpleLine(stageThree, stageOne, -20.9);
+        return simpleLine(stageThree, lastDump, -20);
     }
 
     public static PathChain basketToSub() {

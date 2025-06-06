@@ -245,7 +245,7 @@ public class Intake extends SubsystemBase {
                 if (this.gimblePitchDown()) this.claw.setState(Subsystems.ClawState.StrongGripClosed);
                 break;
             case RetractedClawClosed:
-                if (this.isSlideLatched()) {
+                if (this.isSlidesRetracted()) {
                     claw.setState(Subsystems.ClawState.StrongGripClosed);
                 } else {
                     claw.setState(Subsystems.ClawState.WeakGripClosed);

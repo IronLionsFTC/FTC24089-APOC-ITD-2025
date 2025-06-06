@@ -73,12 +73,12 @@ public class SampleAutonomousV5 extends CommandOpMode {
                 new SequentialCommandGroup(
                         CMD.sleepUntil(this::opModeIsActive),
 
-                        CMD.followPath(follower, core.paths.SampleAutonomousV5.firstDumpAndPickup()).alongWith(
+                        CMD.followPath(follower, core.paths.SampleAutonomousV5.firstDumpAndPickup()).setSpeed(0.7).alongWith(
                                 CMD.sleep(150).andThen(CMD.raiseSlidesForSampleDump(outtakeSubsystem).andThen(
                                         CMD.sleep(300).andThen(CMD.slamDunkSample(outtakeSubsystem))
-                                ))
+                               ))
                         ).alongWith(
-                                CMD.sleep(800).andThen(CMD.extendIntake(intakeSubsystem, 0.35, 700).andThen(
+                                CMD.sleep(900).andThen(CMD.extendIntake(intakeSubsystem, 0.35, 700).andThen(
                                         CMD.waitAndGrabSample(intakeSubsystem).andThen(
                                                 CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem)
                                         )
@@ -90,26 +90,28 @@ public class SampleAutonomousV5 extends CommandOpMode {
                                         CMD.sleep(300).andThen(CMD.slamDunkSample(outtakeSubsystem))
                                 )
                         ).alongWith(
-                                CMD.extendIntake(intakeSubsystem, 0.5, 600).andThen(
+                                CMD.sleep(400).andThen(CMD.extendIntake(intakeSubsystem, 0.5, 546).andThen(
                                         CMD.waitAndGrabSample(intakeSubsystem).andThen(
                                                 CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem)
                                         )
-                                )
+                                ))
                         ),
 
-                        CMD.raiseSlidesForSampleDump(outtakeSubsystem),
+                        CMD.raiseSlidesForSampleDump(outtakeSubsystem).alongWith(
+                                CMD.followPath(follower, core.paths.SampleAutonomousV5.secondDumpAndPickup())
+                        ),
                         CMD.sleep(300),
                         CMD.slamDunkSample(outtakeSubsystem),
 
                         CMD.followPath(follower, core.paths.SampleAutonomousV5.thirdDumpAndPickup()).alongWith(
-                                CMD.sleep(1000).andThen(CMD.extendIntake(intakeSubsystem, 0.8, 450))
+                                CMD.sleep(300).andThen(CMD.extendIntake(intakeSubsystem, 0.55, 630))
                         ),
                         CMD.waitAndGrabSample(intakeSubsystem),
 
                         CMD.followPath(follower, core.paths.SampleAutonomousV5.lastDump()).alongWith(
-                                CMD.sleep(500).andThen(CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem).andThen(
+                                CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem).andThen(
                                         CMD.raiseSlidesForSampleDump(outtakeSubsystem)
-                                ))
+                                )
                         ),
                         CMD.sleep(300),
                         CMD.slamDunkSample(outtakeSubsystem),
