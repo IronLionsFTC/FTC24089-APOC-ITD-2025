@@ -6,7 +6,7 @@ public class Timings {
 
     // Time for claw pincers to open and close
     public static final double clawOpeningTime = 0.25;
-    public static final double clawClosingTime = 0.3;
+    public static final double clawClosingTime = 0.45;
 
     // Time to flip the claw down and up again
     public static final double clawFoldDownTime = 0.5;

@@ -10,8 +10,6 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.util.Constants;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-
 import core.commands.CMD;
 import core.computerVision.Limelight;
 import core.math.Vector;
@@ -21,7 +19,7 @@ import pedroPathing.constants.FConstants;
 import pedroPathing.constants.LConstants;
 
 @Autonomous ( name = "SAMPLE AUTONOMOUS" )
-public class SampleAutonomous extends CommandOpMode {
+public class SampleAutonomousV1 extends CommandOpMode {
 
     private Intake intakeSubsystem;
     private Outtake outtakeSubsystem;

@@ -16,15 +16,15 @@ public class FollowPath extends CommandBase {
     public FollowPath(Follower follower, PathChain path) {
         this.follower = follower;
         this.pathChain = path;
-        this.holdEnd = false;
-        this.speed = 0.8;
+        this.holdEnd = true;
+        this.speed = 1;
     }
 
     public FollowPath(Follower follower, PathChain path, boolean holdEnd) {
         this.follower = follower;
         this.pathChain = path;
         this.holdEnd = holdEnd;
-        this.speed = 0.8;
+        this.speed = 1;
     }
 
     public FollowPath setSpeed(double speed) {

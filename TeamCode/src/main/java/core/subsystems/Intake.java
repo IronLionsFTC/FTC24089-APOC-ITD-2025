@@ -2,9 +2,11 @@ package core.subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.PIDController;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.pedropathing.localization.Pose;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -16,6 +18,7 @@ import core.hardware.IndicatorLight;
 import core.math.Colour;
 import core.parameters.HardwareParameters;
 import core.parameters.PositionalBounds;
+import core.parameters.pidfCoefficients;
 import core.state.Subsystems;
 import core.state.Subsystems.IntakeState;
 
@@ -45,11 +48,20 @@ public class Intake extends SubsystemBase {
         private double target = 0;
         private PIDController controller;
         private Slides(HardwareMap hwmp) {
-            this.controller = new PIDController(0.01, 0, 0.00001);
+            this.controller = new PIDController(
+                    core.parameters.pidfCoefficients.IntakeSlides.p,
+                    core.parameters.pidfCoefficients.IntakeSlides.i,
+                    core.parameters.pidfCoefficients.IntakeSlides.d
+            );
+            this.controller.setPID(
+                    core.parameters.pidfCoefficients.IntakeSlides.p,
+                    core.parameters.pidfCoefficients.IntakeSlides.i,
+                    core.parameters.pidfCoefficients.IntakeSlides.d
+            );
             this.motor = new CachedMotor(hwmp, HardwareParameters.Motors.HardwareMapNames.intakeSlide);
-            this.motor.resetEncoder();
             this.motor.setReversed(HardwareParameters.Motors.Reversed.intakeSlide);
             this.setPosition(PositionalBounds.SlidePositions.IntakePositions.retracted);
+            this.motor.resetEncoder();
         }
 
         private void setPosition(double position) {
@@ -58,13 +70,8 @@ public class Intake extends SubsystemBase {
 
         private void update() {
             double power = this.controller.calculate(this.getPosition(), this.target);
-            if (Math.abs(power) < 0.05) power = 0;
-            if (this.target == 0 && this.getPosition() < 80) power = 0;
-            if (this.target < 0) power = 0;
-            if (this.target > 600) power = 0;
+            if (this.target < 10 && this.getPosition() < 10) power = 0;
             this.motor.setPower(power);
-            telemetry.addData("INTAKE POWER", power);
-            telemetry.addData("INTAKE POS", this.getPosition());
         }
 
         private double getPosition() {
@@ -93,7 +100,8 @@ public class Intake extends SubsystemBase {
         this.claw.setState(Subsystems.ClawState.WideOpen);
 
         this.gimble = new DualAxisGimbal(hwmp,
-                HardwareParameters.Motors.HardwareMapNames.intakeLiftServo,
+                HardwareParameters.Motors.HardwareMapNames.leftIntakeLiftServo,
+                HardwareParameters.Motors.HardwareMapNames.rightIntakeLiftServo,
                 HardwareParameters.Motors.HardwareMapNames.intakeYawServo);
 
         // Schedule SLIDES, as they must constantly update as they contain a PID controller
@@ -119,7 +127,8 @@ public class Intake extends SubsystemBase {
         this.claw.setState(Subsystems.ClawState.WideOpen);
 
         this.gimble = new DualAxisGimbal(hwmp,
-                HardwareParameters.Motors.HardwareMapNames.intakeLiftServo,
+                HardwareParameters.Motors.HardwareMapNames.leftIntakeLiftServo,
+                HardwareParameters.Motors.HardwareMapNames.rightIntakeLiftServo,
                 HardwareParameters.Motors.HardwareMapNames.intakeYawServo);
 
         // Schedule SLIDES, as they must constantly update as they contain a PID controller
@@ -185,6 +194,14 @@ public class Intake extends SubsystemBase {
     public void periodic() {
         telemetry.addData("[PERIODIC] Intake: ", this.state.toString());
 
+        if (pidfCoefficients.IntakeSlides.tuning) {
+            this.slides.controller.setPID(
+                    pidfCoefficients.IntakeSlides.p,
+                    pidfCoefficients.IntakeSlides.i,
+                    pidfCoefficients.IntakeSlides.d
+            );
+        }
+
         // Indicate transfer status if some light was given to the intake
         // Do not give access to the light if trying to use it for other things
         if (this.light != null) {
@@ -214,7 +231,8 @@ public class Intake extends SubsystemBase {
             case ExtendedClawUp:
                 this.slides.setPosition(extension);
                 this.claw.setState(Subsystems.ClawState.WideOpen);
-                this.gimble.resetPosition();
+                if (this.isSlidesPartiallyExtended()) this.nextState();
+                this.gimble.extendPitch();
                 break;
             case ExtendedClawDown:
                 this.slides.setPosition(extension);
@@ -224,10 +242,10 @@ public class Intake extends SubsystemBase {
             case ExtendedClawGrabbing:
                 this.slides.setPosition(extension);
                 this.gimble.extendPitch();
-                this.claw.setState(Subsystems.ClawState.WeakGripClosed);
+                if (this.gimblePitchDown()) this.claw.setState(Subsystems.ClawState.StrongGripClosed);
                 break;
             case RetractedClawClosed:
-                if (this.isSlideLatched()) {
+                if (this.isSlidesRetracted()) {
                     claw.setState(Subsystems.ClawState.StrongGripClosed);
                 } else {
                     claw.setState(Subsystems.ClawState.WeakGripClosed);

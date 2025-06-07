@@ -16,6 +16,7 @@ import java.util.function.DoubleSupplier;
 import core.computerVision.Limelight;
 import core.hardware.IndicatorLight;
 import core.math.Vector;
+import core.parameters.PositionalBounds;
 import core.subsystems.Drivebase;
 import core.subsystems.Intake;
 import core.subsystems.Outtake;
@@ -35,7 +36,7 @@ public class CMD {
     }
 
     // Extends the intake, automatically folding down the claw and rotating to 0 or x degrees.
-    public static ExtendIntake extendIntake(Intake intakeSubsystem) { return new ExtendIntake(intakeSubsystem, 0.5, 0.0); }
+    public static ExtendIntake extendIntake(Intake intakeSubsystem) { return new ExtendIntake(intakeSubsystem, 0.5, PositionalBounds.SlidePositions.IntakePositions.extended); }
     public static ExtendIntake extendIntake(Intake intakeSubsystem, double r, double e) { return new ExtendIntake(intakeSubsystem, r, e); }
 
     // Assumes intake is extended and claw is down and ready to grab.
@@ -146,7 +147,9 @@ public class CMD {
             IndicatorLight light
     ) {
         return new SequentialCommandGroup(
-                CMD.goToSubForCycles(follower, buffer),
+                CMD.goToSubForCycles(follower, buffer).alongWith(
+                        CMD.raiseLimelight(limelight)
+                ),
                 CMD.grabSampleForSubCycles(
                         follower,
                         intakeSubsystem,
@@ -169,43 +172,27 @@ public class CMD {
             IndicatorLight light
     ) {
         return new SequentialCommandGroup(
-                CMD.followPath(follower, core.paths.SampleAutonomousV2.subToCV()).setSpeed(1).alongWith(
-                        CMD.sleep(500).andThen(CMD.extendIntake(intakeSubsystem, 0.5, 0.4))
+                CMD.followPath(follower, core.paths.SampleAutonomousV2.subToCV()).setSpeed(1),
+                CMD.sleep(200),
+                CMD.scanForSample(limelight, buffer, telemetry, follower, intakeSubsystem, false),
+                CMD.driveToSampleUseSlides(follower, intakeSubsystem, buffer, telemetry).alongWith(
+                        CMD.alignClaw(intakeSubsystem, buffer)
                 ),
-                CMD.setTilt(intakeSubsystem, 0.1),
                 CMD.sleep(500),
-                CMD.light(light, 0.28),
-                CMD.scanForSample(limelight, buffer, telemetry, follower, intakeSubsystem, false).tilt(0.1),
-                CMD.light(light, 0.5),
-                CMD.driveToSampleUseSlides(follower, intakeSubsystem, buffer, telemetry),
-                CMD.light(light, 0.611),
-                CMD.alignClaw(intakeSubsystem, buffer),
-                CMD.light(light, 0.333),
-                CMD.sleep(600),
                 CMD.grabSample(intakeSubsystem),
-                CMD.light(light, 0.388),
-                new RecursiveSubIntake(
-                        follower,
-                        intakeSubsystem,
-                        outtakeSubsystem,
-                        limelight,
-                        buffer,
-                        telemetry,
-                        light
-                )
+                CMD.grabSampleAbortIfEmpty(intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, follower),
+                CMD.goToBasketForSubCycles(follower, intakeSubsystem, outtakeSubsystem)
         );
     }
 
     public static Command goToBasketForSubCycles(Follower follower, Intake intakeSubsystem, Outtake outtakeSubsystem) {
         return new SequentialCommandGroup(
-                CMD.followPath(follower, core.paths.SampleAutonomousV2.subToBasket()).setSpeed(1).alongWith(
-                        CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem).andThen(
-                                CMD.sleep(900).andThen(CMD.raiseSlidesForSampleDump(outtakeSubsystem))
-                        )
+                CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem).andThen(
+                        CMD.raiseSlidesForSampleDump(outtakeSubsystem)
+                ).alongWith(
+                        CMD.followPath(follower, core.paths.SampleAutonomousV2.subToBasket()).setSpeed(1)
                 ),
-                CMD.sleep(200),
-                CMD.slamDunkSample(outtakeSubsystem),
-                CMD.sleep(200)
+                CMD.slamDunkSample(outtakeSubsystem)
         );
     }
 
@@ -269,5 +256,27 @@ public class CMD {
 
     public static ExtendSlidesForSample extendSlidesForSample(Intake intakeSubsystem, Limelight.SampleState buffer) {
         return new ExtendSlidesForSample(intakeSubsystem, buffer);
+    }
+
+    public static WaitAndGrabSample waitAndGrabSample(Intake intakeSubsystem) {
+        return new WaitAndGrabSample(intakeSubsystem);
+    }
+
+    public static RetryAndRepeat retryAndRepeat(
+            Intake intakeSubsystem,
+            Outtake outtakeSubsystem,
+            Limelight limelight,
+            Limelight.SampleState buffer,
+            Telemetry telemetry,
+            Follower follower
+    ) {
+        return new RetryAndRepeat(
+                intakeSubsystem,
+                outtakeSubsystem,
+                follower,
+                telemetry,
+                limelight,
+                buffer
+        );
     }
 }

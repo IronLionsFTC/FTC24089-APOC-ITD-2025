@@ -18,10 +18,15 @@ public class Kinematics {
         public static double limelightAngle = 65;
         public static double forwardOffset = 0.5;
 
-        public static double forwardScalarForLateral = 0.01143;
+        public static double forwardScalarForLateral = 0.01;
         public static double forwardOffsetForLateral = 0.2661;
 
         public static double constantXOffset = 4.9;
+
+        public static double a = 24.32983;
+        public static double b = 0.0310553;
+        public static double c = -8.773041;
+        public static double e = Math.E;
     }
     public RobotPosition absoluteRobotTarget;
     public double absoluteSlidePosition;
@@ -29,21 +34,25 @@ public class Kinematics {
 
     public Kinematics(Limelight.SampleState buffer) {
 
-        double forwards = LimelightInformation.limelightHeight
-                / (Math.tan(Math.toRadians(LimelightInformation.limelightAngle - buffer.center.y)))
-                + LimelightInformation.forwardOffset;
+        double forwards = (LimelightInformation.a * (
+                Math.pow(LimelightInformation.e, LimelightInformation.b * buffer.center.y)
+        ) + LimelightInformation.c) / 2.54;
 
-        double lateral = (LimelightInformation.forwardScalarForLateral * forwards + LimelightInformation.forwardOffsetForLateral) * 0.9 // Derived from experiments not maths
-                * buffer.center.x + LimelightInformation.constantXOffset;
-
-        double newSlidePosition = (forwards + 3) * 25;
+        double newSlidePosition = (forwards * 2.54) * 11.6285 + 80.67181;
         double ty = 0;
 
-        if (newSlidePosition > 550) {
-            double error = newSlidePosition - 550;
-            newSlidePosition = 550;
+        if (newSlidePosition > 700) {
+            double error = newSlidePosition - 700;
+            newSlidePosition = 700;
             ty = error / 20;
         }
+
+        double x = forwards * 2.54;
+
+        double m = -0.0119154 * x - 0.487525;
+        double c = -8.06;
+
+        double lateralCM = m * buffer.center.x + c;
 
         this.absoluteRobotTarget = RobotPosition.relativePosition(
                 new RobotPosition(
@@ -51,10 +60,10 @@ public class Kinematics {
                         buffer.robotRotation
                 ),
                 Vector.cartesian(
-                        lateral * -1, ty
+                        lateralCM / 2.54, ty
                 )
         );
-        this.absoluteSlidePosition = newSlidePosition;
+        this.absoluteSlidePosition = newSlidePosition + 11;
         this.absoluteClawRotation = buffer.angle;
     }
 

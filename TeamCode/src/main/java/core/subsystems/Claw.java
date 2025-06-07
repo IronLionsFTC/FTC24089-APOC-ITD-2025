@@ -12,6 +12,7 @@ public class Claw extends SubsystemBase {
     private CachedServo servo;
     private Subsystems.ClawState state;
     private double scalar;
+    private boolean reverse;
 
     // Expose a constructor for creating a claw subsystem starting open
     public Claw(HardwareMap hwmp, String name, boolean inverse) {
@@ -19,6 +20,7 @@ public class Claw extends SubsystemBase {
         this.servo = new CachedServo(hwmp, name);
         this.setState(Subsystems.ClawState.WideOpen);
         if (inverse) this.servo.inverse();
+        this.reverse = false;
     }
 
     // Expose a constructor allowing the claw to be initialised in a certain state (e.g. for preloading)
@@ -27,6 +29,11 @@ public class Claw extends SubsystemBase {
         this.servo = new CachedServo(hwmp, name);
         this.setState(startState);
         if (inverse) this.servo.inverse();
+        this.reverse = false;
+    }
+
+    public void setReversed(boolean reversed) {
+        this.reverse = reversed;
     }
 
     // Expose a constructor for creating a claw subsystem starting open
@@ -34,6 +41,7 @@ public class Claw extends SubsystemBase {
         this.scalar = 1;
         this.servo = new CachedServo(hwmp, name);
         this.setState(Subsystems.ClawState.WideOpen);
+        this.reverse = false;
     }
 
     // Expose a constructor allowing the claw to be initialised in a certain state (e.g. for preloading)
@@ -41,28 +49,38 @@ public class Claw extends SubsystemBase {
         this.scalar = 1;
         this.servo = new CachedServo(hwmp, name);
         this.setState(startState);
+        this.reverse = false;
     }
 
     public void setState(Subsystems.ClawState state) {
         this.state = state;
 
         // Decide where to set the position based on the parameters in the dedicated file
+
+        double position = 0;
+
         switch (this.state) {
             case StrongGripClosed:
-                this.servo.setPosition(this.scalar * PositionalBounds.ServoPositions.ClawPositions.strongGripPosition);
+                position = this.scalar * PositionalBounds.ServoPositions.ClawPositions.strongGripPosition;
                 break;
 
             case WeakGripClosed:
-                this.servo.setPosition(this.scalar * PositionalBounds.ServoPositions.ClawPositions.weakGripPosition);
+                position = this.scalar * PositionalBounds.ServoPositions.ClawPositions.weakGripPosition;
                 break;
 
             case Open:
-                this.servo.setPosition(this.scalar * PositionalBounds.ServoPositions.ClawPositions.openPosition);
+                position = this.scalar * PositionalBounds.ServoPositions.ClawPositions.openPosition;
                 break;
 
             case WideOpen:
-                this.servo.setPosition(this.scalar * PositionalBounds.ServoPositions.ClawPositions.wideOpenPosition);
+                position = this.scalar * PositionalBounds.ServoPositions.ClawPositions.wideOpenPosition;
                 break;
+        }
+
+        if (this.reverse) {
+            this.servo.setPosition(1 - position);
+        } else {
+            this.servo.setPosition(position);
         }
     }
 

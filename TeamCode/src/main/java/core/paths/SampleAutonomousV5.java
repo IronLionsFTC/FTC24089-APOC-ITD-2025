@@ -7,7 +7,7 @@ import com.pedropathing.pathgen.PathBuilder;
 import com.pedropathing.pathgen.PathChain;
 import com.pedropathing.pathgen.Point;
 
-public class SampleAutonomousV2 {
+public class SampleAutonomousV5 {
     private static Point point(double x, double y) {
         return new Point(y, x, Point.CARTESIAN);
     }
@@ -44,30 +44,38 @@ public class SampleAutonomousV2 {
     }
 
     public static Point start = point(0, 0);
-    public static Point stageOne = point(18.75, 10);
-    public static Point cvDump = point(17, 9);
-    public static Point stageTwo = point(22.5, 10.5);
-    public static Point stageThree = point(10, 22.25);
+
+    public static Point stageOne = point(17.5, 6);
+    public static Point lastDump = point(18.5, 5.5);
+
+    public static Point cvDump = point(17, 8.5);
+    public static Point stageTwo = point(22.5, 8.5);
+    public static Point dumpTwo = point(21.5, 7.5);
+    public static Point stageThree = point(20.69, 7.5);
 
     public static Point submersible = point(-10, 53);
     public static Point basketToSubControl = point(15, 50);
     public static Point subToBasketControl = point(13, 15);
-    public static Point cvStart = point(-15, 53);
+    public static Point cvStart = point(-12, 53);
 
     public static PathChain firstDumpAndPickup() {
-        return simpleLine(start, stageOne, -21.4859);
+        return simpleLine(start, stageOne, -20);
     }
 
     public static PathChain secondDumpAndPickup() {
-        return simpleLine(stageOne, stageTwo, -6);
+        return simpleLine(stageOne, stageTwo, -9.5);
+    }
+
+    public static PathChain SecondPreplacedDump() {
+        return simpleLine(stageTwo, dumpTwo, -13);
     }
 
     public static PathChain thirdDumpAndPickup() {
-        return simpleLine(stageTwo, stageThree, 60.22);
+        return simpleLine(stageTwo, stageThree, 17.37);
     }
 
     public static PathChain lastDump() {
-        return simpleLine(stageThree, stageOne, -22.9);
+        return simpleLine(stageThree, lastDump, -20);
     }
 
     public static PathChain basketToSub() {

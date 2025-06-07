@@ -56,15 +56,13 @@ public class StationaryCVTest extends CommandOpMode {
                 new SequentialCommandGroup (
                         CMD.sleepUntil(this::opModeIsActive),
 
-                        new WaitUntilCommand(button::get),
+                        CMD.sleep(1000),
 
                         CMD.raiseLimelight(limelight),
 
-                        new WaitUntilCommand(button::get),
+                        CMD.sleep(1000),
 
                         CMD.scanForSample(limelight, buffer, telemetry, follower, intakeSubsystem, false),
-
-
                         CMD.driveToSampleUseSlides(follower, intakeSubsystem, buffer, telemetry).alongWith(
                                 CMD.alignClaw(intakeSubsystem, buffer)
                         ),
@@ -80,6 +78,30 @@ public class StationaryCVTest extends CommandOpMode {
                                 telemetry,
                                 follower
                         ),
+
+                        CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem),
+
+                        CMD.resetCV(buffer),
+
+                        CMD.scanForSample(limelight, buffer, telemetry, follower, intakeSubsystem, false),
+                        CMD.driveToSampleUseSlides(follower, intakeSubsystem, buffer, telemetry).alongWith(
+                                CMD.alignClaw(intakeSubsystem, buffer)
+                        ),
+
+                        CMD.sleep(500),
+                        CMD.grabSample(intakeSubsystem),
+                        CMD.sleep(100),
+                        CMD.grabSampleAbortIfEmpty(
+                                intakeSubsystem,
+                                outtakeSubsystem,
+                                limelight,
+                                buffer,
+                                telemetry,
+                                follower
+                        ),
+
+                        CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem),
+
                         CMD.moveAbsolute(follower, Vector.cartesian(0, 0), true)
                 )
         );

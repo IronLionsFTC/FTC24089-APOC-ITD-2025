@@ -30,6 +30,11 @@ public class CVPositionLogger extends LinearOpMode {
 
         public static double forwardScalarForLateral = 0.01143;
         public static double forwardOffsetForLateral = 0.2661;
+
+        public static double a = 24.32983;
+        public static double b = 0.0310553;
+        public static double c = -8.773041;
+        public static double e = Math.E;
     }
 
     @Override
@@ -70,15 +75,22 @@ public class CVPositionLogger extends LinearOpMode {
             telemetry.addData("Sample X_fov", buffer.center.x);
             telemetry.addData("Sample Y_fov", buffer.center.y);
 
-            double forwards = LimelightInformation.limelightHeight
-                    / (Math.tan(Math.toRadians(LimelightInformation.limelightAngle - buffer.center.y)))
-                    + LimelightInformation.forwardOffset;
+            double forwards = (LimelightInformation.a * (
+                    Math.pow(LimelightInformation.e, LimelightInformation.b * buffer.center.y)
+            ) + LimelightInformation.c);
 
-            double lateral = (LimelightInformation.forwardScalarForLateral * forwards + LimelightInformation.forwardOffsetForLateral) * 0.8 // Derived from experiments not maths
-                    * buffer.center.x;
+            double x = forwards / 2.54;
 
-            telemetry.addData("forwardsInches", forwards);
-            telemetry.addData("lateralInches", lateral);
+            double m = -0.0119154 * x - 0.487525;
+            double c = -8.06;
+
+            double lateral = m * buffer.center.x + c;
+
+            telemetry.addData("m", m);
+            telemetry.addData("c", c);
+
+            telemetry.addData("forwardsCM", forwards);
+            telemetry.addData("lateralCM", lateral);
         }
     }
 }
