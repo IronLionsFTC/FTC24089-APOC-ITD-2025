@@ -74,15 +74,11 @@ public class Teleop extends CommandOpMode {
 
         // Spawn a command sequence to rotate the claw to align with a sample
         buttons.useCV.whenPressed(
-                CMD.raiseLimelight(limelight).andThen(
-                        CMD.sleep(500)
-                ).andThen(
-                        CMD.scanForSample(limelight, sampleState, telemetry, follower, intakeSubsystem, false)
-                ).andThen(
-                        CMD.extendSlidesForSample(intakeSubsystem, sampleState).alongWith(
+                CMD.scanForSample(limelight, sampleState, telemetry, follower, intakeSubsystem, false).andThen(
+                        (CMD.extendSlidesForSample(intakeSubsystem, sampleState).alongWith(
                                 CMD.alignClaw(intakeSubsystem, sampleState)
-                        ).alongWith(
-                                CMD.hideLimelight(limelight)
+                        )).andThen(
+                                CMD.resetCV(sampleState)
                         )
                 )
         );
