@@ -34,22 +34,6 @@ public class SampleAutonomousV5 extends CommandOpMode {
 
     private IndicatorLight light;
 
-    private Command grabTransferDump(long delay) {
-        return CMD.waitAndGrabSample(intakeSubsystem).andThen(
-                CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem)
-        ).alongWith(
-                CMD.sleep(delay).andThen(CMD.slamDunkSample(outtakeSubsystem))
-        );
-    }
-
-    private Command extendAllAndMove(PathChain path, double r, double e, long delay, double speed) {
-        return (CMD.followPath(follower, path).setSpeed(speed).alongWith(
-                CMD.sleep(delay).andThen(CMD.raiseSlidesForSampleDump(outtakeSubsystem))
-        )).alongWith(
-                CMD.sleep(delay).andThen(CMD.extendIntake(intakeSubsystem, r, e))
-        );
-    }
-
     @Override
     public void initialize() {
         this.telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
@@ -72,6 +56,7 @@ public class SampleAutonomousV5 extends CommandOpMode {
                 new RunCommand(telemetry::update),
                 new SequentialCommandGroup(
                         CMD.sleepUntil(this::opModeIsActive),
+                        CMD.waitForStartWithPreloadWarning(light, intakeSubsystem, this::opModeIsActive),
 
                         CMD.followPath(follower, core.paths.SampleAutonomousV5.firstDumpAndPickup()).setSpeed(0.7).alongWith(
                                 CMD.sleep(150).andThen(CMD.raiseSlidesForSampleDump(outtakeSubsystem).andThen(

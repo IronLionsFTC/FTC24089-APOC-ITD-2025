@@ -7,6 +7,7 @@ import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.pathgen.PathChain;
+import com.qualcomm.robotcore.hardware.Light;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -277,6 +278,12 @@ public class CMD {
                 telemetry,
                 limelight,
                 buffer
+        );
+    }
+
+    public static Command waitForStartWithPreloadWarning(IndicatorLight light, Intake intakeSubsystem, BooleanSupplier condition) {
+        return new WaitUntilCommand(condition).raceWith(
+                new PreloadWarning(intakeSubsystem, light)
         );
     }
 }
