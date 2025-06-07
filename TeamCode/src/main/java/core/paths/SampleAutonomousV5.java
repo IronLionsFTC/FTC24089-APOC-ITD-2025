@@ -7,6 +7,8 @@ import com.pedropathing.pathgen.PathBuilder;
 import com.pedropathing.pathgen.PathChain;
 import com.pedropathing.pathgen.Point;
 
+import core.computerVision.Limelight;
+
 public class SampleAutonomousV5 {
     private static Point point(double x, double y) {
         return new Point(y, x, Point.CARTESIAN);
@@ -80,6 +82,16 @@ public class SampleAutonomousV5 {
 
     public static PathChain basketToSub() {
         return simpleCurve(stageOne, basketToSubControl, submersible);
+    }
+
+    public static PathChain cachedBasketToSub(Limelight.SampleState cached) {
+        if (cached.angle != 0 && cached.angle != 90) {
+            return simpleCurve(stageOne, basketToSubControl,
+                    point(cached.robotPosition.y, cached.robotPosition.x)
+            );
+        } else {
+            return basketToSub();
+        }
     }
 
     public static PathChain subToCV() {

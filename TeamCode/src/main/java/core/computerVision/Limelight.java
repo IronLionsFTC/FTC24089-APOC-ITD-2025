@@ -59,6 +59,16 @@ public class Limelight {
         this.hardware.pipelineSwitch(id);
     }
 
+    public static class SamplePair {
+        public SampleState optimal;
+        public SampleState cached;
+
+        public SamplePair(SampleState optimal, SampleState cached) {
+            this.optimal = optimal;
+            this.cached = cached;
+        }
+    }
+
     public static class SampleState {
         public double angle;
         public Vector center;
@@ -116,6 +126,40 @@ public class Limelight {
         return new SampleState(angle, center, Vector.cartesian(current.getX(),
                 current.getY()), current.getHeading(), intakeSubsystem.getSlidePosition(),
                 intakeSubsystem.getTilt());
+    }
+
+    public SamplePair query_two(Telemetry telemetry, Follower follower, Intake intakeSubsystem) {
+        LLResult result = hardware.getLatestResult();
+
+        telemetry.addData("SOMERESULT", result == null);
+        if (result == null) return null;
+
+        double[] result_array = result.getPythonOutput();
+        telemetry.addData("SOMEPYTHON", result_array == null);
+
+        if (result_array == null) return null;
+        if (result_array.length == 0) return null;
+        double angle = result_array[0];
+        double angle2 = result_array[3];
+
+        // This is POSSIBLE, but so unlikely it can be treated as an error
+        if (angle == 0) return null;
+
+        Vector center = Vector.cartesian(result_array[1], result_array[2]);
+        Vector center2 = Vector.cartesian(result_array[4], result_array[5]);
+        Pose current = follower.getPose();
+
+        SampleState optimal = new SampleState(angle, center, Vector.cartesian(current.getX(),
+                current.getY()), current.getHeading(), intakeSubsystem.getSlidePosition(),
+                intakeSubsystem.getTilt());
+
+        if (angle2 == 0) return new SamplePair(optimal, null);
+
+        SampleState cached = new SampleState(angle2, center2, Vector.cartesian(current.getX(),
+                current.getY()), current.getHeading(), intakeSubsystem.getSlidePosition(),
+                intakeSubsystem.getTilt());
+
+        return new SamplePair(optimal, cached);
     }
 
     public void raise() { this.arm.setPosition(PositionalBounds.ServoPositions.limelightUp); }

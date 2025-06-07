@@ -131,10 +131,11 @@ public class CMD {
         return new ConstantlyUpdateFollower(follower, drivebaseSubsystem);
     }
 
-    public static Command goToSubForCycles(Follower follower, Limelight.SampleState buffer) {
+    public static Command goToSubForCycles(Follower follower, Limelight.SampleState buffer, Limelight.SampleState cached) {
         return new SequentialCommandGroup(
                 CMD.resetCV(buffer),
-                CMD.followPath(follower, core.paths.SampleAutonomousV2.basketToSub()).setSpeed(1)
+                CMD.followPath(follower, core.paths.SampleAutonomousV5.cachedBasketToSub(cached)).setSpeed(1),
+                CMD.resetCV(cached)
         );
     }
 
@@ -144,11 +145,12 @@ public class CMD {
             Outtake outtakeSubsystem,
             Limelight limelight,
             Limelight.SampleState buffer,
+            Limelight.SampleState cached,
             Telemetry telemetry,
             IndicatorLight light
     ) {
         return new SequentialCommandGroup(
-                CMD.goToSubForCycles(follower, buffer).alongWith(
+                CMD.goToSubForCycles(follower, buffer, cached).alongWith(
                         CMD.raiseLimelight(limelight)
                 ),
                 CMD.grabSampleForSubCycles(
@@ -157,6 +159,7 @@ public class CMD {
                         outtakeSubsystem,
                         limelight,
                         buffer,
+                        cached,
                         telemetry,
                         light
                 )
@@ -169,13 +172,14 @@ public class CMD {
             Outtake outtakeSubsystem,
             Limelight limelight,
             Limelight.SampleState buffer,
+            Limelight.SampleState cached,
             Telemetry telemetry,
             IndicatorLight light
     ) {
         return new SequentialCommandGroup(
                 CMD.followPath(follower, core.paths.SampleAutonomousV2.subToCV()).setSpeed(1),
                 CMD.sleep(200),
-                CMD.scanForSample(limelight, buffer, telemetry, follower, intakeSubsystem, false),
+                CMD.scanForTwoSamples(limelight, telemetry, follower, buffer, cached, intakeSubsystem),
                 CMD.driveToSampleUseSlides(follower, intakeSubsystem, buffer, telemetry).alongWith(
                         CMD.alignClaw(intakeSubsystem, buffer)
                 ),
@@ -285,5 +289,9 @@ public class CMD {
         return new WaitUntilCommand(condition).raceWith(
                 new PreloadWarning(intakeSubsystem, light)
         );
+    }
+
+    public static ScanForTwoSamples scanForTwoSamples(Limelight limelight, Telemetry telemetry, Follower follower, Limelight.SampleState buffer, Limelight.SampleState cache, Intake intakeSubsystem) {
+        return new ScanForTwoSamples(limelight, buffer, cache, telemetry, follower, intakeSubsystem, false);
     }
 }

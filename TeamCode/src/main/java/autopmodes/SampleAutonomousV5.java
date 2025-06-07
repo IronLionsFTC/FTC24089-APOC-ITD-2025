@@ -31,6 +31,7 @@ public class SampleAutonomousV5 extends CommandOpMode {
 
     private Limelight limelight;
     private Limelight.SampleState buffer;
+    private Limelight.SampleState cache;
 
     private IndicatorLight light;
 
@@ -50,6 +51,7 @@ public class SampleAutonomousV5 extends CommandOpMode {
 
         this.limelight = new Limelight(hardwareMap, Limelight.Targets.YellowOnly);
         this.buffer = new Limelight.SampleState();
+        this.cache = new Limelight.SampleState();
 
         schedule(
                 new RunCommand(follower::update),
@@ -101,9 +103,9 @@ public class SampleAutonomousV5 extends CommandOpMode {
                         CMD.sleep(300),
                         CMD.slamDunkSample(outtakeSubsystem),
 
-                        CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, light),
-                        CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, light),
-                        CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, light)
+                        CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cache, telemetry, light),
+                        CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cache, telemetry, light),
+                        CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cache, telemetry, light)
                 )
         );
     }
