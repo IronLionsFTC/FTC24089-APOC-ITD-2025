@@ -32,6 +32,6 @@ public class IronLionsInterrupt extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return this.done;
+        return (this.done || this.command.isFinished());
     }
 }
