@@ -27,6 +27,7 @@ public class CVOnly extends CommandOpMode {
     private Follower follower;
     private Limelight limelight;
     private Limelight.SampleState buffer;
+    private Limelight.SampleState cached;
 
     @Override
     public void initialize() {
@@ -43,6 +44,7 @@ public class CVOnly extends CommandOpMode {
 
         this.limelight = new Limelight(hardwareMap, Limelight.Targets.YellowOnly);
         this.buffer = new Limelight.SampleState();
+        this.cached = new Limelight.SampleState();
 
         IndicatorLight light = new IndicatorLight(hardwareMap, "light");
 
@@ -51,9 +53,9 @@ public class CVOnly extends CommandOpMode {
                 new SequentialCommandGroup(
                         CMD.sleepUntil(this::opModeIsActive),
                         CMD.followPath(follower, core.paths.SampleAutonomousV2.firstDumpAndPickup()).setSpeed(1),
-                        CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, light),
-                        CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, light),
-                        CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, light)
+                        CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cached, telemetry, light),
+                        CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cached, telemetry, light),
+                        CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cached, telemetry, light)
 
                 )
         );
