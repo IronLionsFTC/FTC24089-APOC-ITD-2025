@@ -58,6 +58,7 @@ public class Teleop extends CommandOpMode {
         this.drivebaseSubsystem = new Drivebase(hardwareMap, this.telemetry);
 
         this.limelight = new Limelight(hardwareMap, Limelight.Targets.YellowOnly);
+        this.limelight.raise();
         this.sampleState = new Limelight.SampleState();
 
         // IMPORTANT - Register SUBSYSTEMS that implement periodic
@@ -74,12 +75,16 @@ public class Teleop extends CommandOpMode {
 
         // Spawn a command sequence to rotate the claw to align with a sample
         buttons.useCV.whenPressed(
-                CMD.scanForSample(limelight, sampleState, telemetry, follower, intakeSubsystem, false).andThen(
-                        (CMD.extendSlidesForSample(intakeSubsystem, sampleState).alongWith(
-                                CMD.alignClaw(intakeSubsystem, sampleState)
-                        )).andThen(
-                                CMD.resetCV(sampleState)
-                        )
+                CMD.disableDrivebase(drivebaseSubsystem).andThen(
+                    CMD.scanForSample(limelight, sampleState, telemetry, follower, intakeSubsystem, false).andThen(
+                            (CMD.driveToSampleUseSlides(follower, intakeSubsystem, sampleState, telemetry).alongWith(
+                                    CMD.alignClaw(intakeSubsystem, sampleState)
+                            )).andThen(
+                                    CMD.resetCV(sampleState)
+                            )
+                    )
+                ).andThen(
+                        CMD.enableDrivebase(drivebaseSubsystem)
                 )
         );
 
@@ -93,6 +98,8 @@ public class Teleop extends CommandOpMode {
                 CMD.sleepUntil(this::opModeIsActive),
                 new RunCommand(telemetry::update),
                 new ParallelCommandGroup(
+                        CMD.updateFollowerWhenDrivebaseDisabled(drivebaseSubsystem, follower),
+
                         // Switch between follower and manual control (follower only used to hold points against collision)
                         // This means if we get hit when stationary it will correct back when enabled
                         // could be used to do more CV things in future

@@ -116,15 +116,11 @@ public class CMD {
         });
     }
     public static InstantCommand disableDrivebase(Drivebase drivebaseSubsystem) {
-        return new InstantCommand(() -> {
-            drivebaseSubsystem.disable();
-        });
+        return new InstantCommand(drivebaseSubsystem::disable);
     }
 
     public static InstantCommand enableDrivebase(Drivebase drivebaseSubsystem) {
-        return new InstantCommand(() -> {
-            drivebaseSubsystem.enable();
-        });
+        return new InstantCommand(drivebaseSubsystem::enable);
     }
 
     public static ConstantlyUpdateFollower constantlyUpdateFollower(Follower follower, Drivebase drivebaseSubsystem) {
@@ -291,5 +287,9 @@ public class CMD {
 
     public static ScanForTwoSamples scanForTwoSamples(Limelight limelight, Telemetry telemetry, Follower follower, Limelight.SampleState buffer, Limelight.SampleState cache, Intake intakeSubsystem) {
         return new ScanForTwoSamples(limelight, buffer, cache, telemetry, follower, intakeSubsystem, false);
+    }
+
+    public static UpdateFollowerWhenDrivebaseDisabled updateFollowerWhenDrivebaseDisabled(Drivebase drivebase, Follower follower) {
+        return new UpdateFollowerWhenDrivebaseDisabled(drivebase, follower);
     }
 }

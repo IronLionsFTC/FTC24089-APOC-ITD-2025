@@ -9,16 +9,19 @@ public class CachedMotor {
     private double position;
     private final MotorEx motor;
 
+    private Motor.ZeroPowerBehavior zpb;
+
     public CachedMotor(HardwareMap hwmp, String name) {
         this.motor = new MotorEx(hwmp, name);
         this.motor.resetEncoder();
         this.power = 0;
         this.position = 0;
+        this.zpb = Motor.ZeroPowerBehavior.UNKNOWN;
     }
 
     public boolean setPower(double power) {
         double error = Math.abs(power - this.power);
-        if (error > 0.01 || power == 0) {
+        if (error > 0.001 || power == 0) {
             this.power = power;
             this.motor.set(this.power);
             return true;
@@ -51,6 +54,9 @@ public class CachedMotor {
     }
 
     public void setZeroPowerBehaviour(Motor.ZeroPowerBehavior zpb) {
+        if (zpb == this.zpb) {
+            return;
+        }
         this.motor.setZeroPowerBehavior(zpb);
     }
 

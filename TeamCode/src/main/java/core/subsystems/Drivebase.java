@@ -3,6 +3,7 @@ package core.subsystems;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.PIDFController;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -133,7 +134,17 @@ public class Drivebase extends SubsystemBase {
     @Override
     public void periodic() {
 
-        if (!active) return;
+        if (!active) {
+            this.frontLeft.setZeroPowerBehaviour(Motor.ZeroPowerBehavior.FLOAT);
+            this.frontRight.setZeroPowerBehaviour(Motor.ZeroPowerBehavior.FLOAT);
+            this.backRight.setZeroPowerBehaviour(Motor.ZeroPowerBehavior.FLOAT);
+            this.backLeft.setZeroPowerBehaviour(Motor.ZeroPowerBehavior.FLOAT);
+        } else {
+            this.frontLeft.setZeroPowerBehaviour(Motor.ZeroPowerBehavior.BRAKE);
+            this.frontRight.setZeroPowerBehaviour(Motor.ZeroPowerBehavior.BRAKE);
+            this.backRight.setZeroPowerBehaviour(Motor.ZeroPowerBehavior.BRAKE);
+            this.backLeft.setZeroPowerBehaviour(Motor.ZeroPowerBehavior.BRAKE);
+        }
 
         this.lastYawActionWasManual = this.yawInput != 0;
 
