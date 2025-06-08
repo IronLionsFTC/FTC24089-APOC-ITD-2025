@@ -75,17 +75,21 @@ public class Teleop extends CommandOpMode {
 
         // Spawn a command sequence to rotate the claw to align with a sample
         buttons.useCV.whenPressed(
-                CMD.disableDrivebase(drivebaseSubsystem).andThen(
+                (CMD.disableDrivebase(drivebaseSubsystem).andThen(
                     CMD.scanForSample(limelight, sampleState, telemetry, follower, intakeSubsystem, false).andThen(
                             (CMD.driveToSampleUseSlides(follower, intakeSubsystem, sampleState, telemetry).alongWith(
                                     CMD.alignClaw(intakeSubsystem, sampleState)
                             )).andThen(
                                     CMD.resetCV(sampleState)
+                            ).andThen(
+                                    CMD.waitAndGrabSample(intakeSubsystem)
+                            ).andThen(
+                                    CMD.grabSampleAbortIfEmpty(intakeSubsystem, outtakeSubsystem, limelight, sampleState, telemetry, follower)
                             )
                     )
                 ).andThen(
                         CMD.enableDrivebase(drivebaseSubsystem)
-                )
+                )).interruptOn(this.buttons::interruptCV)
         );
 
         // Emergency retract the intake
@@ -98,7 +102,7 @@ public class Teleop extends CommandOpMode {
                 CMD.sleepUntil(this::opModeIsActive),
                 new RunCommand(telemetry::update),
                 new ParallelCommandGroup(
-                        CMD.updateFollowerWhenDrivebaseDisabled(drivebaseSubsystem, follower),
+                        CMD.updateFollowerWhenDrivebaseDisabled(drivebaseSubsystem, follower, this.buttons::interruptCV),
 
                         // Switch between follower and manual control (follower only used to hold points against collision)
                         // This means if we get hit when stationary it will correct back when enabled

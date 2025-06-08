@@ -60,5 +60,9 @@ public class Controls {
             // Overrides
             this.emergencyIntakeRetract = this.gamepad1.getGamepadButton(GamepadKeys.Button.DPAD_DOWN);
         }
+
+        public boolean interruptCV() {
+            return Math.abs(this.driveX.getAsDouble()) >= 0.05 || Math.abs(this.driveY.getAsDouble()) >= 0.05;
+        }
     }
 }

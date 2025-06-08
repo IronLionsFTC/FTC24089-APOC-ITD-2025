@@ -289,7 +289,7 @@ public class CMD {
         return new ScanForTwoSamples(limelight, buffer, cache, telemetry, follower, intakeSubsystem, false);
     }
 
-    public static UpdateFollowerWhenDrivebaseDisabled updateFollowerWhenDrivebaseDisabled(Drivebase drivebase, Follower follower) {
-        return new UpdateFollowerWhenDrivebaseDisabled(drivebase, follower);
+    public static UpdateFollowerWhenDrivebaseDisabled updateFollowerWhenDrivebaseDisabled(Drivebase drivebase, Follower follower, BooleanSupplier joystick) {
+        return new UpdateFollowerWhenDrivebaseDisabled(drivebase, follower, joystick);
     }
 }
