@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import core.commands.CMD;
 import core.computerVision.Limelight;
+import core.hardware.IndicatorLight;
 import core.math.Vector;
 import core.subsystems.Intake;
 import core.subsystems.Outtake;
@@ -47,6 +48,9 @@ public class StationaryCVTest extends CommandOpMode {
         this.limelight = new Limelight(hardwareMap, Limelight.Targets.YellowOnly);
         this.buffer = new Limelight.SampleState();
 
+        IndicatorLight light = new IndicatorLight(hardwareMap, "light");
+        light.setColour(0.5);
+
         GamepadEx gamepad = new GamepadEx(gamepad1);
         GamepadButton button = gamepad.getGamepadButton(GamepadKeys.Button.X);
 
@@ -54,7 +58,8 @@ public class StationaryCVTest extends CommandOpMode {
                 new RunCommand(follower::update),
                 new RunCommand(telemetry::update),
                 new SequentialCommandGroup (
-                        CMD.sleepUntil(this::opModeIsActive),
+
+                        CMD.waitForStartWithPreloadWarning(light, intakeSubsystem, this::opModeIsActive),
 
                         CMD.sleep(1000),
 

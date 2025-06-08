@@ -286,9 +286,7 @@ public class CMD {
     }
 
     public static Command waitForStartWithPreloadWarning(IndicatorLight light, Intake intakeSubsystem, BooleanSupplier condition) {
-        return new WaitUntilCommand(condition).raceWith(
-                new PreloadWarning(intakeSubsystem, light)
-        );
+        return new PreloadWarning(intakeSubsystem, light, condition);
     }
 
     public static ScanForTwoSamples scanForTwoSamples(Limelight limelight, Telemetry telemetry, Follower follower, Limelight.SampleState buffer, Limelight.SampleState cache, Intake intakeSubsystem) {
