@@ -12,6 +12,7 @@ import com.pedropathing.util.Constants;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 // Packages from within TeamCode
+import core.commands.IronLionsInterrupt;
 import core.computerVision.Limelight;
 import core.controls.Controls.Buttons;
 import core.hardware.IndicatorLight;
@@ -75,7 +76,7 @@ public class Teleop extends CommandOpMode {
 
         // Spawn a command sequence to rotate the claw to align with a sample
         buttons.useCV.whenPressed(
-                (CMD.disableDrivebase(drivebaseSubsystem).andThen(
+                new IronLionsInterrupt(CMD.disableDrivebase(drivebaseSubsystem).andThen(
                     CMD.scanForSample(limelight, sampleState, telemetry, follower, intakeSubsystem, false).andThen(
                             (CMD.driveToSampleUseSlides(follower, intakeSubsystem, sampleState, telemetry).alongWith(
                                     CMD.alignClaw(intakeSubsystem, sampleState)
@@ -89,7 +90,7 @@ public class Teleop extends CommandOpMode {
                     )
                 ).andThen(
                         CMD.enableDrivebase(drivebaseSubsystem)
-                )).interruptOn(this.buttons::interruptCV)
+                ), this.buttons::interruptCV)
         );
 
         // Emergency retract the intake

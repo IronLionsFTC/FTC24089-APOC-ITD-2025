@@ -292,4 +292,8 @@ public class CMD {
     public static UpdateFollowerWhenDrivebaseDisabled updateFollowerWhenDrivebaseDisabled(Drivebase drivebase, Follower follower, BooleanSupplier joystick) {
         return new UpdateFollowerWhenDrivebaseDisabled(drivebase, follower, joystick);
     }
+
+    public static IronLionsInterrupt ironLionsInterrupt(Command command, BooleanSupplier condition) {
+        return new IronLionsInterrupt(command, condition);
+    }
 }
