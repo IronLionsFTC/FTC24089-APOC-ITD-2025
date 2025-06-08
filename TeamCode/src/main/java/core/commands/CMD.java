@@ -177,7 +177,7 @@ public class CMD {
             IndicatorLight light
     ) {
         return new SequentialCommandGroup(
-                CMD.followPath(follower, core.paths.SampleAutonomousV2.subToCV()).setSpeed(1),
+                CMD.followPath(follower, core.paths.SampleAutonomousV5.simpleSubToCV(follower)).setSpeed(1),
                 CMD.sleep(200),
                 CMD.scanForTwoSamples(limelight, telemetry, follower, buffer, cached, intakeSubsystem),
                 CMD.driveToSampleUseSlides(follower, intakeSubsystem, buffer, telemetry).alongWith(

@@ -1,5 +1,6 @@
 package core.paths;
 
+import com.pedropathing.follower.Follower;
 import com.pedropathing.pathgen.BezierCurve;
 import com.pedropathing.pathgen.BezierLine;
 import com.pedropathing.pathgen.Path;
@@ -100,5 +101,15 @@ public class SampleAutonomousV5 {
 
     public static PathChain subToBasket() {
         return simpleReverseCurve(submersible, basketToSubControl, subToBasketControl, cvDump);
+    }
+
+    public static PathChain simpleSubToCV(Follower follower) {
+        double x = follower.getPose().getY();
+        double y = follower.getPose().getX();
+        return simpleLine(
+                point(x, y),
+                point(-12, y),
+                -90
+        );
     }
 }
