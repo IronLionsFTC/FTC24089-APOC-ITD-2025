@@ -57,7 +57,6 @@ public class SampleAutonomousV5 extends CommandOpMode {
                 new RunCommand(follower::update),
                 new RunCommand(telemetry::update),
                 new SequentialCommandGroup(
-                        CMD.sleepUntil(this::opModeIsActive),
                         CMD.waitForStartWithPreloadWarning(light, intakeSubsystem, this::opModeIsActive),
 
                         CMD.followPath(follower, core.paths.SampleAutonomousV5.firstDumpAndPickup()).setSpeed(0.7).alongWith(
