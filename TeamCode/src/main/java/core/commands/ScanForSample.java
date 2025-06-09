@@ -41,6 +41,7 @@ public class ScanForSample extends CommandBase {
     public void initialize() {
         this.limelight.enable();
         this.intakeSubsystem.setTilt(this.tilt);
+        this.result.reset();
     }
 
     @Override
@@ -85,6 +86,5 @@ public class ScanForSample extends CommandBase {
     @Override
     public void end(boolean i) {
         this.limelight.disable();
-        this.intakeSubsystem.setTilt(0);
     }
 }

@@ -6,11 +6,11 @@ import com.pedropathing.util.Timer;
 import core.state.Subsystems;
 import core.subsystems.Intake;
 
-public class WaitAndGrabSample extends CommandBase {
+public class ShortWaitAndGrabSample extends CommandBase {
     private Intake intakeSubsystem;
     private Timer timer;
 
-    public WaitAndGrabSample(Intake intakeSubsystem) {
+    public ShortWaitAndGrabSample(Intake intakeSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
         this.timer = new Timer();
     }
@@ -28,7 +28,7 @@ public class WaitAndGrabSample extends CommandBase {
             this.intakeSubsystem.state = Subsystems.IntakeState.ExtendedClawDown;
         }
 
-        if (this.timer.getElapsedTimeSeconds() > 1.5) this.intakeSubsystem.state = Subsystems.IntakeState.ExtendedClawGrabbing;
+        if (this.timer.getElapsedTimeSeconds() > 0.5) this.intakeSubsystem.state = Subsystems.IntakeState.ExtendedClawGrabbing;
     }
 
     @Override

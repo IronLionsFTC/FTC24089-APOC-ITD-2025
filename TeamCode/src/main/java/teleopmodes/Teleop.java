@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.pedropathing.follower.Follower;
@@ -76,22 +77,35 @@ public class Teleop extends CommandOpMode {
 
         // Spawn a command sequence to rotate the claw to align with a sample
         buttons.useCV.whenPressed(
-                new IronLionsInterrupt(CMD.disableDrivebase(drivebaseSubsystem).andThen(
-                    CMD.scanForSample(limelight, sampleState, telemetry, follower, intakeSubsystem, false).andThen(
-                            (CMD.driveToSampleUseSlides(follower, intakeSubsystem, sampleState, telemetry).alongWith(
-                                    CMD.alignClaw(intakeSubsystem, sampleState)
-                            )).andThen(
-                                    CMD.resetCV(sampleState)
-                            ).andThen(
-                                    CMD.waitAndGrabSample(intakeSubsystem)
-                            ).andThen(
-                                    CMD.grabSampleAbortIfEmpty(intakeSubsystem, outtakeSubsystem, limelight, sampleState, telemetry, follower)
+                CMD.resetCV(sampleState).andThen(
+                        new InstantCommand(limelight::disable)
+                ).andThen(
+                        new InstantCommand(limelight::enable)
+                ).andThen(
+                new IronLionsInterrupt(
+                        CMD.disableDrivebase(drivebaseSubsystem).andThen(
+                            CMD.scanForSample(limelight, sampleState, telemetry, follower, intakeSubsystem, false).andThen(
+                                    (CMD.driveToSampleUseSlides(follower, intakeSubsystem, sampleState, telemetry).alongWith(
+                                            CMD.alignClaw(intakeSubsystem, sampleState)
+                                    )).andThen(
+                                            CMD.resetCV(sampleState)
+                                    ).andThen(
+                                            CMD.shortWaitAndGrabSample(intakeSubsystem)
+                                    ).andThen(
+                                            CMD.grabSampleAbortIfEmpty(intakeSubsystem, outtakeSubsystem, limelight, sampleState, telemetry, follower)
+                                    )
                             )
-                    )
+                    ),
+                this.buttons::interruptCV).andThen(
+                        CMD.resetCV(sampleState)
+                ).andThen(
+                        new InstantCommand(limelight::disable)
                 ).andThen(
                         CMD.enableDrivebase(drivebaseSubsystem)
-                ), this.buttons::interruptCV)
-        );
+                ).andThen(
+                        CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem)
+                )
+        ));
 
         // Emergency retract the intake
         buttons.emergencyIntakeRetract.whenPressed(

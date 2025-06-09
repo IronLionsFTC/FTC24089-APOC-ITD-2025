@@ -65,7 +65,7 @@ public class Intake extends SubsystemBase {
 
         private void update() {
 
-            if (this.getPosition() < this.target) {
+            if (this.target > 10) {
                 this.controller.setPID(
                         pidfCoefficients.IntakeExtension.p,
                         pidfCoefficients.IntakeExtension.i,
@@ -107,6 +107,8 @@ public class Intake extends SubsystemBase {
 
         // Claw and gimble do not need to be scheduled as they are servo abstractions and need no update
         this.claw = new Claw(hwmp, HardwareParameters.Motors.HardwareMapNames.intakeClawServo);
+        this.claw.setReversed(true);
+        this.claw.setScalar(0.5);
         this.claw.setState(Subsystems.ClawState.WideOpen);
 
         this.gimble = new DualAxisGimbal(hwmp,
@@ -119,7 +121,6 @@ public class Intake extends SubsystemBase {
         this.gimble.resetPosition();
         this.latchServo = new CachedServo(hwmp, HardwareParameters.Motors.HardwareMapNames.latchServo);
         this.light = light;
-        this.claw.setReversed(true);
     }
 
     public Intake(HardwareMap hwmp, Telemetry telemetry) {
@@ -135,6 +136,8 @@ public class Intake extends SubsystemBase {
 
         // Claw and gimble do not need to be scheduled as they are servo abstractions and need no update
         this.claw = new Claw(hwmp, HardwareParameters.Motors.HardwareMapNames.intakeClawServo);
+        this.claw.setReversed(true);
+        this.claw.setScalar(0.5);
         this.claw.setState(Subsystems.ClawState.WideOpen);
 
         this.gimble = new DualAxisGimbal(hwmp,
@@ -147,7 +150,6 @@ public class Intake extends SubsystemBase {
         this.gimble.resetPosition();
         this.latchServo = new CachedServo(hwmp, HardwareParameters.Motors.HardwareMapNames.latchServo);
         this.light = null;
-        this.claw.setReversed(true);
     }
 
     public void nextState() {

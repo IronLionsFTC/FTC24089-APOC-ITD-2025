@@ -106,14 +106,7 @@ public class CMD {
     public static AlignClaw alignClaw(Intake intakeSubsystem, Limelight.SampleState buffer) { return new AlignClaw(intakeSubsystem, buffer); }
     public static SearchForever searchForever(Follower follower) { return new SearchForever(follower); }
     public static InstantCommand resetCV(Limelight.SampleState sampleState) {
-        return new InstantCommand(() -> {
-            sampleState.angle = 0;
-            sampleState.center = Vector.cartesian(0, 0);
-            sampleState.intakeTilt = 0;
-            sampleState.slidePosition = 0;
-            sampleState.robotRotation = 0;
-            sampleState.robotPosition = Vector.cartesian(0, 0);
-        });
+        return new InstantCommand(sampleState::reset);
     }
     public static InstantCommand disableDrivebase(Drivebase drivebaseSubsystem) {
         return new InstantCommand(drivebaseSubsystem::disable);
@@ -295,5 +288,9 @@ public class CMD {
 
     public static IronLionsInterrupt ironLionsInterrupt(Command command, BooleanSupplier condition) {
         return new IronLionsInterrupt(command, condition);
+    }
+
+    public static ShortWaitAndGrabSample shortWaitAndGrabSample(Intake intakeSubsystem) {
+        return new ShortWaitAndGrabSample(intakeSubsystem);
     }
 }

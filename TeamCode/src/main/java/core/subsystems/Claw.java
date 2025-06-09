@@ -101,15 +101,12 @@ public class Claw extends SubsystemBase {
     public void setScalar(double scalar) {
         this.scalar = scalar;
     }
-
     public double time() {
         return this.servo.elapsedTime();
     }
-
     public Subsystems.ClawState getState() {
         return this.state;
     }
-
     public void resetTime() {
         this.servo.resetTimer();
     }

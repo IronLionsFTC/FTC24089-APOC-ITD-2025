@@ -45,7 +45,7 @@ public class RetryAndRepeat extends CommandBase {
                     CMD.scanForSample(limelight, buffer, telemetry, follower, intakeSubsystem, false).andThen(
                             CMD.driveToSampleUseSlides(follower, intakeSubsystem, buffer, telemetry).alongWith(
                                     CMD.alignClaw(intakeSubsystem, buffer).andThen(
-                                            CMD.waitAndGrabSample(intakeSubsystem)
+                                            CMD.shortWaitAndGrabSample(intakeSubsystem)
                                     )
                             )
                     )
