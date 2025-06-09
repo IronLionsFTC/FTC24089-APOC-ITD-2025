@@ -119,6 +119,7 @@ public class Intake extends SubsystemBase {
         this.gimble.resetPosition();
         this.latchServo = new CachedServo(hwmp, HardwareParameters.Motors.HardwareMapNames.latchServo);
         this.light = light;
+        this.claw.setReversed(true);
     }
 
     public Intake(HardwareMap hwmp, Telemetry telemetry) {
@@ -146,6 +147,7 @@ public class Intake extends SubsystemBase {
         this.gimble.resetPosition();
         this.latchServo = new CachedServo(hwmp, HardwareParameters.Motors.HardwareMapNames.latchServo);
         this.light = null;
+        this.claw.setReversed(true);
     }
 
     public void nextState() {
