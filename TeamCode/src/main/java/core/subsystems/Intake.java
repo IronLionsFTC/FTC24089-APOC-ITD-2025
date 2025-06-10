@@ -113,8 +113,6 @@ public class Intake extends SubsystemBase {
 
         // Claw and gimble do not need to be scheduled as they are servo abstractions and need no update
         this.claw = new Claw(hwmp, HardwareParameters.Motors.HardwareMapNames.intakeClawServo);
-        this.claw.setReversed(true);
-        this.claw.setScalar(0.5);
         this.claw.setState(Subsystems.ClawState.WideOpen);
 
         this.gimble = new DualAxisGimbal(hwmp,
@@ -125,7 +123,6 @@ public class Intake extends SubsystemBase {
         // Schedule SLIDES, as they must constantly update as they contain a PID controller
         // prevents developer error later by ensuring the subsystem is registered no matter what
         this.gimble.resetPosition();
-        this.latchServo = new CachedServo(hwmp, HardwareParameters.Motors.HardwareMapNames.latchServo);
         this.light = light;
     }
 
@@ -142,8 +139,6 @@ public class Intake extends SubsystemBase {
 
         // Claw and gimble do not need to be scheduled as they are servo abstractions and need no update
         this.claw = new Claw(hwmp, HardwareParameters.Motors.HardwareMapNames.intakeClawServo);
-        this.claw.setReversed(true);
-        this.claw.setScalar(0.5);
         this.claw.setState(Subsystems.ClawState.WideOpen);
 
         this.gimble = new DualAxisGimbal(hwmp,
@@ -154,7 +149,6 @@ public class Intake extends SubsystemBase {
         // Schedule SLIDES, as they must constantly update as they contain a PID controller
         // prevents developer error later by ensuring the subsystem is registered no matter what
         this.gimble.resetPosition();
-        this.latchServo = new CachedServo(hwmp, HardwareParameters.Motors.HardwareMapNames.latchServo);
         this.light = null;
     }
 

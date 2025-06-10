@@ -47,7 +47,7 @@ public class SampleAutonomousV5 extends CommandOpMode {
 
         Constants.setConstants(FConstants.class, LConstants.class);
         this.follower = new Follower(hardwareMap);
-        this.follower.setStartingPose(Vector.cartesian(-3, 0).pose(0));
+        this.follower.setStartingPose(Vector.cartesian(-2, 0).pose(0));
 
         this.limelight = new Limelight(hardwareMap, Limelight.Targets.YellowOnly);
         this.buffer = new Limelight.SampleState();
@@ -60,14 +60,14 @@ public class SampleAutonomousV5 extends CommandOpMode {
                         CMD.waitForStartWithPreloadWarning(light, intakeSubsystem, this::opModeIsActive),
 
                         CMD.followPath(follower, core.paths.SampleAutonomousV5.firstDumpAndPickup()).setSpeed(0.7).alongWith(
-                                CMD.sleep(180).andThen(CMD.raiseSlidesForSampleDump(outtakeSubsystem).andThen(
+                                CMD.sleep(250).andThen(CMD.raiseSlidesForSampleDump(outtakeSubsystem).andThen(
                                         CMD.sleep(300).andThen(CMD.slamDunkSample(outtakeSubsystem))
                                ))
                         ).alongWith(
                                 CMD.sleep(900).andThen(CMD.extendIntake(intakeSubsystem, 0.35, 700).andThen(
-                                        CMD.waitAndGrabSample(intakeSubsystem).andThen(
+                                        CMD.sleep(200).andThen(CMD.waitAndGrabSample(intakeSubsystem).andThen(
                                                 CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem)
-                                        )
+                                        ))
                                 ))
                         ),
 

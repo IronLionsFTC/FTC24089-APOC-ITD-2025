@@ -167,7 +167,7 @@ public class CMD {
     ) {
         return new SequentialCommandGroup(
                 CMD.followPath(follower, core.paths.SampleAutonomousV5.simpleSubToCV(follower)).setSpeed(1),
-                CMD.sleep(200),
+                CMD.sleep(500),
                 CMD.scanForTwoSamples(limelight, telemetry, follower, buffer, cached, intakeSubsystem),
                 CMD.driveToSampleUseSlides(follower, intakeSubsystem, buffer, telemetry).alongWith(
                         CMD.alignClaw(intakeSubsystem, buffer)

@@ -48,7 +48,7 @@ public class SampleAutonomousV5 {
 
     public static Point start = point(0, 0);
 
-    public static Point stageOne = point(17.5, 6);
+    public static Point stageOne = point(17.5, 7);
     public static Point lastDump = point(18.5, 5.5);
 
     public static Point cvDump = point(17, 8.5);
@@ -62,7 +62,7 @@ public class SampleAutonomousV5 {
     public static Point cvStart = point(-12, 53);
 
     public static PathChain firstDumpAndPickup() {
-        return simpleLine(start, stageOne, -20);
+        return simpleLine(start, stageOne, -19);
     }
 
     public static PathChain secondDumpAndPickup() {
