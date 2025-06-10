@@ -13,6 +13,7 @@ public class Claw extends SubsystemBase {
     private Subsystems.ClawState state;
     private double scalar;
     private boolean reverse;
+    private double offset;
 
     // Expose a constructor for creating a claw subsystem starting open
     public Claw(HardwareMap hwmp, String name, boolean inverse) {
@@ -78,9 +79,9 @@ public class Claw extends SubsystemBase {
         }
 
         if (this.reverse) {
-            this.servo.setPosition(1 - position);
+            this.servo.setPosition(1 - position - offset);
         } else {
-            this.servo.setPosition(position);
+            this.servo.setPosition(position + offset);
         }
     }
 
@@ -100,6 +101,9 @@ public class Claw extends SubsystemBase {
 
     public void setScalar(double scalar) {
         this.scalar = scalar;
+    }
+    public void setOffset(double offset) {
+        this.offset = offset;
     }
     public double time() {
         return this.servo.elapsedTime();

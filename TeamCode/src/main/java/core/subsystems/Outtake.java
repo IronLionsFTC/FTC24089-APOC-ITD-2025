@@ -46,6 +46,7 @@ public class Outtake extends SubsystemBase {
         this.useHighBasket = true;
         this.arm = new Arm(hwmp);
         this.claw = new Claw(hwmp, HardwareParameters.Motors.HardwareMapNames.outtakeClawServo);
+        this.claw.setOffset(0.1);
         this.pitchServo = new CachedServo(hwmp, HardwareParameters.Motors.HardwareMapNames.outtakePitchServo);
         this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleTransfer);
         this.transferComplete = true;
