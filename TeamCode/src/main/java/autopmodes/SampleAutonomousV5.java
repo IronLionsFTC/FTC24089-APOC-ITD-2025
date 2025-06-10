@@ -47,7 +47,7 @@ public class SampleAutonomousV5 extends CommandOpMode {
 
         Constants.setConstants(FConstants.class, LConstants.class);
         this.follower = new Follower(hardwareMap);
-        this.follower.setStartingPose(Vector.cartesian(-4, 0).pose(0));
+        this.follower.setStartingPose(Vector.cartesian(-3, 0).pose(0));
 
         this.limelight = new Limelight(hardwareMap, Limelight.Targets.YellowOnly);
         this.buffer = new Limelight.SampleState();
@@ -60,7 +60,7 @@ public class SampleAutonomousV5 extends CommandOpMode {
                         CMD.waitForStartWithPreloadWarning(light, intakeSubsystem, this::opModeIsActive),
 
                         CMD.followPath(follower, core.paths.SampleAutonomousV5.firstDumpAndPickup()).setSpeed(0.7).alongWith(
-                                CMD.sleep(150).andThen(CMD.raiseSlidesForSampleDump(outtakeSubsystem).andThen(
+                                CMD.sleep(180).andThen(CMD.raiseSlidesForSampleDump(outtakeSubsystem).andThen(
                                         CMD.sleep(300).andThen(CMD.slamDunkSample(outtakeSubsystem))
                                ))
                         ).alongWith(
@@ -76,7 +76,7 @@ public class SampleAutonomousV5 extends CommandOpMode {
                                         CMD.sleep(300).andThen(CMD.slamDunkSample(outtakeSubsystem))
                                 )
                         ).alongWith(
-                                CMD.sleep(400).andThen(CMD.extendIntake(intakeSubsystem, 0.5, 546).andThen(
+                                CMD.sleep(400).andThen(CMD.extendIntake(intakeSubsystem, 0.5, 580).andThen(
                                         CMD.waitAndGrabSample(intakeSubsystem).andThen(
                                                 CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem)
                                         )
@@ -90,7 +90,7 @@ public class SampleAutonomousV5 extends CommandOpMode {
                         CMD.slamDunkSample(outtakeSubsystem),
 
                         CMD.followPath(follower, core.paths.SampleAutonomousV5.thirdDumpAndPickup()).alongWith(
-                                CMD.sleep(300).andThen(CMD.extendIntake(intakeSubsystem, 0.55, 630))
+                                CMD.sleep(300).andThen(CMD.extendIntake(intakeSubsystem, 0.55, 655))
                         ),
                         CMD.waitAndGrabSample(intakeSubsystem),
 

@@ -38,7 +38,7 @@ public class Kinematics {
                 Math.pow(LimelightInformation.e, LimelightInformation.b * buffer.center.y)
         ) + LimelightInformation.c) / 2.54;
 
-        double newSlidePosition = (forwards * 2.54) * 11.6285 + 80.67181;
+        double newSlidePosition = (forwards * 2.54) * 11.6285 + 80.67181 * 1.075;
         double ty = 0;
 
         if (newSlidePosition > 700) {

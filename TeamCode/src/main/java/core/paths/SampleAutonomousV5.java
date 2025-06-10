@@ -74,7 +74,7 @@ public class SampleAutonomousV5 {
     }
 
     public static PathChain thirdDumpAndPickup() {
-        return simpleLine(stageTwo, stageThree, 17.37);
+        return simpleLine(stageTwo, stageThree, 15.37);
     }
 
     public static PathChain lastDump() {
@@ -86,9 +86,9 @@ public class SampleAutonomousV5 {
     }
 
     public static PathChain cachedBasketToSub(Limelight.SampleState cached) {
-        if (cached.angle != 0 && cached.angle != 90) {
+        if (cached.angle != 0 && cached.angle != 90 && cached.robotPosition.x >= 50) {
             return simpleCurve(stageOne, basketToSubControl,
-                    point(cached.robotPosition.y, cached.robotPosition.x)
+                    point(-10, cached.robotPosition.x)
             );
         } else {
             return basketToSub();
