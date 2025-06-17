@@ -170,7 +170,7 @@ public class CMD {
                 ),
                 CMD.sleep(500),
                 CMD.grabSample(intakeSubsystem),
-                CMD.sleep(200),
+                CMD.retractIntakeSlightly(intakeSubsystem),
                 CMD.grabSampleAbortIfEmpty(intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, follower),
                 CMD.goToBasketForSubCycles(follower, intakeSubsystem, outtakeSubsystem)
         );
@@ -298,5 +298,9 @@ public class CMD {
 
     public static SubToCvCached subToCvCached(Follower follower, Limelight.SampleState cached) {
         return new SubToCvCached(follower, cached);
+    }
+
+    public static RetractIntakeSlightly retractIntakeSlightly(Intake intakeSubsystem) {
+        return new RetractIntakeSlightly(intakeSubsystem);
     }
 }
