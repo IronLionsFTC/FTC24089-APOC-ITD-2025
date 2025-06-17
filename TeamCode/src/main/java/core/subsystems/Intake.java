@@ -260,12 +260,9 @@ public class Intake extends SubsystemBase {
                 } else {
                     claw.setState(Subsystems.ClawState.WeakGripClosed);
                 }
-                if (this.gimble.foldedUp()) {
-                    this.slides.setPosition(PositionalBounds.SlidePositions.IntakePositions.retracted);
-                }
-                else {
-                    this.slides.setPosition(extension);
-                }
+                this.slides.setPosition(PositionalBounds.SlidePositions.IntakePositions.retracted);
+                // NOTE -> This ^^ was set to only occur once gimble was folded up.
+
                 this.gimble.resetPosition();
                 break;
         }
