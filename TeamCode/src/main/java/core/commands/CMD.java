@@ -122,9 +122,7 @@ public class CMD {
 
     public static Command goToSubForCycles(Follower follower, Limelight.SampleState buffer, Limelight.SampleState cached) {
         return new SequentialCommandGroup(
-                CMD.resetCV(buffer),
-                CMD.followPath(follower, core.paths.SampleAutonomousV5.cachedBasketToSub(cached)).setSpeed(1),
-                CMD.resetCV(cached)
+                CMD.basketToSubCached(follower, cached)
         );
     }
 
@@ -139,9 +137,7 @@ public class CMD {
             IndicatorLight light
     ) {
         return new SequentialCommandGroup(
-                CMD.goToSubForCycles(follower, buffer, cached).alongWith(
-                        CMD.raiseLimelight(limelight)
-                ),
+                CMD.goToSubForCycles(follower, buffer, cached),
                 CMD.grabSampleForSubCycles(
                         follower,
                         intakeSubsystem,
@@ -166,14 +162,15 @@ public class CMD {
             IndicatorLight light
     ) {
         return new SequentialCommandGroup(
-                CMD.followPath(follower, core.paths.SampleAutonomousV5.simpleSubToCV(follower)).setSpeed(1),
-                CMD.sleep(500),
+                CMD.subToCvCached(follower, cached),
+                CMD.sleep(200).alongWith(CMD.resetCV(cached)).alongWith(CMD.resetCV(buffer)),
                 CMD.scanForTwoSamples(limelight, telemetry, follower, buffer, cached, intakeSubsystem),
                 CMD.driveToSampleUseSlides(follower, intakeSubsystem, buffer, telemetry).alongWith(
                         CMD.alignClaw(intakeSubsystem, buffer)
                 ),
                 CMD.sleep(500),
                 CMD.grabSample(intakeSubsystem),
+                CMD.sleep(200),
                 CMD.grabSampleAbortIfEmpty(intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, follower),
                 CMD.goToBasketForSubCycles(follower, intakeSubsystem, outtakeSubsystem)
         );
@@ -184,8 +181,9 @@ public class CMD {
                 CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem).andThen(
                         CMD.raiseSlidesForSampleDump(outtakeSubsystem)
                 ).alongWith(
-                        CMD.followPath(follower, core.paths.SampleAutonomousV2.subToBasket()).setSpeed(1)
+                        CMD.followPath(follower, core.paths.SampleAutonomousV5.subToBasket()).setSpeed(1)
                 ),
+                CMD.sleep(300),
                 CMD.slamDunkSample(outtakeSubsystem)
         );
     }
@@ -292,5 +290,13 @@ public class CMD {
 
     public static ShortWaitAndGrabSample shortWaitAndGrabSample(Intake intakeSubsystem) {
         return new ShortWaitAndGrabSample(intakeSubsystem);
+    }
+
+    public static BasketToSubCached basketToSubCached(Follower follower, Limelight.SampleState cached) {
+        return new BasketToSubCached(follower, cached);
+    }
+
+    public static SubToCvCached subToCvCached(Follower follower, Limelight.SampleState cached) {
+        return new SubToCvCached(follower, cached);
     }
 }

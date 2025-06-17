@@ -12,13 +12,13 @@ public final class PositionalBounds {
 
             // Claw positions
             public static final double strongGripPosition = 0;
-            public static final double weakGripPosition = 0.063;
+            public static final double weakGripPosition = 0;
             public static final double openPosition = 0.5;
-            public static final double wideOpenPosition = 0.65;
+            public static final double wideOpenPosition = 0.25;
 
             // Gimble positions
-            public static final double pitchRest = 0;
-            public static final double pitchExtended = 0.5;
+            public static final double pitchRest = 0.0;
+            public static final double pitchExtended = 0.47;
             public static final double yawRest = 0.465;
             // How far in each direction can the servo turn from the
             // yaw rest
@@ -37,10 +37,10 @@ public final class PositionalBounds {
 
             public static final double pitchSampleOuttake = 0.05;
             public static final double pitchSpecimenIntake = 0.05;
-            public static final double pitchSampleTransfer = 0.95;
+            public static final double pitchSampleTransfer = 0.94;
             public static final double safeMovement = 0.5;
 
-            public static final double specimenEntry = 0.6;
+            public static final double specimenEntry = 0.55;
         }
     }
 
@@ -55,7 +55,7 @@ public final class PositionalBounds {
         public static final class OuttakePositions {
             public static final double highBasket = 1;
             public static final double lowBasket = 0.2;
-            public static final double specimenOuttake = 0.35;
+            public static final double specimenOuttake = 0.39;
         }
 
         public static final class IntakePositions {
@@ -65,7 +65,7 @@ public final class PositionalBounds {
     }
 
     public static final class Sensors {
-        public static final double transferThreshold = 25;
+        public static final double transferThreshold = 30;
         public static final double intakeThreshold = 15;
         public static final double intakeHovering = 28;
     }

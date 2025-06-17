@@ -1,9 +1,8 @@
 package core.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
+import com.pedropathing.util.Timer;
 
-import core.parameters.HardwareParameters;
-import core.parameters.PositionalBounds;
 import core.state.Subsystems;
 import core.subsystems.Intake;
 import core.subsystems.Outtake;
@@ -12,19 +11,25 @@ public class RetractIntakeAndTransfer extends CommandBase {
 
     private Intake intakeSubsystem;
     private Outtake outtakeSubsystem;
-    private boolean done;
+    private Timer deadMan;
+    private Timer total;
 
     public RetractIntakeAndTransfer(Intake intakeSubsystem, Outtake outtakeSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
         this.outtakeSubsystem = outtakeSubsystem;
-        this.done = false;
+        this.deadMan = new Timer();
+        this.total = new Timer();
     }
 
     @Override
     public void initialize() {
         // Ensure the intake state is grabbing, and if so bring it in for transfer
         if (this.intakeSubsystem.state == Subsystems.IntakeState.ExtendedClawGrabbing) this.intakeSubsystem.nextState();
+        // If outtake is not ready for transfer, abort
+        this.outtakeSubsystem.state = Subsystems.OuttakeState.DownClawOpen;
         this.outtakeSubsystem.transferComplete = false;
+        this.deadMan.resetTimer();
+        this.total.resetTimer();
     }
 
     @Override
@@ -37,19 +42,14 @@ public class RetractIntakeAndTransfer extends CommandBase {
             // If the outtake claw has closed, release the intake claw
             if (this.outtakeSubsystem.clawClosed()) {
                 this.intakeSubsystem.state = Subsystems.IntakeState.RetractedClawOpen;
-                if (this.intakeSubsystem.clawOpen()) {
-                    this.outtakeSubsystem.transferComplete = true;
-                    this.done = true;
-                }
+                if (this.intakeSubsystem.clawOpen()) outtakeSubsystem.transferComplete = true;
             }
-        } else {
-            this.outtakeSubsystem.state = Subsystems.OuttakeState.DownClawOpen;
-            done = false;
         }
+        if (!this.intakeSubsystem.isSlideLatched()) this.deadMan.resetTimer();
     }
 
     @Override
     public boolean isFinished() {
-        return done;
+        return this.outtakeSubsystem.transferComplete && this.intakeSubsystem.clawOpen() || this.total.getElapsedTimeSeconds() > 3;
     }
 }

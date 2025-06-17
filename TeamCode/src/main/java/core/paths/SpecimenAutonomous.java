@@ -44,8 +44,9 @@ public class SpecimenAutonomous {
     }
 
     public static Point start = point(0, 0);
-    public static Point firstDump = point(31, 0);
-    public static Point spikeOne = point(28.7, -12);
+    public static Point firstDump = point(30.4, 7);
+
+    public static Point spikeOne = point(25.7, -13);
     public static Point spikeTwo = point(26.2, -23.7);
     public static Point spikeThree = point(32, -33.3);
 
@@ -53,14 +54,22 @@ public class SpecimenAutonomous {
     public static Point hpTwo = point(16.4, -18.2);
     public static Point hpThree = point(16.6, -26.2);
 
-    public static Point pickup = point(16.6, -16);
+    public static Point pickupA = point(16.6, -16);
+    public static Point pickupB = point(17.6, -16);
+    public static Point pickupC = point(18.6, -16);
+    public static Point pickupD = point(19.6, -16);
 
-    public static Point intermediary = point(20, 0);
+    public static Point park = point(6, -25);
+    public static Point intermediary = point(20, 5);
 
-    public static Point dumpA = point(31, 7.36);
-    public static Point dumpB = point(32, 9.36);
-    public static Point dumpC = point(32, 11.36);
-    public static Point dumpD = point(33, 13.36);
+    public static Point dumpA = point(31, 8.36);
+    public static Point dumpB = point(32, 8.36);
+    public static Point dumpC = point(33, 8.36);
+    public static Point dumpD = point(34, 8.36);
+
+    public static PathChain park() {
+        return simpleLine(dumpC, park, 0);
+    }
 
     public static PathChain firstDump() {
         return simpleLine(start, firstDump, 0);
@@ -84,7 +93,7 @@ public class SpecimenAutonomous {
                 )
         );
 
-        goToSample.setConstantHeadingInterpolation(-1.2);
+        goToSample.setConstantHeadingInterpolation(-1.15);
 
         builder.addPath(
             turnAway
@@ -98,7 +107,7 @@ public class SpecimenAutonomous {
     }
 
     public static PathChain firstHp() {
-        return simpleLine(spikeOne, hpOne, Math.toDegrees(-2.3));
+        return simpleLine(spikeOne, hpOne, -131.78);
     }
 
     public static PathChain secondSpike() {
@@ -118,11 +127,11 @@ public class SpecimenAutonomous {
     }
 
     public static PathChain startCycling() {
-        return simpleLine(hpThree, pickup, Math.toDegrees(-2.4));
+        return simpleLine(hpThree, pickupA, Math.toDegrees(-2.05));
     }
 
     public static PathChain goDumpA() {
-        return simpleLine(pickup, dumpA, Math.toDegrees(0));
+        return simpleLine(pickupA, dumpA, Math.toDegrees(0));
     }
 
     public static PathChain returnA() {
@@ -140,11 +149,11 @@ public class SpecimenAutonomous {
         Path goToSample = new Path(
                 new BezierLine(
                         intermediary,
-                        pickup
+                        pickupB
                 )
         );
 
-        goToSample.setConstantHeadingInterpolation(-2.4);
+        goToSample.setConstantHeadingInterpolation(-2.05);
 
         builder.addPath(
                 turnAway
@@ -158,7 +167,7 @@ public class SpecimenAutonomous {
     }
 
     public static PathChain goDumpB() {
-        return simpleLine(pickup, dumpB, Math.toDegrees(0));
+        return simpleLine(pickupB, dumpB, Math.toDegrees(0));
     }
 
     public static PathChain returnB() {
@@ -176,11 +185,11 @@ public class SpecimenAutonomous {
         Path goToSample = new Path(
                 new BezierLine(
                         intermediary,
-                        pickup
+                        pickupC
                 )
         );
 
-        goToSample.setConstantHeadingInterpolation(-2.4);
+        goToSample.setConstantHeadingInterpolation(-2.05);
 
         builder.addPath(
                 turnAway
@@ -195,7 +204,7 @@ public class SpecimenAutonomous {
 
 
     public static PathChain goDumpC() {
-        return simpleLine(pickup, dumpC, Math.toDegrees(0));
+        return simpleLine(pickupC, dumpC, Math.toDegrees(0));
     }
 
     public static PathChain returnC() {
@@ -213,11 +222,11 @@ public class SpecimenAutonomous {
         Path goToSample = new Path(
                 new BezierLine(
                         intermediary,
-                        pickup
+                        pickupD
                 )
         );
 
-        goToSample.setConstantHeadingInterpolation(-2.4);
+        goToSample.setConstantHeadingInterpolation(-2.05);
 
         builder.addPath(
                 turnAway
@@ -232,7 +241,7 @@ public class SpecimenAutonomous {
 
 
     public static PathChain goDumpD() {
-        return simpleLine(pickup, dumpD, Math.toDegrees(0));
+        return simpleLine(pickupD, dumpD, Math.toDegrees(0));
     }
 
     public static PathChain returnD() {
@@ -250,11 +259,11 @@ public class SpecimenAutonomous {
         Path goToSample = new Path(
                 new BezierLine(
                         intermediary,
-                        pickup
+                        pickupD
                 )
         );
 
-        goToSample.setConstantHeadingInterpolation(-2.4);
+        goToSample.setConstantHeadingInterpolation(-2.05);
 
         builder.addPath(
                 turnAway

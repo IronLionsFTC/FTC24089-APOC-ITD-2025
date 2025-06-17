@@ -26,8 +26,6 @@ public class ExtendIntake extends CommandBase {
         } else {
             this.clawRotation = clawRotation;
         }
-
-        addRequirements(intakeSubsystem);
     }
 
     @Override

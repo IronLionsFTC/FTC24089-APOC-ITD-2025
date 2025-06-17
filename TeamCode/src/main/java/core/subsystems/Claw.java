@@ -22,6 +22,7 @@ public class Claw extends SubsystemBase {
         this.setState(Subsystems.ClawState.WideOpen);
         if (inverse) this.servo.inverse();
         this.reverse = false;
+        this.offset = 0;
     }
 
     // Expose a constructor allowing the claw to be initialised in a certain state (e.g. for preloading)
@@ -31,6 +32,7 @@ public class Claw extends SubsystemBase {
         this.setState(startState);
         if (inverse) this.servo.inverse();
         this.reverse = false;
+        this.offset = 0;
     }
 
     public void setReversed(boolean reversed) {
@@ -43,6 +45,7 @@ public class Claw extends SubsystemBase {
         this.servo = new CachedServo(hwmp, name);
         this.setState(Subsystems.ClawState.WideOpen);
         this.reverse = false;
+        this.offset = 0;
     }
 
     // Expose a constructor allowing the claw to be initialised in a certain state (e.g. for preloading)
@@ -51,6 +54,7 @@ public class Claw extends SubsystemBase {
         this.servo = new CachedServo(hwmp, name);
         this.setState(startState);
         this.reverse = false;
+        this.offset = 0;
     }
 
     public void setState(Subsystems.ClawState state) {
@@ -83,6 +87,10 @@ public class Claw extends SubsystemBase {
         } else {
             this.servo.setPosition(position + offset);
         }
+    }
+
+    public double getPosition() {
+        return this.servo.getPosition();
     }
 
     public boolean hasClawPhysicallyOpened() {

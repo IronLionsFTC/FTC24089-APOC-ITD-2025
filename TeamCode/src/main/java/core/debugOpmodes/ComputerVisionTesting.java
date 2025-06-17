@@ -35,7 +35,7 @@ public class ComputerVisionTesting extends CommandOpMode {
 
         this.telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         this.intakeSubsystem = new Intake(hardwareMap, this.telemetry);
-        this.outtakeSubsystem = new Outtake(hardwareMap, this.telemetry);
+        this.outtakeSubsystem = new Outtake(hardwareMap, this.telemetry, this.intakeSubsystem::forceDown);
 
         CommandScheduler.getInstance().registerSubsystem(intakeSubsystem);
         CommandScheduler.getInstance().registerSubsystem(outtakeSubsystem);

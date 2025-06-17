@@ -39,7 +39,7 @@ public class SampleAutonomousV5 extends CommandOpMode {
     public void initialize() {
         this.telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         this.intakeSubsystem = new Intake(hardwareMap, this.telemetry);
-        this.outtakeSubsystem = new Outtake(hardwareMap, this.telemetry);
+        this.outtakeSubsystem = new Outtake(hardwareMap, this.telemetry, this.intakeSubsystem::forceDown);
         this.light = new IndicatorLight(hardwareMap, "light");
 
         CommandScheduler.getInstance().registerSubsystem(intakeSubsystem);
@@ -53,6 +53,8 @@ public class SampleAutonomousV5 extends CommandOpMode {
         this.buffer = new Limelight.SampleState();
         this.cache = new Limelight.SampleState();
 
+        limelight.raise();
+
         schedule(
                 new RunCommand(follower::update),
                 new RunCommand(telemetry::update),
@@ -64,7 +66,7 @@ public class SampleAutonomousV5 extends CommandOpMode {
                                         CMD.sleep(300).andThen(CMD.slamDunkSample(outtakeSubsystem))
                                ))
                         ).alongWith(
-                                CMD.sleep(900).andThen(CMD.extendIntake(intakeSubsystem, 0.35, 700).andThen(
+                                CMD.sleep(700).andThen(CMD.extendIntake(intakeSubsystem, 0.35, 700).andThen(
                                         CMD.sleep(200).andThen(CMD.waitAndGrabSample(intakeSubsystem).andThen(
                                                 CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem)
                                         ))
@@ -76,7 +78,7 @@ public class SampleAutonomousV5 extends CommandOpMode {
                                         CMD.sleep(300).andThen(CMD.slamDunkSample(outtakeSubsystem))
                                 )
                         ).alongWith(
-                                CMD.sleep(400).andThen(CMD.extendIntake(intakeSubsystem, 0.5, 580).andThen(
+                                CMD.sleep(400).andThen(CMD.extendIntake(intakeSubsystem, 0.5, 600).andThen(
                                         CMD.waitAndGrabSample(intakeSubsystem).andThen(
                                                 CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem)
                                         )
@@ -92,7 +94,7 @@ public class SampleAutonomousV5 extends CommandOpMode {
                         CMD.followPath(follower, core.paths.SampleAutonomousV5.thirdDumpAndPickup()).alongWith(
                                 CMD.sleep(300).andThen(CMD.extendIntake(intakeSubsystem, 0.55, 655))
                         ),
-                        CMD.waitAndGrabSample(intakeSubsystem),
+                        CMD.sleep(300).andThen(CMD.grabSample(intakeSubsystem)),
 
                         CMD.followPath(follower, core.paths.SampleAutonomousV5.lastDump()).alongWith(
                                 CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem).andThen(

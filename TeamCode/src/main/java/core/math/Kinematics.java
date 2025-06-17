@@ -38,7 +38,7 @@ public class Kinematics {
                 Math.pow(LimelightInformation.e, LimelightInformation.b * buffer.center.y)
         ) + LimelightInformation.c) / 2.54;
 
-        double newSlidePosition = (forwards * 2.54) * 11.6285 + 80.67181 * 1.075;
+        double newSlidePosition = (forwards * 2.54) * 11.6285 + 80.67181 * 1.1;
         double ty = 0;
 
         if (newSlidePosition > 700) {
@@ -53,6 +53,8 @@ public class Kinematics {
         double c = -8.06;
 
         double lateralCM = m * buffer.center.x + c;
+
+        if (lateralCM > 0) lateralCM /= 1.2;
 
         this.absoluteRobotTarget = RobotPosition.relativePosition(
                 new RobotPosition(

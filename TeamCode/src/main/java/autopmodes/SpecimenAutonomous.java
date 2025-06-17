@@ -35,7 +35,7 @@ public class SpecimenAutonomous extends CommandOpMode {
 
         this.telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         this.intakeSubsystem = new Intake(hardwareMap, this.telemetry);
-        this.outtakeSubsystem = new Outtake(hardwareMap, this.telemetry);
+        this.outtakeSubsystem = new Outtake(hardwareMap, this.telemetry, this.intakeSubsystem::forceDown);
 
         CommandScheduler.getInstance().registerSubsystem(intakeSubsystem);
         CommandScheduler.getInstance().registerSubsystem(outtakeSubsystem);
@@ -51,23 +51,22 @@ public class SpecimenAutonomous extends CommandOpMode {
                 new RunCommand(follower::update),
                 new SequentialCommandGroup(
                         CMD.sleepUntil(this::opModeIsActive),
-                        CMD.followPath(follower, core.paths.SpecimenAutonomous.firstDump()).setSpeed(1).alongWith(
+                        CMD.followPath(follower, core.paths.SpecimenAutonomous.firstDump()).setSpeed(0.8).alongWith(
                                 CMD.raiseSlidesForSpecimen(outtakeSubsystem)
                         ),
                         CMD.clipSpecimen(outtakeSubsystem, 0.3),
-                        CMD.followPath(follower, core.paths.SpecimenAutonomous.firstSpike()).setSpeed(1).alongWith(
+                        CMD.followPath(follower, core.paths.SpecimenAutonomous.firstSpike()).setSpeed(0.8).alongWith(
                                 CMD.sleep(600).andThen(
-                                        CMD.extendIntake(intakeSubsystem, 0.72, 0)
+                                        CMD.extendIntake(intakeSubsystem, 1, 685)
                                 )
                         ),
-                        CMD.sleep(500),
-                        CMD.grabSample(intakeSubsystem),
+                        CMD.waitAndGrabSample(intakeSubsystem),
                         CMD.followPath(follower, core.paths.SpecimenAutonomous.firstHp(), true).setSpeed(1),
                         CMD.releaseSample(intakeSubsystem),
                         CMD.sleep(200),
 
-                        CMD.followPath(follower, core.paths.SpecimenAutonomous.secondSpike(), true).setSpeed(1).alongWith(
-                                CMD.extendIntake(intakeSubsystem, 0.7, 390)
+                        CMD.followPath(follower, core.paths.SpecimenAutonomous.secondSpike(), true).setSpeed(0.8).alongWith(
+                                CMD.extendIntake(intakeSubsystem, 1, 670)
                         ),
                         CMD.sleep(500),
                         CMD.grabSample(intakeSubsystem),
@@ -75,19 +74,24 @@ public class SpecimenAutonomous extends CommandOpMode {
                         CMD.releaseSample(intakeSubsystem),
                         CMD.sleep(200),
 
+                        /*
                         CMD.followPath(follower, core.paths.SpecimenAutonomous.thirdSpike(), true).setSpeed(1).alongWith(
-                                CMD.extendIntake(intakeSubsystem, 0.65, 290)
+                                CMD.extendIntake(intakeSubsystem, 1, 650)
                         ),
                         CMD.sleep(500),
                         CMD.grabSample(intakeSubsystem),
                         CMD.followPath(follower, core.paths.SpecimenAutonomous.thirdHp()),
                         CMD.releaseSample(intakeSubsystem),
                         CMD.sleep(200),
+                        */
 
-                        CMD.followPath(follower, core.paths.SpecimenAutonomous.startCycling(), true),
-                        CMD.setClawRotation(intakeSubsystem, 0.5),
-
+                        CMD.followPath(follower, core.paths.SpecimenAutonomous.startCycling(), true).alongWith(
+                                CMD.extendIntake(intakeSubsystem, 0.5, 300)
+                        ),
                         CMD.sleep(1000),
+                        CMD.extendIntake(intakeSubsystem, 0.5, 650),
+                        CMD.sleep(500),
+
 
                         CMD.grabSample(intakeSubsystem),
                         CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem),
@@ -96,50 +100,55 @@ public class SpecimenAutonomous extends CommandOpMode {
                                 CMD.sleep(500).andThen(CMD.raiseSlidesForSpecimen(outtakeSubsystem))
                         ),
 
-                        CMD.clipSpecimen(outtakeSubsystem, 0.4),
+                        CMD.clipSpecimen(outtakeSubsystem, 0.3),
                         CMD.followPath(follower, core.paths.SpecimenAutonomous.returnA(), true).setSpeed(1).alongWith(
-                                CMD.sleep(800).andThen(CMD.extendIntake(intakeSubsystem))
+                                CMD.sleep(800).andThen(CMD.extendIntake(intakeSubsystem, 0.5, 300))
                         ),
 
                         CMD.sleep(1000),
+                        CMD.extendIntake(intakeSubsystem, 0.5, 650),
+                        CMD.sleep(500),
 
                         CMD.grabSample(intakeSubsystem),
                         CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem),
                         CMD.followPath(follower, core.paths.SpecimenAutonomous.goDumpB(), true).setSpeed(1).alongWith(
                                 CMD.sleep(500).andThen(CMD.raiseSlidesForSpecimen(outtakeSubsystem))
                         ),
-                        CMD.clipSpecimen(outtakeSubsystem, 0.5),
+                        CMD.clipSpecimen(outtakeSubsystem, 0.3),
                         CMD.followPath(follower, core.paths.SpecimenAutonomous.returnB(), true).setSpeed(1).alongWith(
                                 CMD.sleep(800).andThen(
-                                        CMD.extendIntake(intakeSubsystem)
+                                        CMD.extendIntake(intakeSubsystem, 0.5, 300)
                                 )
                         ),
                         CMD.sleep(1000),
+                        CMD.extendIntake(intakeSubsystem, 0.5, 650),
+                        CMD.sleep(500),
 
                         CMD.grabSample(intakeSubsystem),
                         CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem),
                         CMD.followPath(follower, core.paths.SpecimenAutonomous.goDumpC(), true).setSpeed(1).alongWith(
                                 CMD.sleep(500).andThen(CMD.raiseSlidesForSpecimen(outtakeSubsystem))
                         ),
-                        CMD.clipSpecimen(outtakeSubsystem, 0.5),
+                        CMD.clipSpecimen(outtakeSubsystem, 0.3),
+                        CMD.followPath(follower, core.paths.SpecimenAutonomous.park())
+                        /*
                         CMD.followPath(follower, core.paths.SpecimenAutonomous.returnC(), true).setSpeed(1).alongWith(
                                 CMD.sleep(800).andThen(
-                                        CMD.extendIntake(intakeSubsystem)
+                                        CMD.extendIntake(intakeSubsystem, 0.5, 300)
                                 )
                         ),
+
                         CMD.sleep(1000),
+                        CMD.extendIntake(intakeSubsystem, 0.5, 650),
+                        CMD.sleep(500),
 
                         CMD.grabSample(intakeSubsystem),
                         CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem),
                         CMD.followPath(follower, core.paths.SpecimenAutonomous.goDumpD(), true).setSpeed(1).alongWith(
                                 CMD.sleep(800).andThen(CMD.raiseSlidesForSpecimen(outtakeSubsystem))
                         ),
-                        CMD.clipSpecimen(outtakeSubsystem, 0.6),
-                        CMD.followPath(follower, core.paths.SpecimenAutonomous.returnD(), true).setSpeed(1).alongWith(
-                                CMD.sleep(800).andThen(
-                                        CMD.extendIntake(intakeSubsystem)
-                                )
-                        )
+                        CMD.clipSpecimen(outtakeSubsystem, 0.6)
+                        */
                 )
         );
 

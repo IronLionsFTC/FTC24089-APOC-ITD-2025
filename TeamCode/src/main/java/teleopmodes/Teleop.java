@@ -56,8 +56,8 @@ public class Teleop extends CommandOpMode {
         this.telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         this.buttons = new Buttons(gamepad1, gamepad2);
         this.intakeSubsystem = new Intake(hardwareMap, this.telemetry, this.light);
-        this.outtakeSubsystem = new Outtake(hardwareMap, this.telemetry);
-        this.drivebaseSubsystem = new Drivebase(hardwareMap, this.telemetry);
+        this.outtakeSubsystem = new Outtake(hardwareMap, this.telemetry, this.intakeSubsystem::forceDown);
+        this.drivebaseSubsystem = new Drivebase(hardwareMap, this.telemetry, this.intakeSubsystem::isSlidesExtended);
 
         this.limelight = new Limelight(hardwareMap, Limelight.Targets.YellowOnly);
         this.limelight.raise();

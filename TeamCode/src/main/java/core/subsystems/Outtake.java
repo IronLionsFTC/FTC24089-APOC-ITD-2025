@@ -9,6 +9,8 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import java.util.function.BooleanSupplier;
+
 import core.hardware.CachedServo;
 import core.hardware.MasterSlaveMotorPair;
 import core.parameters.HardwareParameters;
@@ -41,12 +43,12 @@ public class Outtake extends SubsystemBase {
     private boolean useHighBasket;
     private boolean hasCycleOccured = false;
 
-    public Outtake(HardwareMap hwmp, Telemetry telemetry) {
+    public Outtake(HardwareMap hwmp, Telemetry telemetry, BooleanSupplier forceDown) {
 
         this.useHighBasket = true;
         this.arm = new Arm(hwmp);
         this.claw = new Claw(hwmp, HardwareParameters.Motors.HardwareMapNames.outtakeClawServo);
-        this.claw.setOffset(0.1);
+        this.claw.setOffset(0.05);
         this.pitchServo = new CachedServo(hwmp, HardwareParameters.Motors.HardwareMapNames.outtakePitchServo);
         this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleTransfer);
         this.transferComplete = true;
@@ -72,7 +74,7 @@ public class Outtake extends SubsystemBase {
 
         this.slides = new LinearSlides(this.slideMotors, this.slideController, telemetry, voltageSensor,
                 pidfCoefficients.OuttakeSlides.feedforward, pidfCoefficients.OuttakeSlides.feedbackward,
-                PositionalBounds.SlidePositions.outtakeMaximumExtension);
+                PositionalBounds.SlidePositions.outtakeMaximumExtension, forceDown);
         this.slides.setZeroPowerOnRetraction();
 
         this.claw.setState(Subsystems.ClawState.WeakGripClosed);
@@ -207,7 +209,7 @@ public class Outtake extends SubsystemBase {
 
             case UpClawOpen:
                 this.slides.setTarget(this.getTargetHeight());
-                this.claw.setState(Subsystems.ClawState.WideOpen);
+                this.claw.setState(Subsystems.ClawState.Open);
                 this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armSample);
                 this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleOuttake);
 
@@ -225,7 +227,7 @@ public class Outtake extends SubsystemBase {
                     this.claw.setState(Subsystems.ClawState.StrongGripClosed);
                 } else {
                     this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSpecimenIntake);
-                    this.claw.setState(Subsystems.ClawState.WideOpen);
+                    this.claw.setState(Subsystems.ClawState.Open);
                 }
                 break;
 
@@ -247,7 +249,7 @@ public class Outtake extends SubsystemBase {
                 break;
 
             case SpecimenOuttakeExit:
-                this.slides.setTarget(PositionalBounds.SlidePositions.OuttakePositions.specimenOuttake + 0.3);
+                this.slides.setTarget(PositionalBounds.SlidePositions.OuttakePositions.specimenOuttake + 0.5);
                 this.claw.setState(Subsystems.ClawState.StrongGripClosed);
                 this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armDown);
                 this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.specimenEntry);

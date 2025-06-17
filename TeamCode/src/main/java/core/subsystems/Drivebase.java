@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import java.util.function.BooleanSupplier;
+
 import core.hardware.CachedEncoder;
 import core.hardware.CachedMotor;
 import core.math.Vector;
@@ -44,6 +46,7 @@ public class Drivebase extends SubsystemBase {
 
     // Telemetry
     private Telemetry telemetry;
+    private BooleanSupplier shouldSlow;
 
     // Odometry
     public Odometry odometry;
@@ -57,6 +60,7 @@ public class Drivebase extends SubsystemBase {
         private CachedEncoder left;
         private CachedEncoder right;
         private CachedEncoder sideways;
+
 
         public Odometry(HardwareMap hwmp) {
 
@@ -80,8 +84,9 @@ public class Drivebase extends SubsystemBase {
         }
     }
 
-    public Drivebase(HardwareMap hwmp, Telemetry telemetry) {
+    public Drivebase(HardwareMap hwmp, Telemetry telemetry, BooleanSupplier shouldSlow) {
         this.telemetry = telemetry;
+        this.shouldSlow = shouldSlow;
 
         // PID
         this.yawCorrectionController = new PIDFController(
@@ -171,10 +176,14 @@ public class Drivebase extends SubsystemBase {
 
         if (Math.abs(r) < 0.1) r = 0;
 
-        this.frontLeft.setPower((driveVector.x - driveVector.y) * driveScalar + r);
-        this.frontRight.setPower((-driveVector.x - driveVector.y) * driveScalar - r);
-        this.backLeft.setPower((-driveVector.x - driveVector.y) * driveScalar + r);
-        this.backRight.setPower((driveVector.x - driveVector.y) * driveScalar - r);
+        double pow = 1;
+
+        if (this.shouldSlow.getAsBoolean()) pow = 0.6;
+
+        this.frontLeft.setPower((driveVector.x - driveVector.y) * driveScalar * pow + r);
+        this.frontRight.setPower((-driveVector.x - driveVector.y) * driveScalar * pow - r);
+        this.backLeft.setPower((-driveVector.x - driveVector.y) * driveScalar * pow + r);
+        this.backRight.setPower((driveVector.x - driveVector.y) * driveScalar * pow - r);
     }
 
     public void setDriveVector(Vector driveVector) {

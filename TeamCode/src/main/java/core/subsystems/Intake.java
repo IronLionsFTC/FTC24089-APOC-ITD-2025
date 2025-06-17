@@ -27,7 +27,6 @@ public class Intake extends SubsystemBase {
     // Subsystems of intake
     private Claw claw;
     private DualAxisGimbal gimble;
-    private CachedServo latchServo;
     private Slides slides;
     private RevColorSensorV3 outtakeProximity;
     private RevColorSensorV3 intakeProximity;
@@ -63,7 +62,7 @@ public class Intake extends SubsystemBase {
             this.target = position;
         }
 
-        private void update() {
+        private void update(IntakeState state) {
 
             if (this.target > 20 && this.target < 500) {
                 this.controller.setPID(
@@ -86,7 +85,8 @@ public class Intake extends SubsystemBase {
             }
 
             double power = this.controller.calculate(this.getPosition(), this.target);
-            if (this.target < 10 && this.getPosition() < 10) power = 0;
+            if (this.target < 10 && this.getPosition() < 5) power = 0;
+            if (state == IntakeState.RetractedClawClosed && this.getPosition() < 10) power = -0.3;
             this.motor.setPower(power);
         }
 
@@ -113,6 +113,8 @@ public class Intake extends SubsystemBase {
 
         // Claw and gimble do not need to be scheduled as they are servo abstractions and need no update
         this.claw = new Claw(hwmp, HardwareParameters.Motors.HardwareMapNames.intakeClawServo);
+        this.claw.setOffset(0.04);
+        this.claw.setReversed(true);
         this.claw.setState(Subsystems.ClawState.WideOpen);
 
         this.gimble = new DualAxisGimbal(hwmp,
@@ -139,6 +141,8 @@ public class Intake extends SubsystemBase {
 
         // Claw and gimble do not need to be scheduled as they are servo abstractions and need no update
         this.claw = new Claw(hwmp, HardwareParameters.Motors.HardwareMapNames.intakeClawServo);
+        this.claw.setOffset(0.04);
+        this.claw.setReversed(true);
         this.claw.setState(Subsystems.ClawState.WideOpen);
 
         this.gimble = new DualAxisGimbal(hwmp,
@@ -266,11 +270,9 @@ public class Intake extends SubsystemBase {
                 break;
         }
 
-        if (this.state == IntakeState.RetractedClawOpen || this.state == IntakeState.RetractedClawClosed) {
-            if (this.slides.isRetracted()) this.latchServo.setPosition(PositionalBounds.ServoPositions.LatchPositions.closed);
-            else this.latchServo.setPosition(PositionalBounds.ServoPositions.LatchPositions.open);
-        } else this.latchServo.setPosition(PositionalBounds.ServoPositions.LatchPositions.open);
-        this.slides.update();
+        telemetry.addData("claw pos", this.claw.getPosition());
+
+        this.slides.update(state);
     }
 
     public boolean hasClawClosed() {
@@ -324,5 +326,9 @@ public class Intake extends SubsystemBase {
 
     public boolean isClawHoveringOverSample() {
         return this.intakeProximity.getDistance(DistanceUnit.MM) < PositionalBounds.Sensors.intakeHovering;
+    }
+
+    public boolean forceDown() {
+        return this.state == IntakeState.RetractedClawClosed;
     }
 }
