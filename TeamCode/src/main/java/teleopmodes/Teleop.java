@@ -62,6 +62,7 @@ public class Teleop extends CommandOpMode {
         this.limelight = new Limelight(hardwareMap, Limelight.Targets.YellowOnly);
         this.limelight.raise();
         this.sampleState = new Limelight.SampleState();
+        this.follower.setMaxPower(0.6);
 
         // IMPORTANT - Register SUBSYSTEMS that implement periodic
         CommandScheduler.getInstance().registerSubsystem(drivebaseSubsystem);

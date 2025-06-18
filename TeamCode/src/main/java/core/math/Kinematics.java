@@ -33,28 +33,20 @@ public class Kinematics {
     public double absoluteClawRotation;
 
     public Kinematics(Limelight.SampleState buffer) {
+        double slideExtension = 319.77939 * Math.pow(Math.E, 0.0310912 * buffer.center.y) - 83.62055;
+        double lateralGradient = -0.000871067 * slideExtension - 0.474881;
+        double lateralIntercept = -10.45;
 
-        double forwards = (LimelightInformation.a * (
-                Math.pow(LimelightInformation.e, LimelightInformation.b * buffer.center.y)
-        ) + LimelightInformation.c) / 2.54;
-
-        double newSlidePosition = (forwards * 2.54) * 11.6285 + 80.67181 * 1.1;
+        double lateralCM = lateralGradient * buffer.center.x + lateralIntercept;
         double ty = 0;
 
-        if (newSlidePosition > 700) {
-            double error = newSlidePosition - 700;
-            newSlidePosition = 700;
+        slideExtension = slideExtension + 15; // Adjust for claw tilt
+
+        if (slideExtension > 700) {
+            double error = slideExtension - 700;
+            slideExtension = 700;
             ty = error / 20;
         }
-
-        double x = forwards * 2.54;
-
-        double m = -0.0119154 * x - 0.487525;
-        double c = -8.06;
-
-        double lateralCM = m * buffer.center.x + c;
-
-        if (lateralCM > 0) lateralCM /= 1.2;
 
         this.absoluteRobotTarget = RobotPosition.relativePosition(
                 new RobotPosition(
@@ -65,7 +57,7 @@ public class Kinematics {
                         lateralCM / 2.54, ty
                 )
         );
-        this.absoluteSlidePosition = newSlidePosition + 11;
+        this.absoluteSlidePosition = slideExtension;
         this.absoluteClawRotation = buffer.angle;
     }
 

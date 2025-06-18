@@ -74,7 +74,8 @@ public class StationaryCVTest extends CommandOpMode {
 
                         CMD.sleep(500),
                         CMD.grabSample(intakeSubsystem),
-                        CMD.sleep(100),
+                        CMD.sleep(200),
+                        CMD.retractIntakeSlightly(intakeSubsystem),
                         CMD.grabSampleAbortIfEmpty(
                                 intakeSubsystem,
                                 outtakeSubsystem,

@@ -12,13 +12,13 @@ public final class PositionalBounds {
 
             // Claw positions
             public static final double strongGripPosition = 0;
-            public static final double weakGripPosition = 0;
+            public static final double weakGripPosition = 0.015;
             public static final double openPosition = 0.5;
             public static final double wideOpenPosition = 0.25;
 
             // Gimble positions
             public static final double pitchRest = 0.0;
-            public static final double pitchExtended = 0.47;
+            public static final double pitchExtended = 0.49;
             public static final double yawRest = 0.465;
             // How far in each direction can the servo turn from the
             // yaw rest

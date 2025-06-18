@@ -18,8 +18,8 @@ public class RetractIntakeSlightly extends CommandBase {
 
     @Override
     public void initialize() {
-        if (this.intakeSubsystem.getExtension() > 100) {
-            this.intakeSubsystem.setExtension(this.intakeSubsystem.getExtension() - 50);
+        if (this.intakeSubsystem.getExtension() > 350) {
+            this.intakeSubsystem.setExtension(this.intakeSubsystem.getExtension() - 150);
         } else {
             this.done = true;
         }

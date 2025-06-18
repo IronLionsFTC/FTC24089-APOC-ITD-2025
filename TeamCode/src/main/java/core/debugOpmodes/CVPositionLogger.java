@@ -7,8 +7,10 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.util.Constants;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import core.computerVision.Limelight;
+import core.parameters.HardwareParameters;
 import core.subsystems.Intake;
 import pedroPathing.constants.FConstants;
 import pedroPathing.constants.LConstants;
@@ -58,39 +60,29 @@ public class CVPositionLogger extends LinearOpMode {
 
         while (opModeIsActive()) {
             telemetry.update();
+            telemetry.addData("Intake Ext", intakeSubsystem.getSlidePosition());
+            this.intakeSubsystem.takeGimbleSubsystem().extendPitch();
 
             this.buffer = limelight.query(telemetry, follower, intakeSubsystem);
 
             if (this.buffer == null) {
-                this.telemetry.addLine("Nothing detected");
                 continue;
             }
 
             if (this.buffer.angle == 0) {
-                this.telemetry.addLine("Nothing detected");
                 continue;
             }
+
+            double slideExtension = 319.77939 * Math.pow(Math.E, 0.0310912 * buffer.center.y) - 83.62055;
+            double lateralGradient = -0.000871067 * slideExtension - 0.474881;
+            double lateralIntercept = -10.45;
+
+            double lateralCM = lateralGradient * buffer.center.x + lateralIntercept;
 
             telemetry.addData("Sample Angle", buffer.angle);
             telemetry.addData("Sample X_fov", buffer.center.x);
             telemetry.addData("Sample Y_fov", buffer.center.y);
-
-            double forwards = (LimelightInformation.a * (
-                    Math.pow(LimelightInformation.e, LimelightInformation.b * buffer.center.y)
-            ) + LimelightInformation.c);
-
-            double x = forwards / 2.54;
-
-            double m = -0.0119154 * x - 0.487525;
-            double c = -8.06;
-
-            double lateral = m * buffer.center.x + c;
-
-            telemetry.addData("m", m);
-            telemetry.addData("c", c);
-
-            telemetry.addData("forwardsCM", forwards);
-            telemetry.addData("lateralCM", lateral);
+            telemetry.addData("Calculated Ext", slideExtension);
         }
     }
 }
