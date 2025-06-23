@@ -35,10 +35,10 @@ public class Limelight {
                 this.hardware.pipelineSwitch(1);
                 break;
             case RedAndYellow:
-                this.hardware.pipelineSwitch(0);
+                this.hardware.pipelineSwitch(2);
                 break;
             case BlueAndYellow:
-                this.hardware.pipelineSwitch(0);
+                this.hardware.pipelineSwitch(3);
                 break;
         }
         this.hardware.updatePythonInputs(0, 0, 0, 0, 0, 0, 0, 0);

@@ -168,10 +168,8 @@ public class CMD {
                 CMD.driveToSampleUseSlides(follower, intakeSubsystem, buffer, telemetry).alongWith(
                         CMD.alignClaw(intakeSubsystem, buffer)
                 ),
-                CMD.sleep(500),
-                CMD.grabSample(intakeSubsystem),
+                CMD.waitAndGrabSample(intakeSubsystem),
                 CMD.sleep(200),
-                CMD.retractIntakeSlightly(intakeSubsystem),
                 CMD.grabSampleAbortIfEmpty(intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, follower),
                 CMD.goToBasketForSubCycles(follower, intakeSubsystem, outtakeSubsystem)
         );
@@ -303,5 +301,27 @@ public class CMD {
 
     public static RetractIntakeSlightly retractIntakeSlightly(Intake intakeSubsystem) {
         return new RetractIntakeSlightly(intakeSubsystem);
+    }
+
+    public static JerkAndStartRepeating jerkAndStartRepeating(
+            Intake intakeSubsystem,
+            Outtake outtakeSubsystem,
+            Limelight limelight,
+            Limelight.SampleState buffer,
+            Telemetry telemetry,
+            Follower follower
+    ) {
+        return new JerkAndStartRepeating(
+                intakeSubsystem,
+                outtakeSubsystem,
+                limelight,
+                buffer,
+                telemetry,
+                follower
+        );
+    }
+
+    public static Command waitForProgress(Follower follower, double progress) {
+        return new WaitUntilCommand(() -> follower.getCurrentTValue() >= progress);
     }
 }

@@ -1,23 +1,16 @@
 package core.commands;
 
-import com.arcrobotics.ftclib.command.Command;
-import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.command.ConditionalCommand;
-import com.arcrobotics.ftclib.command.SelectCommand;
+import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.pedropathing.follower.Follower;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-import java.util.HashMap;
-
 import core.computerVision.Limelight;
-import core.state.Subsystems;
 import core.subsystems.Intake;
 import core.subsystems.Outtake;
 
 public class GrabSampleAbortIfEmpty extends ConditionalCommand {
-
-    private Intake intakeSubsystem;
 
     public GrabSampleAbortIfEmpty(
             Intake intakeSubsystem,
@@ -30,13 +23,17 @@ public class GrabSampleAbortIfEmpty extends ConditionalCommand {
         super(
                 CMD.resetCV(buffer),
 
-                CMD.retryAndRepeat(
-                        intakeSubsystem,
-                        outtakeSubsystem,
-                        limelight,
-                        buffer,
-                        telemetry,
-                        follower
+                new SequentialCommandGroup(
+                        CMD.retractIntakeSlightly(intakeSubsystem),
+                        CMD.sleep(100),
+                        CMD.jerkAndStartRepeating(
+                                intakeSubsystem,
+                                outtakeSubsystem,
+                                limelight,
+                                buffer,
+                                telemetry,
+                                follower
+                        )
                 ),
 
                 intakeSubsystem::hasIntakeGotSample

@@ -62,10 +62,10 @@ public class SpecimenAutonomous {
     public static Point park = point(6, -25);
     public static Point intermediary = point(20, 5);
 
-    public static Point dumpA = point(31, 8.36);
-    public static Point dumpB = point(32, 8.36);
-    public static Point dumpC = point(33, 8.36);
-    public static Point dumpD = point(34, 8.36);
+    public static Point dumpA = point(32, 8.36);
+    public static Point dumpB = point(34, 8.36);
+    public static Point dumpC = point(35, 8.36);
+    public static Point dumpD = point(36, 8.36);
 
     public static PathChain park() {
         return simpleLine(dumpC, park, 0);

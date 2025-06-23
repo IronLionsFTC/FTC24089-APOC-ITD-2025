@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 // Packages from within TeamCode
 import core.commands.IronLionsInterrupt;
+import core.commands.ToggleExtension;
 import core.computerVision.Limelight;
 import core.controls.Controls.Buttons;
 import core.hardware.IndicatorLight;
@@ -25,8 +26,8 @@ import core.subsystems.Outtake;
 import pedroPathing.constants.FConstants;
 import pedroPathing.constants.LConstants;
 
-@TeleOp(name = "Teleop", group = "Competition")
-public class Teleop extends CommandOpMode {
+@TeleOp(name = "- BLUE Teleop", group = "Competition")
+public class BlueTeleop extends CommandOpMode {
 
     // Create subsystems
     private Drivebase drivebaseSubsystem;
@@ -59,10 +60,11 @@ public class Teleop extends CommandOpMode {
         this.outtakeSubsystem = new Outtake(hardwareMap, this.telemetry, this.intakeSubsystem::forceDown);
         this.drivebaseSubsystem = new Drivebase(hardwareMap, this.telemetry, this.intakeSubsystem::isSlidesExtended);
 
-        this.limelight = new Limelight(hardwareMap, Limelight.Targets.YellowOnly);
+        this.limelight = new Limelight(hardwareMap, Limelight.Targets.BlueAndYellow);
         this.limelight.raise();
         this.sampleState = new Limelight.SampleState();
         this.follower.setMaxPower(0.6);
+        this.intakeSubsystem.setExtension(450);
 
         // IMPORTANT - Register SUBSYSTEMS that implement periodic
         CommandScheduler.getInstance().registerSubsystem(drivebaseSubsystem);
@@ -75,6 +77,9 @@ public class Teleop extends CommandOpMode {
         buttons.rotateRight.whenPressed(CMD.rotateCW(drivebaseSubsystem));
         buttons.rotateLeft.whenPressed(CMD.rotateCCW(drivebaseSubsystem));
         buttons.override.whenPressed(CMD.teleopOverride(intakeSubsystem, outtakeSubsystem));
+        buttons.toggleExtension.whenPressed(
+                new ToggleExtension(this.intakeSubsystem)
+        );
 
         // Spawn a command sequence to rotate the claw to align with a sample
         buttons.useCV.whenPressed(
@@ -92,8 +97,6 @@ public class Teleop extends CommandOpMode {
                                             CMD.resetCV(sampleState)
                                     ).andThen(
                                             CMD.shortWaitAndGrabSample(intakeSubsystem)
-                                    ).andThen(
-                                            CMD.grabSampleAbortIfEmpty(intakeSubsystem, outtakeSubsystem, limelight, sampleState, telemetry, follower)
                                     )
                             )
                     ),
@@ -103,8 +106,6 @@ public class Teleop extends CommandOpMode {
                         new InstantCommand(limelight::disable)
                 ).andThen(
                         CMD.enableDrivebase(drivebaseSubsystem)
-                ).andThen(
-                        CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem)
                 )
         ));
 
@@ -146,10 +147,10 @@ public class Teleop extends CommandOpMode {
                         // Optionally scheduled command that uses proximity sensors and encoders to confidently attempt transfer automatically
                         // If this is not scheduled driver is in control. During comp, if something fails and we can't fix it in time, this could
                         // be removed so that driver can control it. (IE if outtake sensor breaks or cable breaks, or physical alignment is changed)
-                        CMD.teleopAutomaticTransfer(intakeSubsystem, outtakeSubsystem),
+                        CMD.teleopAutomaticTransfer(intakeSubsystem, outtakeSubsystem)
 
                         // Automatically open the claw when it grabs and nothing is there.
-                        CMD.autoRejectionRunCommand(intakeSubsystem, telemetry)
+                        // CMD.autoRejectionRunCommand(intakeSubsystem, telemetry)
                 )
         );
     }

@@ -12,12 +12,12 @@ public final class PositionalBounds {
 
             // Claw positions
             public static final double strongGripPosition = 0;
-            public static final double weakGripPosition = 0.015;
+            public static final double weakGripPosition = 0.01;
             public static final double openPosition = 0.5;
             public static final double wideOpenPosition = 0.25;
 
             // Gimble positions
-            public static final double pitchRest = 0.0;
+            public static final double pitchRest = 0.007;
             public static final double pitchExtended = 0.49;
             public static final double yawRest = 0.465;
             // How far in each direction can the servo turn from the
@@ -34,10 +34,9 @@ public final class PositionalBounds {
             public static final double armDown = 0.0;
             public static final double armSample = 0.2;
             public static final double armSpecimen = 0.5;
-
-            public static final double pitchSampleOuttake = 0.05;
+            public static final double pitchSampleOuttake = 0;
             public static final double pitchSpecimenIntake = 0.05;
-            public static final double pitchSampleTransfer = 0.94;
+            public static final double pitchSampleTransfer = 1;
             public static final double safeMovement = 0.5;
 
             public static final double specimenEntry = 0.55;
@@ -50,12 +49,12 @@ public final class PositionalBounds {
         // Positions expressed as relative 0-1 so that they are consistent
         // Across motors and ratios
 
-        public static final double outtakeMaximumExtension = 730;
+        public static final double outtakeMaximumExtension = 740;
 
         public static final class OuttakePositions {
             public static final double highBasket = 1;
             public static final double lowBasket = 0.2;
-            public static final double specimenOuttake = 0.39;
+            public static final double specimenOuttake = 0.37;
         }
 
         public static final class IntakePositions {

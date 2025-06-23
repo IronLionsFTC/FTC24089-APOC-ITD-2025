@@ -2,13 +2,11 @@ package autopmodes;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.pedropathing.follower.Follower;
-import com.pedropathing.pathgen.PathChain;
 import com.pedropathing.util.Constants;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
@@ -22,8 +20,8 @@ import core.subsystems.Outtake;
 import pedroPathing.constants.FConstants;
 import pedroPathing.constants.LConstants;
 
-@Autonomous ( name = "SAMPLE AUTONOMOUS V5" )
-public class SampleAutonomousV5 extends CommandOpMode {
+@Autonomous ( name = "- 7 Sample [YELLOW ONLY] -" )
+public class SevenSampleYellow extends CommandOpMode {
 
     private Intake intakeSubsystem;
     private Outtake outtakeSubsystem;
@@ -62,14 +60,14 @@ public class SampleAutonomousV5 extends CommandOpMode {
                         CMD.waitForStartWithPreloadWarning(light, intakeSubsystem, this::opModeIsActive),
 
                         CMD.followPath(follower, core.paths.SampleAutonomousV5.firstDumpAndPickup()).setSpeed(0.7).alongWith(
-                                CMD.sleep(250).andThen(CMD.raiseSlidesForSampleDump(outtakeSubsystem).andThen(
-                                        CMD.sleep(300).andThen(CMD.slamDunkSample(outtakeSubsystem))
-                               ))
+                                CMD.raiseSlidesForSampleDump(outtakeSubsystem).andThen(
+                                        CMD.waitForProgress(follower, 0.75).andThen(CMD.slamDunkSample(outtakeSubsystem))
+                                )
                         ).alongWith(
-                                CMD.sleep(700).andThen(CMD.extendIntake(intakeSubsystem, 0.35, 700).andThen(
-                                        CMD.sleep(200).andThen(CMD.waitAndGrabSample(intakeSubsystem).andThen(
+                                CMD.sleep(800).andThen(CMD.extendIntake(intakeSubsystem, 0.35, 700).andThen(
+                                        CMD.shortWaitAndGrabSample(intakeSubsystem).andThen(
                                                 CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem)
-                                        ))
+                                        )
                                 ))
                         ),
 
@@ -78,8 +76,8 @@ public class SampleAutonomousV5 extends CommandOpMode {
                                         CMD.sleep(300).andThen(CMD.slamDunkSample(outtakeSubsystem))
                                 )
                         ).alongWith(
-                                CMD.sleep(400).andThen(CMD.extendIntake(intakeSubsystem, 0.5, 600).andThen(
-                                        CMD.waitAndGrabSample(intakeSubsystem).andThen(
+                                CMD.sleep(200).andThen(CMD.extendIntake(intakeSubsystem, 0.5, 600).andThen(
+                                        CMD.shortWaitAndGrabSample(intakeSubsystem).andThen(
                                                 CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem)
                                         )
                                 ))

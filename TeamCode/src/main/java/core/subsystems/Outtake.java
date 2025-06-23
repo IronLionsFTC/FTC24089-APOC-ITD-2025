@@ -48,7 +48,6 @@ public class Outtake extends SubsystemBase {
         this.useHighBasket = true;
         this.arm = new Arm(hwmp);
         this.claw = new Claw(hwmp, HardwareParameters.Motors.HardwareMapNames.outtakeClawServo);
-        this.claw.setOffset(0.05);
         this.pitchServo = new CachedServo(hwmp, HardwareParameters.Motors.HardwareMapNames.outtakePitchServo);
         this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleTransfer);
         this.transferComplete = true;
@@ -243,8 +242,7 @@ public class Outtake extends SubsystemBase {
                 this.slides.setTarget(PositionalBounds.SlidePositions.OuttakePositions.specimenOuttake);
                 this.claw.setState(Subsystems.ClawState.StrongGripClosed);
                 this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armDown);
-                if (!this.arm.armPhysicallyDown()) this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.safeMovement * 2);
-                else this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.specimenEntry);
+                this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.specimenEntry);
                 this.hasCycleOccured = false;
                 break;
 

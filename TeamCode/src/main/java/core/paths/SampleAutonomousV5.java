@@ -26,6 +26,16 @@ public class SampleAutonomousV5 {
         return pathBuilder.build();
     }
 
+    public static PathChain constantCurve(Point a, Point c, Point b, double h) {
+        Path path = new Path(
+                new BezierCurve(a, c, b)
+        );
+        path.setConstantHeadingInterpolation(Math.toRadians(h));
+        PathBuilder pathBuilder = new PathBuilder();
+        pathBuilder.addPath(path);
+        return pathBuilder.build();
+    }
+
     public static PathChain simpleCurve(Point a, Point c, Point b) {
         Path path = new Path(
                 new BezierCurve(a, c, b)
@@ -50,24 +60,24 @@ public class SampleAutonomousV5 {
     public static Point start = point(0, 0);
 
     public static Point stageOne = point(17.5, 7);
+    public static Point controlOne = point(18.5, -3);
     public static Point lastDump = point(18.5, 5.5);
-
-    public static Point cvDump = point(15, 12.5);
+    public static Point cvDump = point(14, 13.5);
+    public static Point cvDumpFurther = point(13, 11.5);
     public static Point stageTwo = point(22.5, 9);
     public static Point dumpTwo = point(21.5, 7.5);
     public static Point stageThree = point(20.69, 8.5);
-
     public static Point submersible = point(-10, 53);
     public static Point basketToSubControl = point(15, 50);
     public static Point subToBasketControl = point(11, 17);
-    public static Point cvStart = point(-12, 53);
+    public static Point cvStart = point(-13, 53);
 
     public static PathChain firstDumpAndPickup() {
-        return simpleLine(start, stageOne, -19);
+        return constantCurve(start, controlOne, stageOne, -19);
     }
 
     public static PathChain secondDumpAndPickup() {
-        return simpleLine(stageOne, stageTwo, -9.5);
+        return simpleLine(stageOne, stageTwo, -11.8);
     }
 
     public static PathChain SecondPreplacedDump() {
@@ -75,7 +85,7 @@ public class SampleAutonomousV5 {
     }
 
     public static PathChain thirdDumpAndPickup() {
-        return simpleLine(stageTwo, stageThree, 15.37);
+        return simpleLine(stageTwo, stageThree, 17.5);
     }
 
     public static PathChain lastDump() {
@@ -107,6 +117,10 @@ public class SampleAutonomousV5 {
 
     public static PathChain subToBasket() {
         return simpleReverseCurve(submersible, basketToSubControl, subToBasketControl, cvDump);
+    }
+
+    public static PathChain subToBasketFurther() {
+        return simpleReverseCurve(submersible, basketToSubControl, subToBasketControl, cvDumpFurther);
     }
 
     public static PathChain cachedSubToCv(Limelight.SampleState cached) {

@@ -68,8 +68,7 @@ public class SpecimenAutonomous extends CommandOpMode {
                         CMD.followPath(follower, core.paths.SpecimenAutonomous.secondSpike(), true).setSpeed(0.8).alongWith(
                                 CMD.extendIntake(intakeSubsystem, 1, 670)
                         ),
-                        CMD.sleep(500),
-                        CMD.grabSample(intakeSubsystem),
+                        CMD.waitAndGrabSample(intakeSubsystem),
                         CMD.followPath(follower, core.paths.SpecimenAutonomous.secondHp()),
                         CMD.releaseSample(intakeSubsystem),
                         CMD.sleep(200),

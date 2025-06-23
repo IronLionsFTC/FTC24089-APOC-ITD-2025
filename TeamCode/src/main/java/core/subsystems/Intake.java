@@ -8,6 +8,7 @@ import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
+import org.ejml.dense.row.decompose.chol.CholeskyDecompositionInner_CDRM;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
@@ -35,7 +36,7 @@ public class Intake extends SubsystemBase {
 
     // Internal Subsystem State
     public IntakeState state;
-    private double extension = PositionalBounds.SlidePositions.IntakePositions.extended;
+    private double extension;
     private double tilt = 0;
 
     // Telemetry
@@ -126,6 +127,7 @@ public class Intake extends SubsystemBase {
         // prevents developer error later by ensuring the subsystem is registered no matter what
         this.gimble.resetPosition();
         this.light = light;
+        this.extension = PositionalBounds.SlidePositions.IntakePositions.extended;
     }
 
     public Intake(HardwareMap hwmp, Telemetry telemetry) {
@@ -154,6 +156,7 @@ public class Intake extends SubsystemBase {
         // prevents developer error later by ensuring the subsystem is registered no matter what
         this.gimble.resetPosition();
         this.light = null;
+        this.extension = PositionalBounds.SlidePositions.IntakePositions.extended;
     }
 
     public void nextState() {
@@ -294,7 +297,6 @@ public class Intake extends SubsystemBase {
     }
 
     public void setExtension(double extension) { this.extension = extension; }
-    public void resetExtension(double extension) { this.extension = PositionalBounds.SlidePositions.IntakePositions.extended; }
 
     public boolean gimblePitchDown() { return this.gimble.foldedDown(); }
     public boolean clawOpen() {
