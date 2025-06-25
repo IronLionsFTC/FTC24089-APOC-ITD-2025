@@ -55,55 +55,16 @@ public class SevenSampleRed extends CommandOpMode {
         schedule(
                 new RunCommand(follower::update),
                 new RunCommand(telemetry::update),
-                new SequentialCommandGroup(
-                        CMD.waitForStartWithPreloadWarning(light, intakeSubsystem, this::opModeIsActive),
-
-                        CMD.followPath(follower, core.paths.SampleAutonomousV5.firstDumpAndPickup()).setSpeed(0.7).alongWith(
-                                CMD.raiseSlidesForSampleDump(outtakeSubsystem).andThen(
-                                    CMD.waitForProgress(follower, 0.75).andThen(CMD.slamDunkSample(outtakeSubsystem))
-                                )
-                        ).alongWith(
-                                CMD.sleep(800).andThen(CMD.extendIntake(intakeSubsystem, 0.35, 700).andThen(
-                                        CMD.shortWaitAndGrabSample(intakeSubsystem).andThen(
-                                                CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem)
-                                        )
-                                ))
-                        ),
-
-                        CMD.followPath(follower, core.paths.SampleAutonomousV5.secondDumpAndPickup()).alongWith(
-                                CMD.raiseSlidesForSampleDump(outtakeSubsystem).andThen(
-                                        CMD.sleep(300).andThen(CMD.slamDunkSample(outtakeSubsystem))
-                                )
-                        ).alongWith(
-                                CMD.sleep(200).andThen(CMD.extendIntake(intakeSubsystem, 0.5, 600).andThen(
-                                        CMD.shortWaitAndGrabSample(intakeSubsystem).andThen(
-                                                CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem)
-                                        )
-                                ))
-                        ),
-
-                        CMD.raiseSlidesForSampleDump(outtakeSubsystem).alongWith(
-                                CMD.followPath(follower, core.paths.SampleAutonomousV5.secondDumpAndPickup())
-                        ),
-                        CMD.sleep(300),
-                        CMD.slamDunkSample(outtakeSubsystem),
-
-                        CMD.followPath(follower, core.paths.SampleAutonomousV5.thirdDumpAndPickup()).alongWith(
-                                CMD.sleep(300).andThen(CMD.extendIntake(intakeSubsystem, 0.55, 655))
-                        ),
-                        CMD.sleep(300).andThen(CMD.grabSample(intakeSubsystem)),
-
-                        CMD.followPath(follower, core.paths.SampleAutonomousV5.lastDump()).alongWith(
-                                CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem).andThen(
-                                        CMD.raiseSlidesForSampleDump(outtakeSubsystem)
-                                )
-                        ),
-                        CMD.sleep(300),
-                        CMD.slamDunkSample(outtakeSubsystem),
-
-                        CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cache, telemetry, light),
-                        CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cache, telemetry, light),
-                        CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cache, telemetry, light)
+                CMD.sampleAuto(
+                        intakeSubsystem,
+                        outtakeSubsystem,
+                        follower,
+                        light,
+                        this::opModeIsActive,
+                        limelight,
+                        buffer,
+                        cache,
+                        telemetry
                 )
         );
     }

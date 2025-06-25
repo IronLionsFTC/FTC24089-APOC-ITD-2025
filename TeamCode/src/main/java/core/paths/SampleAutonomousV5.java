@@ -1,6 +1,7 @@
 package core.paths;
 
 import com.pedropathing.follower.Follower;
+import com.pedropathing.localization.Pose;
 import com.pedropathing.pathgen.BezierCurve;
 import com.pedropathing.pathgen.BezierLine;
 import com.pedropathing.pathgen.Path;
@@ -60,9 +61,9 @@ public class SampleAutonomousV5 {
     public static Point start = point(0, 0);
 
     public static Point stageOne = point(17.5, 7);
-    public static Point controlOne = point(18.5, -3);
+    public static Point controlOne = point(22, 7.5);
     public static Point lastDump = point(18.5, 5.5);
-    public static Point cvDump = point(14, 13.5);
+    public static Point cvDump = point(15, 14);
     public static Point cvDumpFurther = point(13, 11.5);
     public static Point stageTwo = point(22.5, 9);
     public static Point dumpTwo = point(21.5, 7.5);
@@ -72,8 +73,38 @@ public class SampleAutonomousV5 {
     public static Point subToBasketControl = point(11, 17);
     public static Point cvStart = point(-13, 53);
 
+    public static Point testCVDumpStart = point(-8, 54);
+    public static Point testCVDump = point(17, 10);
+
+    public static PathChain testCV(Follower follower) {
+        Path currentToCV = currentToCV(follower);
+        Path CVToBasket = simpleLine(testCVDumpStart, testCVDump, -30).getPath(0);
+
+        PathBuilder builder = new PathBuilder();
+        currentToCV.setConstantHeadingInterpolation(Math.toRadians(-30));
+        CVToBasket.setConstantHeadingInterpolation(Math.toRadians(-30));
+        builder.addPath(currentToCV);
+        builder.addPath(CVToBasket);
+
+        return builder.build();
+    }
+
+    public static Path currentToCV(Follower follower) {
+        Pose current = follower.getPose();
+        Point currentPoint = point(current.getY(), current.getX());
+        return simpleLine(currentPoint, testCVDumpStart, -30).getPath(0);
+    }
+
     public static PathChain firstDumpAndPickup() {
         return constantCurve(start, controlOne, stageOne, -19);
+    }
+
+    public static PathChain testFirstDump() {
+        return simpleLine(start, lastDump, -20);
+    }
+
+    public static PathChain testFirstPickup() {
+        return simpleLine(lastDump, stageOne, -17);
     }
 
     public static PathChain secondDumpAndPickup() {

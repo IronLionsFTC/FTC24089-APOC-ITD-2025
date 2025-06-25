@@ -44,10 +44,4 @@ public class SubToCvCached extends CommandBase {
     public boolean isFinished() {
         return this.follower.getCurrentTValue() > 0.95;
     }
-
-    @Override
-    public void end(boolean wasInterrupted) {
-        if (wasInterrupted) follower.holdPoint(follower.getPose());
-        follower.setMaxPower(1);
-    }
 }

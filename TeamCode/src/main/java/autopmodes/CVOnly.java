@@ -43,6 +43,7 @@ public class CVOnly extends CommandOpMode {
         this.follower.setStartingPose(Vector.cartesian(-3, 0).pose(0));
 
         this.limelight = new Limelight(hardwareMap, Limelight.Targets.YellowOnly);
+        this.limelight.raise();
         this.buffer = new Limelight.SampleState();
         this.cached = new Limelight.SampleState();
 
@@ -52,7 +53,7 @@ public class CVOnly extends CommandOpMode {
                 new RunCommand(follower::update),
                 new SequentialCommandGroup(
                         CMD.sleepUntil(this::opModeIsActive),
-                        CMD.followPath(follower, core.paths.SampleAutonomousV2.firstDumpAndPickup()).setSpeed(1),
+                        CMD.followPath(follower, core.paths.SampleAutonomousV5.testFirstDump()).setSpeed(1),
                         CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cached, telemetry, light),
                         CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cached, telemetry, light),
                         CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cached, telemetry, light)

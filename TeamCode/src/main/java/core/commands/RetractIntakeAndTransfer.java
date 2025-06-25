@@ -42,7 +42,8 @@ public class RetractIntakeAndTransfer extends CommandBase {
             // If the outtake claw has closed, release the intake claw
             if (this.outtakeSubsystem.clawClosed()) {
                 this.intakeSubsystem.state = Subsystems.IntakeState.RetractedClawOpen;
-                if (this.intakeSubsystem.clawOpen()) outtakeSubsystem.transferComplete = true;
+                //if (this.intakeSubsystem.clawOpen()) outtakeSubsystem.transferComplete = true;
+                outtakeSubsystem.transferComplete = true;
             }
         }
         if (!this.intakeSubsystem.isSlideLatched()) this.deadMan.resetTimer();
@@ -50,6 +51,6 @@ public class RetractIntakeAndTransfer extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return this.outtakeSubsystem.transferComplete && this.intakeSubsystem.clawOpen() || this.total.getElapsedTimeSeconds() > 3;
+        return this.outtakeSubsystem.transferComplete || this.total.getElapsedTimeSeconds() > 1.5;
     }
 }
