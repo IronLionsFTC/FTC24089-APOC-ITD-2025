@@ -13,6 +13,8 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.util.Constants;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import java.util.function.BooleanSupplier;
+
 import core.commands.CMD;
 import core.commands.IronLionsInterrupt;
 import core.commands.ToggleExtension;
@@ -56,8 +58,9 @@ public class RedTeleop extends CommandOpMode {
         // Intialize the rest of subsystems
         this.telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         this.buttons = new Buttons(gamepad1, gamepad2);
-        this.intakeSubsystem = new Intake(hardwareMap, this.telemetry, this.light, this.buttons.zeroSlides::get);
-        this.outtakeSubsystem = new Outtake(hardwareMap, this.telemetry, this.intakeSubsystem::forceDown);
+        BooleanSupplier zeroSlides = this.buttons.zeroSlides::get;
+        this.intakeSubsystem = new Intake(hardwareMap, this.telemetry, this.light, zeroSlides);
+        this.outtakeSubsystem = new Outtake(hardwareMap, this.telemetry, this.intakeSubsystem::forceDown, zeroSlides);
         this.drivebaseSubsystem = new Drivebase(hardwareMap, this.telemetry, this.intakeSubsystem::isSlidesExtended);
 
         this.limelight = new Limelight(hardwareMap, Limelight.Targets.RedAndYellow);

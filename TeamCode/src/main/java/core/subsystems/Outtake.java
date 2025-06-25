@@ -44,7 +44,6 @@ public class Outtake extends SubsystemBase {
     private boolean hasCycleOccured = false;
 
     public Outtake(HardwareMap hwmp, Telemetry telemetry, BooleanSupplier forceDown) {
-
         this.useHighBasket = true;
         this.arm = new Arm(hwmp);
         this.claw = new Claw(hwmp, HardwareParameters.Motors.HardwareMapNames.outtakeClawServo);
@@ -73,7 +72,42 @@ public class Outtake extends SubsystemBase {
 
         this.slides = new LinearSlides(this.slideMotors, this.slideController, telemetry, voltageSensor,
                 pidfCoefficients.OuttakeSlides.feedforward, pidfCoefficients.OuttakeSlides.feedbackward,
-                PositionalBounds.SlidePositions.outtakeMaximumExtension, forceDown);
+                PositionalBounds.SlidePositions.outtakeMaximumExtension, forceDown, () -> false);
+        this.slides.setZeroPowerOnRetraction();
+
+        this.claw.setState(Subsystems.ClawState.WeakGripClosed);
+    }
+
+    public Outtake(HardwareMap hwmp, Telemetry telemetry, BooleanSupplier forceDown, BooleanSupplier zeroing) {
+        this.useHighBasket = true;
+        this.arm = new Arm(hwmp);
+        this.claw = new Claw(hwmp, HardwareParameters.Motors.HardwareMapNames.outtakeClawServo);
+        this.pitchServo = new CachedServo(hwmp, HardwareParameters.Motors.HardwareMapNames.outtakePitchServo);
+        this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleTransfer);
+        this.transferComplete = true;
+
+        // Currently start with claw closed for preloads, always use high basket
+        this.state = OuttakeState.DownClawClosed;
+        this.useHighBasket = true;
+
+        this.telemetry = telemetry;
+        this.slideMotors = new MasterSlaveMotorPair(hwmp,
+                HardwareParameters.Motors.HardwareMapNames.rightOuttakeSlide,
+                HardwareParameters.Motors.Reversed.rightOuttakeSlide,
+                HardwareParameters.Motors.HardwareMapNames.leftOuttakeSlide,
+                HardwareParameters.Motors.Reversed.leftOuttakeSlide);
+
+        this.slideController = new PIDController(
+                pidfCoefficients.OuttakeSlides.p,
+                pidfCoefficients.OuttakeSlides.i,
+                pidfCoefficients.OuttakeSlides.d
+        );
+
+        VoltageSensor voltageSensor = hwmp.voltageSensor.get("Control Hub");
+
+        this.slides = new LinearSlides(this.slideMotors, this.slideController, telemetry, voltageSensor,
+                pidfCoefficients.OuttakeSlides.feedforward, pidfCoefficients.OuttakeSlides.feedbackward,
+                PositionalBounds.SlidePositions.outtakeMaximumExtension, forceDown, zeroing);
         this.slides.setZeroPowerOnRetraction();
 
         this.claw.setState(Subsystems.ClawState.WeakGripClosed);
