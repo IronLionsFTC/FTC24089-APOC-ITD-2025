@@ -13,6 +13,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 
+import java.util.function.BooleanSupplier;
+
 import core.hardware.CachedMotor;
 import core.hardware.CachedServo;
 import core.hardware.IndicatorLight;
@@ -38,6 +40,7 @@ public class Intake extends SubsystemBase {
     public IntakeState state;
     private double extension;
     private double tilt = 0;
+    private BooleanSupplier zeroing;
 
     // Telemetry
     private Telemetry telemetry;
@@ -102,11 +105,17 @@ public class Intake extends SubsystemBase {
         private boolean isRetracted() {
             return this.getPosition() < 50;
         }
+
+        private void rollingZero() {
+            this.motor.setPower(-0.5);
+            this.motor.resetEncoder();
+        }
     }
 
-    public Intake(HardwareMap hwmp, Telemetry telemetry, IndicatorLight light) {
+    public Intake(HardwareMap hwmp, Telemetry telemetry, IndicatorLight light, BooleanSupplier zeroing) {
         this.outtakeProximity = hwmp.get(RevColorSensorV3.class, HardwareParameters.Sensors.HardwareMapNames.outtakeProximity);
         this.intakeProximity = hwmp.get(RevColorSensorV3.class, HardwareParameters.Sensors.HardwareMapNames.intakeProximity);
+        this.zeroing = zeroing;
 
         this.state = IntakeState.RetractedClawOpen;
         this.telemetry = telemetry;
@@ -131,6 +140,7 @@ public class Intake extends SubsystemBase {
     }
 
     public Intake(HardwareMap hwmp, Telemetry telemetry) {
+        this.zeroing = () -> false;
         if (this.slides != null) telemetry.addData("intakePos", getSlideExtension());
         telemetry.addData("intakeExt", extension);
 
@@ -276,7 +286,8 @@ public class Intake extends SubsystemBase {
 
         telemetry.addData("claw pos", this.claw.getPosition());
 
-        this.slides.update(state);
+        if (!this.zeroing.getAsBoolean()) this.slides.update(state);
+        else this.slides.rollingZero();
     }
 
     public boolean hasClawClosed() {

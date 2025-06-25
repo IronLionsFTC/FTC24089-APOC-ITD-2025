@@ -56,7 +56,7 @@ public class RedTeleop extends CommandOpMode {
         // Intialize the rest of subsystems
         this.telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         this.buttons = new Buttons(gamepad1, gamepad2);
-        this.intakeSubsystem = new Intake(hardwareMap, this.telemetry, this.light);
+        this.intakeSubsystem = new Intake(hardwareMap, this.telemetry, this.light, this.buttons.zeroSlides::get);
         this.outtakeSubsystem = new Outtake(hardwareMap, this.telemetry, this.intakeSubsystem::forceDown);
         this.drivebaseSubsystem = new Drivebase(hardwareMap, this.telemetry, this.intakeSubsystem::isSlidesExtended);
 

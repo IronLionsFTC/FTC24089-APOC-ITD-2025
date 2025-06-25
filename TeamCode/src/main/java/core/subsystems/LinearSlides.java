@@ -36,16 +36,7 @@ public class LinearSlides extends SubsystemBase {
     private Telemetry telemetry;
     private VoltageSensor voltageSensor;
     private BooleanSupplier forceDown;
-
-    // Public constructor requires non-null motor pair to avoid overhead
-    public LinearSlides(MasterSlaveMotorPair motors, PIDController pidController, Telemetry telemetry, double feedForward, double maximumExtension) {
-        this.telemetry = telemetry;
-        this.motors = motors;
-        this.pidController = pidController;
-        this.positiveFeedForward = feedForward;
-        this.negativeFeedForward = feedForward;
-        this.maximumExtension = maximumExtension;
-    }
+    private BooleanSupplier zeroing;
 
     // Allow for different negative and positive feedforward values on construction
     public LinearSlides(
@@ -66,6 +57,30 @@ public class LinearSlides extends SubsystemBase {
         this.negativeFeedForward = negativeFeedForward;
         this.maximumExtension = maximumExtension;
         this.forceDown = forceDown;
+        this.zeroing = () -> false;
+    }
+
+    // Allow for different negative and positive feedforward values on construction
+    public LinearSlides(
+            MasterSlaveMotorPair motors,
+            PIDController pidController,
+            Telemetry telemetry,
+            VoltageSensor voltageSensor,
+            double positiveFeedForward,
+            double negativeFeedForward,
+            double maximumExtension,
+            BooleanSupplier forceDown,
+            BooleanSupplier zeroing
+    ) {
+        this.telemetry = telemetry;
+        this.voltageSensor = voltageSensor;
+        this.motors = motors;
+        this.pidController = pidController;
+        this.positiveFeedForward = positiveFeedForward;
+        this.negativeFeedForward = negativeFeedForward;
+        this.maximumExtension = maximumExtension;
+        this.forceDown = forceDown;
+        this.zeroing = zeroing;
     }
 
     public void setTarget(double relative) {
@@ -93,7 +108,14 @@ public class LinearSlides extends SubsystemBase {
         }
 
         if (this.target == 0 && getRelative() < 0.07) {
-            if (this.forceDown.getAsBoolean()) response = -0.4;
+            if (this.forceDown.getAsBoolean()) {
+                response = -0.4;
+            }
+        }
+
+        if (this.zeroing.getAsBoolean()) {
+            response = -0.5;
+            this.motors.resetEncoder();
         }
 
         // Set the master-slave paradigm to use the power

@@ -23,6 +23,7 @@ public class Controls {
         public GamepadButton override;
         public GamepadButton emergencyIntakeRetract;
         public GamepadButton toggleExtension;
+        public GamepadButton zeroSlides;
 
         // Controls to be constantly read
         public DoubleSupplier rotateClawLeft;
@@ -61,6 +62,7 @@ public class Controls {
             // Overrides
             this.emergencyIntakeRetract = this.gamepad1.getGamepadButton(GamepadKeys.Button.DPAD_DOWN);
             this.toggleExtension = this.gamepad1.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT);
+            this.zeroSlides = this.gamepad1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT);
         }
 
         public boolean interruptCV() {
