@@ -232,10 +232,8 @@ public class Outtake extends SubsystemBase {
             case UpClawClosed:
                 this.slides.setTarget(this.getTargetHeight());
                 this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armSample);
-
-                if (!this.arm.armPhysicallyUp() || !this.slides.atTarget()) this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.safeMovement);
+                if (!this.arm.armPhysicallyUp() || !this.slides.atTarget()) this.pitchServo.setPosition(0.2);
                 else this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleOuttake);
-
                 this.claw.setState(Subsystems.ClawState.StrongGripClosed);
                 this.hasCycleOccured = true;
                 break;
