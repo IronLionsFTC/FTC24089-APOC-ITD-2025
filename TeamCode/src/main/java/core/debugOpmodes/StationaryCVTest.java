@@ -85,29 +85,7 @@ public class StationaryCVTest extends CommandOpMode {
                                 follower
                         ),
 
-                        CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem),
-
-                        CMD.resetCV(buffer),
-
-                        CMD.scanForSample(limelight, buffer, telemetry, follower, intakeSubsystem, false),
-                        CMD.driveToSampleUseSlides(follower, intakeSubsystem, buffer, telemetry).alongWith(
-                                CMD.alignClaw(intakeSubsystem, buffer)
-                        ),
-
-                        CMD.sleep(500),
-                        CMD.grabSample(intakeSubsystem),
-                        CMD.sleep(100),
-                        CMD.grabSampleAbortIfEmpty(
-                                intakeSubsystem,
-                                outtakeSubsystem,
-                                limelight,
-                                buffer,
-                                telemetry,
-                                follower
-                        ),
-
-                        CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem),
-
+                        CMD.retractIntakeAndTransferHalf(intakeSubsystem, outtakeSubsystem),
                         CMD.moveAbsolute(follower, Vector.cartesian(0, 0), true)
                 )
         );

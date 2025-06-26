@@ -109,7 +109,7 @@ public class LinearSlides extends SubsystemBase {
 
         if (this.target == 0 && getRelative() < 0.07) {
             if (this.forceDown.getAsBoolean()) {
-                response = -0.4;
+                response = -0.7;
             }
         }
 

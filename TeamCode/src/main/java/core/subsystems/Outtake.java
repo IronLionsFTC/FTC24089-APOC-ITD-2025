@@ -140,8 +140,8 @@ public class Outtake extends SubsystemBase {
             return this.leftArmServo.getPosition();
         }
 
-        public boolean armPhysicallyUp() { return this.leftArmServo.getPosition() >= 0.2 && this.leftArmServo.secondsSinceMovement() > Timings.armFoldUpTime; }
-        public boolean armPhysicallyDown() { return this.leftArmServo.getPosition() < 0.2 && this.leftArmServo.secondsSinceMovement() > Timings.armFoldDownTime; }
+        public boolean armPhysicallyUp() { return this.leftArmServo.getPosition() >= 0.5 && this.leftArmServo.secondsSinceMovement() > Timings.armFoldUpTime; }
+        public boolean armPhysicallyDown() { return this.leftArmServo.getPosition() < 0.5 && this.leftArmServo.secondsSinceMovement() > Timings.armFoldDownTime; }
     }
 
     // Wrapper function for getting height based on basket substate
@@ -252,32 +252,45 @@ public class Outtake extends SubsystemBase {
                 break;
 
             case SpecimenIntakeClawOpen:
-                this.slides.setTarget(0);
                 this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armSpecimen);
 
-                if (!this.arm.armPhysicallyUp()) {
-                    this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.safeMovement);
-                    this.claw.setState(Subsystems.ClawState.StrongGripClosed);
-                } else {
-                    this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSpecimenIntake);
+                if (this.armPhysicallyDown()) this.slides.setTarget(PositionalBounds.SlidePositions.OuttakePositions.specimenOuttake * 0.8);
+                else this.slides.setTarget(PositionalBounds.SlidePositions.OuttakePositions.specimenOuttake * 1.5);
+                this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSpecimenIntake);
+
+                if (this.pitchServo.elapsedTime() > 0.8) {
                     this.claw.setState(Subsystems.ClawState.Open);
+                } else {
+                    this.claw.setState(Subsystems.ClawState.StrongGripClosed);
                 }
                 break;
 
             case SpecimenIntakeClawClosed:
-                this.slides.setTarget(0);
                 this.claw.setState(Subsystems.ClawState.StrongGripClosed);
+
+                if (this.clawClosed()) this.slides.setTarget(PositionalBounds.SlidePositions.OuttakePositions.specimenOuttake * 1.5);
+                else this.slides.setTarget(PositionalBounds.SlidePositions.OuttakePositions.specimenOuttake * 0.8);
+
                 this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armSpecimen);
                 this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSpecimenIntake);
                 this.hasCycleOccured = false;
+                if (this.clawClosed() && this.slides.atTarget()) nextState();
                 break;
 
             case SpecimenOuttakeEntry:
-                this.slides.setTarget(PositionalBounds.SlidePositions.OuttakePositions.specimenOuttake);
-                this.claw.setState(Subsystems.ClawState.StrongGripClosed);
                 this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armDown);
                 this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.specimenEntry);
                 this.hasCycleOccured = false;
+
+                if (this.pitchServo.elapsedTime() > 0.4) {
+                    this.slides.setTarget(PositionalBounds.SlidePositions.OuttakePositions.specimenOuttake);
+                    this.claw.setState(Subsystems.ClawState.ReallyWeak);
+                }
+                else {
+                    this.slides.setTarget(PositionalBounds.SlidePositions.OuttakePositions.specimenOuttake * 1.4);
+                    this.claw.setState(Subsystems.ClawState.StrongGripClosed);
+                }
+
                 break;
 
             case SpecimenOuttakeExit:

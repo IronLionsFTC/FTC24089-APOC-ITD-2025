@@ -7,7 +7,8 @@ public class Subsystems {
         StrongGripClosed,
         WeakGripClosed,
         Open,
-        WideOpen
+        WideOpen,
+        ReallyWeak
     }
 
     public enum IntakeState {

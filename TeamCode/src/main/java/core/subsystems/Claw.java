@@ -80,6 +80,10 @@ public class Claw extends SubsystemBase {
             case WideOpen:
                 position = this.scalar * PositionalBounds.ServoPositions.ClawPositions.wideOpenPosition;
                 break;
+
+            case ReallyWeak:
+                position = 0.08;
+                break;
         }
 
         if (this.reverse) {

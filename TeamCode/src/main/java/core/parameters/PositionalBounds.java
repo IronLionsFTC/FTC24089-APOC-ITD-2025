@@ -31,15 +31,15 @@ public final class PositionalBounds {
         }
 
         public static final class Outtake {
-            public static final double armDown = 0.0;
-            public static final double armSample = 0.2;
-            public static final double armSpecimen = 0.5;
+            public static final double armDown = 0.40;
+            public static final double armSample = 0.615;
+            public static final double armSpecimen = 0;
             public static final double pitchSampleOuttake = 0;
-            public static final double pitchSpecimenIntake = 0.05;
-            public static final double pitchSampleTransfer = 1;
-            public static final double safeMovement = 0.5;
+            public static final double pitchSpecimenIntake = 1;
+            public static final double pitchSampleTransfer = 0.66;
+            public static final double safeMovement = 0.4;
 
-            public static final double specimenEntry = 0.55;
+            public static final double specimenEntry = 0.35;
         }
     }
 

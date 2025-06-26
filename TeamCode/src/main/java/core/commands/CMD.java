@@ -404,4 +404,20 @@ public class CMD {
                 CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cache, telemetry, light)
         );
     }
+
+    public static GoToSpecimenIntake goToSpecimenIntake(Outtake outtakeSubsystem) {
+        return new GoToSpecimenIntake(outtakeSubsystem);
+    }
+
+    public static SpecimenIntakeBySensor specimenIntakeBySensor(Intake intakeSubsystem, Outtake outtakeSubsystem) {
+        return new SpecimenIntakeBySensor(intakeSubsystem, outtakeSubsystem);
+    }
+
+    public static RetractIntakeAndTransferHalf retractIntakeAndTransferHalf(Intake intakeSubsystem, Outtake outtakeSubsystem) {
+        return new RetractIntakeAndTransferHalf(intakeSubsystem, outtakeSubsystem);
+    }
+
+    public static InstantCommand intakeFull(Intake intakeSubsystem) {
+        return new InstantCommand(intakeSubsystem::full);
+    }
 }

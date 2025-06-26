@@ -7,7 +7,7 @@ import com.pedropathing.pathgen.PathBuilder;
 import com.pedropathing.pathgen.PathChain;
 import com.pedropathing.pathgen.Point;
 
-public class SpecimenAutonomous {
+public class OldSpecimenAutonomous {
     private static Point point(double x, double y) {
         return new Point(x, y, Point.CARTESIAN);
     }
@@ -54,18 +54,18 @@ public class SpecimenAutonomous {
     public static Point hpTwo = point(16.4, -18.2);
     public static Point hpThree = point(16.6, -26.2);
 
-    public static Point pickupA = point(5, -32);
-    public static Point pickupB = point(5, -32);
-    public static Point pickupC = point(5, -32);
-    public static Point pickupD = point(5, -32);
+    public static Point pickupA = point(16.6, -16);
+    public static Point pickupB = point(17, -17);
+    public static Point pickupC = point(20.6, -18);
+    public static Point pickupD = point(22.6, -19);
 
     public static Point park = point(6, -25);
     public static Point intermediary = point(20, 5);
 
-    public static Point dumpA = point(30, 8.36);
-    public static Point dumpB = point(30, 8.36);
-    public static Point dumpC = point(30, 8.36);
-    public static Point dumpD = point(30, 8.36);
+    public static Point dumpA = point(32, 8.36);
+    public static Point dumpB = point(34, 8.36);
+    public static Point dumpC = point(35, 8.36);
+    public static Point dumpD = point(36, 8.36);
 
     public static PathChain park() {
         return simpleLine(dumpC, park, 0);
@@ -127,7 +127,7 @@ public class SpecimenAutonomous {
     }
 
     public static PathChain startCycling() {
-        return simpleLine(hpThree, pickupA, 0);
+        return simpleLine(hpThree, pickupA, Math.toDegrees(-2.05));
     }
 
     public static PathChain goDumpA() {
@@ -135,7 +135,35 @@ public class SpecimenAutonomous {
     }
 
     public static PathChain returnA() {
-        return simpleLine(dumpA, pickupB, 0);
+        PathBuilder builder = new PathBuilder();
+
+        Path turnAway = new Path(
+                new BezierLine(
+                        dumpA,
+                        intermediary
+                )
+        );
+
+        turnAway.setLinearHeadingInterpolation(0, -2);
+
+        Path goToSample = new Path(
+                new BezierLine(
+                        intermediary,
+                        pickupB
+                )
+        );
+
+        goToSample.setConstantHeadingInterpolation(-2.05);
+
+        builder.addPath(
+                turnAway
+        );
+
+        builder.addPath(
+                goToSample
+        );
+
+        return builder.build();
     }
 
     public static PathChain goDumpB() {
@@ -143,7 +171,35 @@ public class SpecimenAutonomous {
     }
 
     public static PathChain returnB() {
-        return simpleLine(dumpB, pickupC, 0);
+        PathBuilder builder = new PathBuilder();
+
+        Path turnAway = new Path(
+                new BezierLine(
+                        dumpB,
+                        intermediary
+                )
+        );
+
+        turnAway.setLinearHeadingInterpolation(0, -2);
+
+        Path goToSample = new Path(
+                new BezierLine(
+                        intermediary,
+                        pickupC
+                )
+        );
+
+        goToSample.setConstantHeadingInterpolation(-2.05);
+
+        builder.addPath(
+                turnAway
+        );
+
+        builder.addPath(
+                goToSample
+        );
+
+        return builder.build();
     }
 
 
@@ -152,7 +208,35 @@ public class SpecimenAutonomous {
     }
 
     public static PathChain returnC() {
-        return simpleLine(dumpC, pickupD, 0);
+        PathBuilder builder = new PathBuilder();
+
+        Path turnAway = new Path(
+                new BezierLine(
+                        dumpC,
+                        intermediary
+                )
+        );
+
+        turnAway.setLinearHeadingInterpolation(0, -2);
+
+        Path goToSample = new Path(
+                new BezierLine(
+                        intermediary,
+                        pickupD
+                )
+        );
+
+        goToSample.setConstantHeadingInterpolation(-2.05);
+
+        builder.addPath(
+                turnAway
+        );
+
+        builder.addPath(
+                goToSample
+        );
+
+        return builder.build();
     }
 
 
@@ -161,6 +245,34 @@ public class SpecimenAutonomous {
     }
 
     public static PathChain returnD() {
-        return simpleLine(dumpD, park, 0);
+        PathBuilder builder = new PathBuilder();
+
+        Path turnAway = new Path(
+                new BezierLine(
+                        dumpD,
+                        intermediary
+                )
+        );
+
+        turnAway.setLinearHeadingInterpolation(0, -2);
+
+        Path goToSample = new Path(
+                new BezierLine(
+                        intermediary,
+                        pickupD
+                )
+        );
+
+        goToSample.setConstantHeadingInterpolation(-2.05);
+
+        builder.addPath(
+                turnAway
+        );
+
+        builder.addPath(
+                goToSample
+        );
+
+        return builder.build();
     }
 }

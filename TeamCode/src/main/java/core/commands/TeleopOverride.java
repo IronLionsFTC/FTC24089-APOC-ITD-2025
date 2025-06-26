@@ -21,11 +21,13 @@ public class TeleopOverride extends CommandBase {
         if (this.intakeSubsystem.state == Subsystems.IntakeState.ExtendedClawGrabbing) {
             // Open the claw if a grab is missed
             this.intakeSubsystem.cancelGrab();
+        } else if (this.outtakeSubsystem.state == Subsystems.OuttakeState.DownClawOpen) {
+            this.outtakeSubsystem.state = Subsystems.OuttakeState.SpecimenIntakeClawOpen;
         } else if (this.outtakeSubsystem.state == Subsystems.OuttakeState.UpClawClosed) {
             // If the outtake is up ready to deposit, then the override button switches buckets
             this.outtakeSubsystem.toggleBasket();
         } else if (this.outtakeSubsystem.state == Subsystems.OuttakeState.DownClawClosed) {
-            this.outtakeSubsystem.state = Subsystems.OuttakeState.SpecimenOuttakeEntry;
+            this.outtakeSubsystem.state = Subsystems.OuttakeState.SpecimenIntakeClawOpen;
         }
     }
 

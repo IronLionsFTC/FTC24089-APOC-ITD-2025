@@ -19,6 +19,7 @@ public class DualAxisGimbal extends SubsystemBase {
     private CachedServo yawServo;
 
     private double tilt = 0;
+    private boolean halfPitch;
 
     public DualAxisGimbal(HardwareMap hwmp, String leftPitchServoName, String rightPitchServoName, String yawServoName) {
         this.leftPitchServo = new CachedServo(hwmp, leftPitchServoName);
@@ -26,13 +27,19 @@ public class DualAxisGimbal extends SubsystemBase {
         this.yawServo = new CachedServo(hwmp, yawServoName, ClawPositions.yawRest);
         this.yawServo.setPosition(ClawPositions.yawRest);
         this.leftPitchServo.setPosition(0);
+        this.halfPitch = false;
     }
 
-    public void resetPosition() {
+    public void resetPosition(boolean halfPitch) {
+        this.halfPitch = halfPitch;
         this.yawServo.setPosition(ClawPositions.yawRest);
-
-        this.leftPitchServo.setPosition(ClawPositions.pitchRest);
-        this.rightPitchServo.setPosition(1 - ClawPositions.pitchRest);
+        if (!this.halfPitch){
+            this.leftPitchServo.setPosition(ClawPositions.pitchRest);
+            this.rightPitchServo.setPosition(1 - ClawPositions.pitchRest);
+        } else {
+            this.leftPitchServo.setPosition(ClawPositions.pitchExtended * 0.5);
+            this.rightPitchServo.setPosition(1 - ClawPositions.pitchExtended * 0.5);
+        }
     }
 
     public void extendPitch() {
@@ -50,7 +57,11 @@ public class DualAxisGimbal extends SubsystemBase {
     }
 
     public boolean foldedUp() {
-        return this.leftPitchServo.secondsSinceMovement() > Timings.clawFoldUpTime && this.leftPitchServo.getPosition() == ClawPositions.pitchRest;
+        return this.leftPitchServo.secondsSinceMovement() > Timings.clawFoldUpTime
+                && (
+                    this.leftPitchServo.getPosition() == ClawPositions.pitchRest
+                    || this.leftPitchServo.getPosition() == ClawPositions.pitchExtended * 0.5 && this.halfPitch
+                );
     }
 
     public boolean foldedDown() {
