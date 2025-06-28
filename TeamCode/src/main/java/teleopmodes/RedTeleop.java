@@ -89,7 +89,9 @@ public class RedTeleop extends CommandOpMode {
                 CMD.resetCV(sampleState).andThen(
                         new InstantCommand(limelight::disable)
                 ).andThen(
-                        new InstantCommand(limelight::enable)
+                        new InstantCommand(limelight::enable).andThen(
+                                CMD.target(limelight, Limelight.Targets.RedAndYellow)
+                        )
                 ).andThen(
                 new IronLionsInterrupt(
                         CMD.disableDrivebase(drivebaseSubsystem).andThen(
@@ -122,7 +124,8 @@ public class RedTeleop extends CommandOpMode {
                         follower,
                         drivebaseSubsystem,
                         telemetry,
-                        this.buttons::interruptCV
+                        this.buttons::interruptCV,
+                        Limelight.Targets.RedOnly
                 )
         );
 

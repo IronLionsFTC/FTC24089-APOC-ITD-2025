@@ -22,13 +22,16 @@ public class TeleOpSpecButton extends ConditionalCommand {
             Follower follower,
             Drivebase drivebase,
             Telemetry telemetry,
-            BooleanSupplier interupt
+            BooleanSupplier interupt,
+            Limelight.Targets targets
     ) {
         super(
                 CMD.resetCV(buffer).andThen(
                         new InstantCommand(limelight::disable)
                 ).andThen(
-                        new InstantCommand(limelight::enable)
+                        new InstantCommand(limelight::enable).andThen(
+                                CMD.target(limelight, targets)
+                        )
                 ).andThen(
                         new IronLionsInterrupt(
                                 CMD.disableDrivebase(drivebase).andThen(

@@ -25,11 +25,20 @@ public class Limelight {
     public enum Targets {
         YellowOnly,
         RedAndYellow,
-        BlueAndYellow
+        BlueAndYellow,
+        RedOnly,
+        BlueOnly
     }
 
     public Limelight(HardwareMap hwmp, Targets targets) {
         this.hardware = hwmp.get(Limelight3A.class, "limelight");
+        this.setTarget(targets);
+        this.hardware.updatePythonInputs(0, 0, 0, 0, 0, 0, 0, 0);
+        this.arm = new CachedServo(hwmp, "limelightServo");
+        this.hide();
+    }
+
+    public void setTarget(Targets targets) {
         switch (targets) {
             case YellowOnly:
                 this.hardware.pipelineSwitch(1);
@@ -40,10 +49,13 @@ public class Limelight {
             case BlueAndYellow:
                 this.hardware.pipelineSwitch(3);
                 break;
+            case RedOnly:
+                this.hardware.pipelineSwitch(4);
+                break;
+            case BlueOnly:
+                this.hardware.pipelineSwitch(5);
+                break;
         }
-        this.hardware.updatePythonInputs(0, 0, 0, 0, 0, 0, 0, 0);
-        this.arm = new CachedServo(hwmp, "limelightServo");
-        this.hide();
     }
 
     public void enable() {

@@ -438,7 +438,8 @@ public class CMD {
             Follower follower,
             Drivebase drivebase,
             Telemetry telemetry,
-            BooleanSupplier interupt
+            BooleanSupplier interupt,
+            Limelight.Targets targets
     ) {
         return new TeleOpSpecButton(
                 intakeSubsystem,
@@ -448,7 +449,102 @@ public class CMD {
                 follower,
                 drivebase,
                 telemetry,
-                interupt
+                interupt,
+                targets
         );
+    }
+
+    public static Command specimenAuto(
+            BooleanSupplier opModeIsActive,
+            Follower follower,
+            Outtake outtakeSubsystem,
+            Intake intakeSubsystem,
+            Limelight limelight,
+            Limelight.SampleState buffer,
+            Telemetry telemetry
+    ) {
+        return new SequentialCommandGroup(
+                CMD.sleepUntil(opModeIsActive),
+                CMD.followPath(follower, core.paths.SpecimenAutonomous.firstDump()).setSpeed(1.0).alongWith(
+                        CMD.raiseSlidesForSpecimen(outtakeSubsystem)
+                ),
+                CMD.clipSpecimen(outtakeSubsystem, 0.3).alongWith(
+                        CMD.scanForSample(limelight, buffer, telemetry, follower, intakeSubsystem, false).andThen(
+                                CMD.driveToSampleUseSlidesSpec(follower, intakeSubsystem, buffer, telemetry).alongWith(
+                                        CMD.alignClaw(intakeSubsystem, buffer)
+                                ).andThen(
+                                        CMD.waitAndGrabSample(intakeSubsystem)
+                                )
+                        )
+                ),
+                CMD.followPath(follower, core.paths.SpecimenAutonomous.returnCV()).setSpeed(0.6).alongWith(
+                        CMD.retractIntakeAndTransferHalf(intakeSubsystem, outtakeSubsystem).andThen(
+                                CMD.goToSpecimenIntake(outtakeSubsystem)
+                        )
+                ),
+
+                CMD.specimenIntakeBySensor(intakeSubsystem, outtakeSubsystem),
+
+                CMD.followPath(follower, core.paths.SpecimenAutonomous.goCV()).setSpeed(1.0).alongWith(
+                        CMD.raiseSlidesForSpecimen(outtakeSubsystem)
+                ),
+
+                CMD.clipSpecimen(outtakeSubsystem, 0.3),
+
+                CMD.followPath(follower, core.paths.SpecimenAutonomous.firstSpike()).setSpeed(1.0).alongWith(
+                        CMD.sleep(800).andThen(CMD.extendIntake(intakeSubsystem, 0.7, 697))
+                ),
+                CMD.waitAndGrabSample(intakeSubsystem),
+                CMD.followPath(follower, core.paths.SpecimenAutonomous.firstHp(), false).setSpeed(1),
+                CMD.releaseSample(intakeSubsystem),
+
+                CMD.followPath(follower, core.paths.SpecimenAutonomous.secondSpike(), true).setSpeed(1.0).alongWith(
+                        CMD.sleep(300).andThen(CMD.extendIntake(intakeSubsystem, 0.7, 697))
+                ),
+                CMD.waitAndGrabSample(intakeSubsystem),
+                CMD.followPath(follower, core.paths.SpecimenAutonomous.secondHp()).setSpeed(1.0),
+                CMD.releaseSample(intakeSubsystem),
+
+                CMD.followPath(follower, core.paths.SpecimenAutonomous.thirdSpike(), true).setSpeed(1.0).alongWith(
+                        CMD.sleep(300).andThen(CMD.extendIntake(intakeSubsystem, 0.7, 600))
+                ),
+                CMD.waitAndGrabSample(intakeSubsystem),
+                CMD.followPath(follower, core.paths.SpecimenAutonomous.thirdHp(), false).setSpeed(1.0),
+                CMD.retractIntake(intakeSubsystem).alongWith(
+                        CMD.followPath(follower, core.paths.SpecimenAutonomous.startCycling())
+                ).alongWith(
+                        CMD.goToSpecimenIntake(outtakeSubsystem)
+                ),
+
+                // ------------
+
+                CMD.specimenIntakeBySensor(intakeSubsystem, outtakeSubsystem).andThen(
+                        CMD.followPath(follower, core.paths.SpecimenAutonomous.goDumpA())
+                ), CMD.clipSpecimen(outtakeSubsystem, 0.3),
+
+                CMD.followPath(follower, core.paths.SpecimenAutonomous.returnA()).alongWith(
+                        CMD.specimenIntakeBySensor(intakeSubsystem, outtakeSubsystem).andThen(
+                                CMD.followPath(follower, core.paths.SpecimenAutonomous.goDumpB())
+                        )
+                ), CMD.clipSpecimen(outtakeSubsystem, 0.3),
+
+                CMD.followPath(follower, core.paths.SpecimenAutonomous.returnB()).alongWith(
+                        CMD.specimenIntakeBySensor(intakeSubsystem, outtakeSubsystem).andThen(
+                                CMD.followPath(follower, core.paths.SpecimenAutonomous.goDumpC())
+                        )
+                ), CMD.clipSpecimen(outtakeSubsystem, 0.3),
+
+                CMD.followPath(follower, core.paths.SpecimenAutonomous.returnC()).alongWith(
+                        CMD.specimenIntakeBySensor(intakeSubsystem, outtakeSubsystem).andThen(
+                                CMD.followPath(follower, core.paths.SpecimenAutonomous.goDumpD())
+                        )
+                ), CMD.clipSpecimen(outtakeSubsystem, 0.3),
+
+                CMD.followPath(follower, core.paths.SpecimenAutonomous.returnD())
+        );
+    }
+
+    public static InstantCommand target(Limelight limelight, Limelight.Targets targets) {
+        return new InstantCommand(() -> limelight.setTarget(targets));
     }
 }
