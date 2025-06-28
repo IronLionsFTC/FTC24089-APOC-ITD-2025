@@ -361,4 +361,8 @@ public class Intake extends SubsystemBase {
     public void full() {
         this.halfRaise = false;
     }
+
+    public boolean isHalf() {
+        return this.halfRaise;
+    }
 }

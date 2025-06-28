@@ -63,7 +63,7 @@ public class Controls {
 
             // Overrides
             this.emergencyIntakeRetract = this.gamepad1.getGamepadButton(GamepadKeys.Button.DPAD_DOWN);
-            this.toggleExtension = this.gamepad1.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT);
+            this.toggleExtension = this.gamepad1.getGamepadButton(GamepadKeys.Button.RIGHT_STICK_BUTTON);
             this.zeroSlides = this.gamepad1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT);
         }
 

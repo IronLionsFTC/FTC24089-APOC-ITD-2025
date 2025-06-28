@@ -68,6 +68,8 @@ public class RetractIntakeAndTransferHalf extends CommandBase {
 
     @Override
     public void end(boolean i) {
+        intakeSubsystem.full();
         outtakeSubsystem.pitchUp = false;
+        this.up = false;
     }
 }
