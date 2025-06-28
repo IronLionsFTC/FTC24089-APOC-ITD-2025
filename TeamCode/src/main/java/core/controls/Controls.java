@@ -34,6 +34,7 @@ public class Controls {
 
         // Register COMPUTER VISION
         public GamepadButton useCV;
+        public GamepadButton spec;
 
         public Buttons(Gamepad gamepad1, Gamepad gamepad2) {
 
@@ -58,6 +59,7 @@ public class Controls {
 
             // Computer vision
             this.useCV = this.gamepad1.getGamepadButton(GamepadKeys.Button.DPAD_UP);
+            this.spec = this.gamepad1.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT);
 
             // Overrides
             this.emergencyIntakeRetract = this.gamepad1.getGamepadButton(GamepadKeys.Button.DPAD_DOWN);

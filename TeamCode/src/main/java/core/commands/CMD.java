@@ -429,4 +429,26 @@ public class CMD {
     public static InstantCommand outtakeDown(Outtake outtakeSubsystem) {
         return new InstantCommand(() -> outtakeSubsystem.state = Subsystems.OuttakeState.DownClawOpen);
     }
+
+    public static TeleOpSpecButton teleOpSpecButton(
+            Intake intakeSubsystem,
+            Outtake outtakeSubsystem,
+            Limelight limelight,
+            Limelight.SampleState buffer,
+            Follower follower,
+            Drivebase drivebase,
+            Telemetry telemetry,
+            BooleanSupplier interupt
+    ) {
+        return new TeleOpSpecButton(
+                intakeSubsystem,
+                outtakeSubsystem,
+                limelight,
+                buffer,
+                follower,
+                drivebase,
+                telemetry,
+                interupt
+        );
+    }
 }

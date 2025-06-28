@@ -112,6 +112,20 @@ public class RedTeleop extends CommandOpMode {
                 )
         ));
 
+        // Specimen intaking functionality (CV + retraction)
+        buttons.spec.whenActive(
+                CMD.teleOpSpecButton(
+                        intakeSubsystem,
+                        outtakeSubsystem,
+                        limelight,
+                        sampleState,
+                        follower,
+                        drivebaseSubsystem,
+                        telemetry,
+                        this.buttons::interruptCV
+                )
+        );
+
         // Emergency retract the intake
         buttons.emergencyIntakeRetract.whenPressed(
                 CMD.retractIntake(intakeSubsystem)
