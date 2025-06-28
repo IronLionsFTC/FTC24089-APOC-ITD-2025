@@ -33,11 +33,12 @@ public class RetractIntakeAndTransferHalf extends CommandBase {
         this.outtakeSubsystem.transferComplete = false;
         this.deadMan.resetTimer();
         this.total.resetTimer();
+        this.outtakeSubsystem.pitchUp = true;
     }
 
     @Override
     public void execute() {
-        if (!this.intakeSubsystem.isSlideLatched()) this.deadMan.resetTimer();
+        if (!this.intakeSubsystem.isSlidesRetracted()) this.deadMan.resetTimer();
 
         if (this.intakeSubsystem.isSlidesRetracted() && !this.up) {
             this.intakeSubsystem.full();
@@ -47,6 +48,10 @@ public class RetractIntakeAndTransferHalf extends CommandBase {
         if (!this.up) this.deadMan.resetTimer();
 
         if (this.deadMan.getElapsedTimeSeconds() > 0.2) {
+            this.outtakeSubsystem.pitchUp = false;
+        }
+
+        if (this.deadMan.getElapsedTimeSeconds() > 0.4) {
             this.outtakeSubsystem.state = Subsystems.OuttakeState.DownClawClosed;
         }
 
@@ -59,5 +64,10 @@ public class RetractIntakeAndTransferHalf extends CommandBase {
     @Override
     public boolean isFinished() {
         return this.outtakeSubsystem.transferComplete || this.total.getElapsedTimeSeconds() > 4.5;
+    }
+
+    @Override
+    public void end(boolean i) {
+        outtakeSubsystem.pitchUp = false;
     }
 }

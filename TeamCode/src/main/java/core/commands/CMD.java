@@ -15,6 +15,7 @@ import core.hardware.IndicatorLight;
 import core.math.Vector;
 import core.parameters.PositionalBounds;
 import core.paths.SampleAutonomousV5;
+import core.state.Subsystems;
 import core.subsystems.Drivebase;
 import core.subsystems.Intake;
 import core.subsystems.Outtake;
@@ -193,6 +194,10 @@ public class CMD {
 
     public static DriveToSampleUseSlides driveToSampleUseSlides(Follower follower, Intake intakeSubsystem, Limelight.SampleState buffer, Telemetry telemetry) {
         return new DriveToSampleUseSlides(follower, intakeSubsystem, buffer, telemetry);
+    }
+
+    public static DriveToSampleUseSlidesSpec driveToSampleUseSlidesSpec(Follower follower, Intake intakeSubsystem, Limelight.SampleState buffer, Telemetry telemetry) {
+        return new DriveToSampleUseSlidesSpec(follower, intakeSubsystem, buffer, telemetry);
     }
 
     public static InstantCommand setTilt(Intake intakeSubsystem, double tilt) {
@@ -419,5 +424,9 @@ public class CMD {
 
     public static InstantCommand intakeFull(Intake intakeSubsystem) {
         return new InstantCommand(intakeSubsystem::full);
+    }
+
+    public static InstantCommand outtakeDown(Outtake outtakeSubsystem) {
+        return new InstantCommand(() -> outtakeSubsystem.state = Subsystems.OuttakeState.DownClawOpen);
     }
 }

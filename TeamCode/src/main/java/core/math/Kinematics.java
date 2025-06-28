@@ -33,14 +33,14 @@ public class Kinematics {
     public double absoluteClawRotation;
 
     public Kinematics(Limelight.SampleState buffer) {
-        double slideExtension = 319.77939 * Math.pow(Math.E, 0.0310912 * buffer.center.y) - 83.62055;
+        double slideExtension = 319.77939 * Math.pow(Math.E, 0.0310912 * buffer.center.y) - 3.62055;
         double lateralGradient = -0.000871067 * slideExtension - 0.474881;
         double lateralIntercept = -10.45;
 
         double lateralCM = lateralGradient * buffer.center.x + lateralIntercept;
         double ty = 0;
 
-        slideExtension = slideExtension + 15; // Adjust for claw tilt
+        //slideExtension = slideExtension; // Adjust for claw tilt
 
         if (slideExtension > 700) {
             double error = slideExtension - 700;

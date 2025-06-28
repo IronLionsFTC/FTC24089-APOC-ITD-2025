@@ -42,6 +42,7 @@ public class Outtake extends SubsystemBase {
     public OuttakeState state;
     private boolean useHighBasket;
     private boolean hasCycleOccured = false;
+    public boolean pitchUp;
 
     public Outtake(HardwareMap hwmp, Telemetry telemetry, BooleanSupplier forceDown) {
         this.useHighBasket = true;
@@ -76,6 +77,7 @@ public class Outtake extends SubsystemBase {
         this.slides.setZeroPowerOnRetraction();
 
         this.claw.setState(Subsystems.ClawState.WeakGripClosed);
+        this.pitchUp = false;
     }
 
     public Outtake(HardwareMap hwmp, Telemetry telemetry, BooleanSupplier forceDown, BooleanSupplier zeroing) {
@@ -111,6 +113,7 @@ public class Outtake extends SubsystemBase {
         this.slides.setZeroPowerOnRetraction();
 
         this.claw.setState(Subsystems.ClawState.WeakGripClosed);
+        this.pitchUp = false;
     }
 
     // Wrapper around setting the positions such that the right servo is inverted,
@@ -128,7 +131,7 @@ public class Outtake extends SubsystemBase {
             // Load the servos directly
             this.leftArmServo = new CachedServo(hwmp, HardwareParameters.Motors.HardwareMapNames.leftArmServo);
             this.rightArmServo = new CachedServo(hwmp, HardwareParameters.Motors.HardwareMapNames.rightArmServo);
-            this.setArmPosition(0);
+            this.setArmPosition(PositionalBounds.ServoPositions.Outtake.armDown);
         }
 
         public void setArmPosition(double position) {
@@ -140,8 +143,8 @@ public class Outtake extends SubsystemBase {
             return this.leftArmServo.getPosition();
         }
 
-        public boolean armPhysicallyUp() { return this.leftArmServo.getPosition() >= 0.5 && this.leftArmServo.secondsSinceMovement() > Timings.armFoldUpTime; }
-        public boolean armPhysicallyDown() { return this.leftArmServo.getPosition() < 0.5 && this.leftArmServo.secondsSinceMovement() > Timings.armFoldDownTime; }
+        public boolean armPhysicallyUp() { return this.leftArmServo.getPosition() >= 0.6 && this.leftArmServo.secondsSinceMovement() > Timings.armFoldUpTime; }
+        public boolean armPhysicallyDown() { return this.leftArmServo.getPosition() <= 0.6 && this.leftArmServo.secondsSinceMovement() > Timings.armFoldDownTime; }
     }
 
     // Wrapper function for getting height based on basket substate
@@ -209,11 +212,13 @@ public class Outtake extends SubsystemBase {
                     else this.slides.setTarget(PositionalBounds.SlidePositions.OuttakePositions.lowBasket);
                 }
 
-                if (!this.arm.armPhysicallyDown()) this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.safeMovement);
-                else this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleTransfer);
+                //if (!this.arm.armPhysicallyDown()) this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleTransfer);
+                //else this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleTransfer);
+                this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleTransfer);
 
                 this.claw.setState(Subsystems.ClawState.Open);
-                this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armDown);
+                if (this.pitchUp) this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armDown + 0.1);
+                else this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armDown);
                 break;
 
             case DownClawClosed:
@@ -225,7 +230,7 @@ public class Outtake extends SubsystemBase {
                     this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleTransfer);
                 } else {
                     this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armSample);
-                    this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.safeMovement * 1.3);
+                    this.pitchServo.setPosition(0.2);
                 }
                 break;
 
@@ -252,11 +257,11 @@ public class Outtake extends SubsystemBase {
             case SpecimenIntakeClawOpen:
                 this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armSpecimen);
 
-                if (this.armPhysicallyDown()) this.slides.setTarget(PositionalBounds.SlidePositions.OuttakePositions.specimenOuttake * 0.8);
+                if (this.armPhysicallyDown()) this.slides.setTarget(PositionalBounds.SlidePositions.OuttakePositions.specimenOuttake * 1.0);
                 else this.slides.setTarget(PositionalBounds.SlidePositions.OuttakePositions.specimenOuttake * 1.5);
                 this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSpecimenIntake);
 
-                if (this.pitchServo.elapsedTime() > 0.8) {
+                if (this.pitchServo.elapsedTime() > 1.0) {
                     this.claw.setState(Subsystems.ClawState.Open);
                 } else {
                     this.claw.setState(Subsystems.ClawState.StrongGripClosed);
@@ -267,7 +272,7 @@ public class Outtake extends SubsystemBase {
                 this.claw.setState(Subsystems.ClawState.StrongGripClosed);
 
                 if (this.clawClosed()) this.slides.setTarget(PositionalBounds.SlidePositions.OuttakePositions.specimenOuttake * 1.5);
-                else this.slides.setTarget(PositionalBounds.SlidePositions.OuttakePositions.specimenOuttake * 0.8);
+                else this.slides.setTarget(PositionalBounds.SlidePositions.OuttakePositions.specimenOuttake * 1.0);
 
                 this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armSpecimen);
                 this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSpecimenIntake);

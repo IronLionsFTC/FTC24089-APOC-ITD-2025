@@ -44,31 +44,57 @@ public class SpecimenAutonomous {
     }
 
     public static Point start = point(0, 0);
-    public static Point firstDump = point(30.4, 7);
+    public static Point firstDump = point(30.8, 7);
 
-    public static Point spikeOne = point(26.5, -14.5);
-    public static Point spikeTwo = point(26.5, -25);
-    public static Point spikeThree = point(32, -33.3);
+    public static Point spikeOne = point(26.6, -14.0);
+    public static Point spikeTwo = point(26.5, -23.7);
+    public static Point spikeThree = point(32, -35.6);
 
+    /*
     public static Point hpOne = point(17.2, -14.3);
     public static Point hpTwo = point(16.4, -18.2);
     public static Point hpThree = point(16.6, -26.2);
+    */
 
-    public static Point pickupA = point(5, -32);
-    public static Point pickupB = point(5, -32);
-    public static Point pickupC = point(5, -32);
-    public static Point pickupD = point(5, -32);
+    public static Point hpOne = point(25, -14);
+    public static Point hpTwo = point(30, -35);
+    public static Point hpThree = point(15, -25);
 
-    public static Point park = point(6, -25);
+    public static Point pickupA = point(4, -32);
+    public static Point pickupB = point(4, -32);
+    public static Point pickupC = point(4, -32);
+    public static Point pickupD = point(4, -32);
+
+    public static Point park = point(2, -25);
     public static Point intermediary = point(20, 5);
 
-    public static Point dumpA = point(30, 8.36);
-    public static Point dumpB = point(30, 8.36);
-    public static Point dumpC = point(30, 8.36);
-    public static Point dumpD = point(30, 8.36);
+    public static Point dumpPath = point(25, -3);
+    public static Point dumpA = point(30, 0.36);
+    public static Point dumpB = point(30.2, 0.36);
+    public static Point dumpC = point(30.5, 0.36);
+    public static Point dumpD = point(30.5, 0.36);
+
+    public static Point dumpTurn = point(25, -2);
+    public static Point hpTurn = point(10, -25);
+
+    public static PathChain angleReturn() {
+        Path a = simpleLine(dumpA, hpTurn, 45).getPath(0);
+        Path b = simpleLine(hpTurn, pickupA, 0).getPath(0);
+
+        a.setConstantHeadingInterpolation(Math.toRadians(45));
+        b.setConstantHeadingInterpolation(Math.toRadians(0));
+
+        PathBuilder builder = new PathBuilder();
+        builder.addPath(a);
+        builder.addPath(b);
+        return builder.build();
+    }
 
     public static PathChain park() {
         return simpleLine(dumpC, park, 0);
+    }
+    public static PathChain returnCV() {
+        return simpleLine(firstDump, pickupA, 0);
     }
 
     public static PathChain firstDump() {
@@ -107,7 +133,7 @@ public class SpecimenAutonomous {
     }
 
     public static PathChain firstHp() {
-        return simpleLine(spikeOne, hpOne, -131.78);
+        return simpleLine(spikeOne, hpOne, -145);//-131.78);
     }
 
     public static PathChain secondSpike() {
@@ -115,11 +141,15 @@ public class SpecimenAutonomous {
     }
 
     public static PathChain secondHp() {
-        return simpleLine(spikeTwo, hpTwo, Math.toDegrees(-2.3));
+        return simpleLine(spikeTwo, hpTwo, -145);//Math.toDegrees(-2.3));
+    }
+
+    public static PathChain goCV() {
+        return simpleLine(pickupA, firstDump, 0);
     }
 
     public static PathChain thirdSpike() {
-        return simpleLine(hpTwo, spikeThree, Math.toDegrees(-1.3));
+        return simpleLine(hpTwo, spikeThree, -70);
     }
 
     public static PathChain thirdHp() {
@@ -128,6 +158,21 @@ public class SpecimenAutonomous {
 
     public static PathChain startCycling() {
         return simpleLine(hpThree, pickupA, 0);
+    }
+
+    public static PathChain startCyclingTest() {
+        return simpleLine(hpTwo, pickupA, 0);
+    }
+
+    public static PathChain testDump() {
+        PathBuilder builder = new PathBuilder();
+        Path beeline = simpleLine(pickupA, dumpPath, 0).getPath(0);
+        beeline.setTangentHeadingInterpolation();
+        Path dump = simpleLine(dumpPath, dumpA, 0).getPath(0);
+
+        builder.addPath(beeline);
+        builder.addPath(dump);
+        return builder.build();
     }
 
     public static PathChain goDumpA() {
