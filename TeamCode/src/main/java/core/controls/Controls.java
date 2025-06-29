@@ -31,6 +31,7 @@ public class Controls {
         public DoubleSupplier driveY;
         public DoubleSupplier driveX;
         public DoubleSupplier yaw;
+        public DoubleSupplier slideOffset;
 
         // Register COMPUTER VISION
         public GamepadButton useCV;
@@ -65,6 +66,7 @@ public class Controls {
             this.emergencyIntakeRetract = this.gamepad1.getGamepadButton(GamepadKeys.Button.DPAD_DOWN);
             this.toggleExtension = this.gamepad1.getGamepadButton(GamepadKeys.Button.RIGHT_STICK_BUTTON);
             this.zeroSlides = this.gamepad1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT);
+            this.slideOffset = this.gamepad1::getRightY;
         }
 
         public boolean interruptCV() {

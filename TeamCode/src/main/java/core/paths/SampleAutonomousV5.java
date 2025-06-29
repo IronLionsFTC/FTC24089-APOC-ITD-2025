@@ -13,11 +13,11 @@ import core.computerVision.Limelight;
 import core.math.Kinematics;
 
 public class SampleAutonomousV5 {
-    private static Point point(double x, double y) {
+    public static Point point(double x, double y) {
         return new Point(y, x, Point.CARTESIAN);
     }
 
-    private static PathChain simpleLine(Point a, Point b, double h) {
+    public static PathChain simpleLine(Point a, Point b, double h) {
         Path path = new Path(
                 new BezierLine(a, b)
         );
@@ -60,21 +60,21 @@ public class SampleAutonomousV5 {
 
     public static Point start = point(0, 0);
 
-    public static Point stageOne = point(17.5, 7);
+    public static Point stageOne = point(17.5, 7.6);
     public static Point controlOne = point(22, 7.5);
     public static Point lastDump = point(18.5, 5.5);
-    public static Point cvDump = point(15, 14);
+    public static Point cvDump = point(17, 13.5);
     public static Point cvDumpFurther = point(13, 11.5);
-    public static Point stageTwo = point(22.5, 9);
+    public static Point stageTwo = point(21.5, 9);
     public static Point dumpTwo = point(21.5, 7.5);
-    public static Point stageThree = point(20.69, 8.5);
+    public static Point stageThree = point(20.69, 9);
     public static Point submersible = point(-10, 53);
     public static Point basketToSubControl = point(15, 50);
     public static Point subToBasketControl = point(11, 17);
     public static Point cvStart = point(-13, 53);
 
-    public static Point testCVDumpStart = point(-8, 54);
-    public static Point testCVDump = point(17, 10);
+    public static Point testCVDumpStart = point(-7, 54);
+    public static Point testCVDump = point(18, 9);
 
     public static PathChain testCV(Follower follower) {
         Path currentToCV = currentToCV(follower);
@@ -108,7 +108,7 @@ public class SampleAutonomousV5 {
     }
 
     public static PathChain secondDumpAndPickup() {
-        return simpleLine(stageOne, stageTwo, -11.8);
+        return simpleLine(stageOne, stageTwo, -7.5);
     }
 
     public static PathChain SecondPreplacedDump() {

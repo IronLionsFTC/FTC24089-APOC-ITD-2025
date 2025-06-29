@@ -18,7 +18,7 @@ import core.subsystems.Outtake;
 import pedroPathing.constants.FConstants;
 import pedroPathing.constants.LConstants;
 
-@Autonomous ( name = "- RED SPECIMEN AUTONOMOUS" )
+@Autonomous ( name = "- BLUE SPECIMEN AUTONOMOUS" )
 public class BlueSpecimenAutonomous extends CommandOpMode {
 
     private Intake intakeSubsystem;

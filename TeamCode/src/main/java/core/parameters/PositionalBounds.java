@@ -14,7 +14,7 @@ public final class PositionalBounds {
             public static final double strongGripPosition = 0;
             public static final double weakGripPosition = 0.01;
             public static final double openPosition = 0.5;
-            public static final double wideOpenPosition = 0.25;
+            public static final double wideOpenPosition = 0.3;
 
             // Gimble positions
             public static final double pitchRest = 0.007;
@@ -31,12 +31,12 @@ public final class PositionalBounds {
         }
 
         public static final class Outtake {
-            public static final double armDown = 0.40;
+            public static final double armDown = 0.4;
             public static final double armSample = 0.615;
             public static final double armSpecimen = 0;
             public static final double pitchSampleOuttake = 0;
             public static final double pitchSpecimenIntake = 1;
-            public static final double pitchSampleTransfer = 0.66;
+            public static final double pitchSampleTransfer = 0.69;
             public static final double safeMovement = 0.4;
 
             public static final double specimenEntry = 0.35;
@@ -49,7 +49,7 @@ public final class PositionalBounds {
         // Positions expressed as relative 0-1 so that they are consistent
         // Across motors and ratios
 
-        public static final double outtakeMaximumExtension = 740;
+        public static final double outtakeMaximumExtension = 700;
 
         public static final class OuttakePositions {
             public static final double highBasket = 1;

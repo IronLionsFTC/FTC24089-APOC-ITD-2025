@@ -36,7 +36,7 @@ public class RetractIntakeAndTransfer extends CommandBase {
     public void execute() {
 
         // If the intake slides have been in for a certain period of time
-        if (this.intakeSubsystem.isSlideLatched()) {
+        if (this.intakeSubsystem.isSlideLatched() && this.outtakeSubsystem.areSlidesDown()) {
             // Grab with the outtake claw
             if (this.outtakeSubsystem.state != Subsystems.OuttakeState.DownClawClosed) this.outtakeSubsystem.state = Subsystems.OuttakeState.DownClawClosed;
             // If the outtake claw has closed, release the intake claw

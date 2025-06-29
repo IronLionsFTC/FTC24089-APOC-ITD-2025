@@ -10,10 +10,13 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.util.Constants;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import java.nio.file.Path;
+
 import core.commands.CMD;
 import core.computerVision.Limelight;
 import core.hardware.IndicatorLight;
 import core.math.Vector;
+import core.paths.PathMaker;
 import core.subsystems.Intake;
 import core.subsystems.Outtake;
 
@@ -32,6 +35,7 @@ public class SevenSampleYellow extends CommandOpMode {
     private Limelight.SampleState cache;
 
     private IndicatorLight light;
+    private PathMaker makeDump;
 
     @Override
     public void initialize() {
@@ -50,6 +54,8 @@ public class SevenSampleYellow extends CommandOpMode {
         this.limelight = new Limelight(hardwareMap, Limelight.Targets.YellowOnly);
         this.buffer = new Limelight.SampleState();
         this.cache = new Limelight.SampleState();
+        this.makeDump = new PathMaker();
+        this.makeDump.calculate(follower);
 
         limelight.raise();
 
@@ -65,7 +71,8 @@ public class SevenSampleYellow extends CommandOpMode {
                         limelight,
                         buffer,
                         cache,
-                        telemetry
+                        telemetry,
+                        makeDump
                 )
         );
     }

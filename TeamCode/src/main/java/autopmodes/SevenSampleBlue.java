@@ -14,6 +14,7 @@ import core.commands.CMD;
 import core.computerVision.Limelight;
 import core.hardware.IndicatorLight;
 import core.math.Vector;
+import core.paths.PathMaker;
 import core.subsystems.Intake;
 import core.subsystems.Outtake;
 import pedroPathing.constants.FConstants;
@@ -31,6 +32,7 @@ public class SevenSampleBlue extends CommandOpMode {
     private Limelight.SampleState cache;
 
     private IndicatorLight light;
+    private PathMaker makeDump;
 
     @Override
     public void initialize() {
@@ -49,6 +51,8 @@ public class SevenSampleBlue extends CommandOpMode {
         this.limelight = new Limelight(hardwareMap, Limelight.Targets.BlueAndYellow);
         this.buffer = new Limelight.SampleState();
         this.cache = new Limelight.SampleState();
+        this.makeDump = new PathMaker();
+        this.makeDump.calculate(follower);
 
         limelight.raise();
 
@@ -64,7 +68,8 @@ public class SevenSampleBlue extends CommandOpMode {
                         limelight,
                         buffer,
                         cache,
-                        telemetry
+                        telemetry,
+                        makeDump
                 )
         );
     }

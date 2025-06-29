@@ -60,7 +60,7 @@ public class BlueTeleop extends CommandOpMode {
         this.buttons = new Buttons(gamepad1, gamepad2);
         BooleanSupplier zeroSlides = this.buttons.zeroSlides::get;
         this.intakeSubsystem = new Intake(hardwareMap, this.telemetry, this.light, zeroSlides);
-        this.outtakeSubsystem = new Outtake(hardwareMap, this.telemetry, this.intakeSubsystem::forceDown, zeroSlides);
+        this.outtakeSubsystem = new Outtake(hardwareMap, this.telemetry, this.intakeSubsystem::forceDown, zeroSlides, buttons.slideOffset);
         this.drivebaseSubsystem = new Drivebase(hardwareMap, this.telemetry, this.intakeSubsystem::isSlidesExtended);
 
         this.limelight = new Limelight(hardwareMap, Limelight.Targets.BlueAndYellow);

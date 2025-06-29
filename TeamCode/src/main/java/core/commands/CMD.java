@@ -6,6 +6,7 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.pedropathing.follower.Follower;
+import com.pedropathing.pathgen.Path;
 import com.pedropathing.pathgen.PathChain;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import java.util.function.BooleanSupplier;
@@ -14,6 +15,7 @@ import core.computerVision.Limelight;
 import core.hardware.IndicatorLight;
 import core.math.Vector;
 import core.parameters.PositionalBounds;
+import core.paths.PathMaker;
 import core.paths.SampleAutonomousV5;
 import core.state.Subsystems;
 import core.subsystems.Drivebase;
@@ -132,7 +134,7 @@ public class CMD {
             Limelight.SampleState buffer,
             Limelight.SampleState cached,
             Telemetry telemetry,
-            IndicatorLight light
+            PathMaker pathMaker
     ) {
         return new SequentialCommandGroup(
                 CMD.basketToSubCached(follower, cached),
@@ -144,7 +146,7 @@ public class CMD {
                         buffer,
                         cached,
                         telemetry,
-                        light
+                        pathMaker
                 )
         );
     }
@@ -157,7 +159,7 @@ public class CMD {
             Limelight.SampleState buffer,
             Limelight.SampleState cached,
             Telemetry telemetry,
-            IndicatorLight light
+            PathMaker pathMaker
     ) {
         return new SequentialCommandGroup(
                 CMD.subToCvCached(follower, cached),
@@ -169,11 +171,13 @@ public class CMD {
                 CMD.shortWaitAndGrabSample(intakeSubsystem),
                 CMD.sleep(200),
                 CMD.grabSampleAbortIfEmpty(intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, follower),
-                CMD.goToBasketForSubCycles(follower, intakeSubsystem, outtakeSubsystem)
+                CMD.goToBasketForSubCycles(follower, intakeSubsystem, outtakeSubsystem, pathMaker)
         );
     }
 
-    public static Command goToBasketForSubCycles(Follower follower, Intake intakeSubsystem, Outtake outtakeSubsystem) {
+    public static Command goToBasketForSubCycles(
+            Follower follower, Intake intakeSubsystem, Outtake outtakeSubsystem, PathMaker pathMaker
+    ) {
         return new SequentialCommandGroup(
                 CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem).andThen(
                         CMD.raiseSlidesForSampleDump(outtakeSubsystem).andThen(
@@ -183,7 +187,11 @@ public class CMD {
                         )
                 ).alongWith(
                         //CMD.followPath(follower, core.paths.SampleAutonomousV5.subToBasket()).setSpeed(1)
-                        CMD.followPath(follower, core.paths.SampleAutonomousV5.testCV(follower)).setSpeed(1)
+                        new InstantCommand(() -> pathMaker.calculate(follower)).andThen(
+                                CMD.followPath(follower, pathMaker.result).setSpeed(1)
+                        ).andThen(
+                                new InstantCommand(pathMaker::increment)
+                        )
                 )
         );
     }
@@ -339,7 +347,8 @@ public class CMD {
             Limelight limelight,
             Limelight.SampleState buffer,
             Limelight.SampleState cache,
-            Telemetry telemetry
+            Telemetry telemetry,
+            PathMaker pathMaker
     ) {
         return new SequentialCommandGroup(
                 CMD.waitForStartWithPreloadWarning(light, intakeSubsystem, opModeIsActive),
@@ -358,19 +367,33 @@ public class CMD {
                 ),
                 */
 
-                CMD.followPath(follower, core.paths.SampleAutonomousV5.testFirstDump()).setSpeed(1).alongWith(
+                (CMD.followPath(follower, core.paths.SampleAutonomousV5.testFirstDump()).setSpeed(1).alongWith(
                         CMD.raiseSlidesForSampleDump(outtakeSubsystem).andThen(
                                 CMD.waitForProgress(follower, 0.72).andThen(
                                         CMD.slamDunkSample(outtakeSubsystem)
                                 )
                         )
-                ), CMD.followPath(follower, core.paths.SampleAutonomousV5.testFirstPickup()).setSpeed(1).alongWith(
-                        CMD.extendIntake(intakeSubsystem, 0.55, 780).andThen(
+                ).andThen(
+                        CMD.followPath(follower, SampleAutonomousV5.testFirstPickup()).setSpeed(1.0)
+                )).alongWith(
+                        CMD.waitForProgress(follower, 0.5).andThen(
+                                CMD.extendIntake(intakeSubsystem, 0.55, 780).andThen(
+                                        CMD.waitAndGrabSample(intakeSubsystem).andThen(
+                                                CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem)
+                                        )
+                                )
+                        )
+                ),
+
+                /*
+                CMD.followPath(follower, core.paths.SampleAutonomousV5.testFirstPickup()).setSpeed(1).alongWith(
+                        CMD.extendIntake(intakeSubsystem, 0.55, 697).andThen(
                                 CMD.shortWaitAndGrabSample(intakeSubsystem).andThen(
                                         CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem)
                                 )
                         )
                 ),
+                */
 
                 CMD.followPath(follower, core.paths.SampleAutonomousV5.secondDumpAndPickup()).alongWith(
                         CMD.raiseSlidesForSampleDump(outtakeSubsystem).andThen(
@@ -391,7 +414,7 @@ public class CMD {
                 CMD.slamDunkSample(outtakeSubsystem),
 
                 CMD.followPath(follower, core.paths.SampleAutonomousV5.thirdDumpAndPickup()).alongWith(
-                        CMD.sleep(300).andThen(CMD.extendIntake(intakeSubsystem, 0.43, 670))
+                        CMD.extendIntake(intakeSubsystem, 0.43, 670)
                 ),
                 CMD.sleep(300).andThen(CMD.grabSample(intakeSubsystem)),
 
@@ -403,10 +426,22 @@ public class CMD {
                 CMD.sleep(300),
                 CMD.slamDunkSample(outtakeSubsystem),
 
-                CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cache, telemetry, light),
-                CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cache, telemetry, light),
-                CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cache, telemetry, light),
-                CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cache, telemetry, light)
+                CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cache, telemetry, pathMaker),
+                CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cache, telemetry, pathMaker),
+                CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cache, telemetry, pathMaker),
+                CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cache, telemetry, pathMaker),
+                CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cache, telemetry, pathMaker),
+                CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cache, telemetry, pathMaker),
+                CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cache, telemetry, pathMaker),
+                CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cache, telemetry, pathMaker),
+                CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cache, telemetry, pathMaker),
+                CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cache, telemetry, pathMaker),
+                CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cache, telemetry, pathMaker),
+                CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cache, telemetry, pathMaker),
+                CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cache, telemetry, pathMaker),
+                CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cache, telemetry, pathMaker),
+                CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cache, telemetry, pathMaker),
+                CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cache, telemetry, pathMaker)
         );
     }
 
