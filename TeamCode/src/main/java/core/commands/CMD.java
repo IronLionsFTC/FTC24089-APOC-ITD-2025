@@ -400,7 +400,7 @@ public class CMD {
                                 CMD.sleep(300).andThen(CMD.slamDunkSample(outtakeSubsystem))
                         )
                 ).alongWith(
-                        CMD.sleep(200).andThen(CMD.extendIntake(intakeSubsystem, 0.5, 600).andThen(
+                        CMD.sleep(200).andThen(CMD.extendIntake(intakeSubsystem, 0.5, 620).andThen(
                                 CMD.shortWaitAndGrabSample(intakeSubsystem).andThen(
                                         CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem)
                                 )

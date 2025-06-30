@@ -1,7 +1,5 @@
 package core.subsystems;
 
-import android.icu.text.Transliterator;
-
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -252,14 +250,14 @@ public class Outtake extends SubsystemBase {
                     this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleTransfer);
                 } else {
                     this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armSample);
-                    this.pitchServo.setPosition(0.2);
+                    this.pitchServo.setPosition(0.28);
                 }
                 break;
 
             case UpClawClosed:
                 this.slides.setTarget(this.getTargetHeight() + offset);
                 this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armSample);
-                if (!this.slides.nearlyAtTarget()) this.pitchServo.setPosition(0.2);
+                if (!this.slides.nearlyAtTarget()) this.pitchServo.setPosition(0.28);
                 else this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleOuttake);
                 this.claw.setState(Subsystems.ClawState.StrongGripClosed);
                 this.hasCycleOccured = true;
@@ -304,7 +302,7 @@ public class Outtake extends SubsystemBase {
 
             case SpecimenOuttakeEntry:
                 this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armDown);
-                this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.specimenEntry);
+                this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSpecimenEntry);
                 this.hasCycleOccured = false;
 
                 if (this.pitchServo.elapsedTime() > 0.4) {
@@ -322,7 +320,7 @@ public class Outtake extends SubsystemBase {
                 this.slides.setTarget(PositionalBounds.SlidePositions.OuttakePositions.specimenOuttake + 0.5);
                 this.claw.setState(Subsystems.ClawState.StrongGripClosed);
                 this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armDown);
-                this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.specimenEntry);
+                this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSpecimenEntry);
                 this.hasCycleOccured = false;
                 this.wasSpec = false;
                 if (this.slides.atTarget()) {

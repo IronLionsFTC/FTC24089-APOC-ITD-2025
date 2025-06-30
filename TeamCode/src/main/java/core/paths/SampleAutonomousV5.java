@@ -65,7 +65,7 @@ public class SampleAutonomousV5 {
     public static Point lastDump = point(18.5, 5.5);
     public static Point cvDump = point(17, 13.5);
     public static Point cvDumpFurther = point(13, 11.5);
-    public static Point stageTwo = point(21.5, 9);
+    public static Point stageTwo = point(21.5, 8);
     public static Point dumpTwo = point(21.5, 7.5);
     public static Point stageThree = point(20.69, 9);
     public static Point submersible = point(-10, 53);
