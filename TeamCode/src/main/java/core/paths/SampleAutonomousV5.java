@@ -3,6 +3,7 @@ package core.paths;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.localization.Pose;
 import com.pedropathing.pathgen.BezierCurve;
+import com.pedropathing.pathgen.BezierCurveCoefficients;
 import com.pedropathing.pathgen.BezierLine;
 import com.pedropathing.pathgen.Path;
 import com.pedropathing.pathgen.PathBuilder;
@@ -60,21 +61,20 @@ public class SampleAutonomousV5 {
 
     public static Point start = point(0, 0);
 
-    public static Point stageOne = point(17.5, 7.6);
-    public static Point controlOne = point(22, 7.5);
+    public static Point stageOne = point(17.5, 6.6);
     public static Point lastDump = point(18.5, 5.5);
     public static Point cvDump = point(17, 13.5);
     public static Point cvDumpFurther = point(13, 11.5);
-    public static Point stageTwo = point(21.5, 8);
-    public static Point dumpTwo = point(21.5, 7.5);
+    public static Point stageTwo = point(20.5, 9);
+    public static Point stageTwoDump = point(17.5, 7);
     public static Point stageThree = point(20.69, 9);
     public static Point submersible = point(-10, 53);
     public static Point basketToSubControl = point(15, 50);
     public static Point subToBasketControl = point(11, 17);
     public static Point cvStart = point(-13, 53);
-
-    public static Point testCVDumpStart = point(-7, 54);
-    public static Point testCVDump = point(18, 9);
+    public static Point fourthDump = point(17.5, 7);
+    public static Point testCVDumpStart = point(-6, 54);
+    public static Point testCVDump = point(19, 9);
 
     public static PathChain testCV(Follower follower) {
         Path currentToCV = currentToCV(follower);
@@ -89,40 +89,63 @@ public class SampleAutonomousV5 {
         return builder.build();
     }
 
+    public static PathChain testBasketToSub(Limelight.SampleState cached) {
+        double x = 53;
+        if (cached.angle != 0 && cached.angle != 90) {
+            Kinematics kinematics = new Kinematics(cached);
+            if (kinematics.absoluteRobotTarget.position.x >= 50) {
+                x = kinematics.absoluteRobotTarget.position.x;
+            }
+        }
+        Point cache = point(-5, x);
+
+        Path straightThere = new Path(
+                new BezierLine(
+                        testCVDump, cache
+                )
+        );
+
+        straightThere.setTangentHeadingInterpolation();
+
+        Path toSample = new Path(
+                new BezierLine(
+                    cache,
+                    point(-13, x)
+                )
+        );
+
+        toSample.setConstantHeadingInterpolation(Math.toRadians(-90));
+
+        PathBuilder chain = new PathBuilder();
+        chain.addPath(straightThere);
+        chain.addPath(toSample);
+        return chain.build();
+    }
+
     public static Path currentToCV(Follower follower) {
         Pose current = follower.getPose();
         Point currentPoint = point(current.getY(), current.getX());
         return simpleLine(currentPoint, testCVDumpStart, -30).getPath(0);
     }
 
-    public static PathChain firstDumpAndPickup() {
-        return constantCurve(start, controlOne, stageOne, -19);
-    }
-
     public static PathChain testFirstDump() {
         return simpleLine(start, lastDump, -20);
     }
-
     public static PathChain testFirstPickup() {
         return simpleLine(lastDump, stageOne, -17);
     }
-
     public static PathChain secondDumpAndPickup() {
         return simpleLine(stageOne, stageTwo, -7.5);
     }
-
-    public static PathChain SecondPreplacedDump() {
-        return simpleLine(stageTwo, dumpTwo, -13);
+    public static PathChain dumpFromSecond() {
+        return simpleLine(stageTwo, stageTwoDump, -40);
     }
-
     public static PathChain thirdDumpAndPickup() {
-        return simpleLine(stageTwo, stageThree, 17.5);
+        return simpleLine(stageTwo, stageThree, 20);
     }
-
     public static PathChain lastDump() {
-        return simpleLine(stageThree, lastDump, -20);
+        return simpleLine(stageThree, fourthDump, -40);
     }
-
     public static PathChain basketToSub() {
         return simpleCurve(stageOne, basketToSubControl, submersible);
     }

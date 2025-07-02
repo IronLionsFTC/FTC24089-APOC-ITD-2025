@@ -81,7 +81,7 @@ public class Outtake extends SubsystemBase {
         this.claw.setState(Subsystems.ClawState.WeakGripClosed);
         this.pitchUp = false;
         this.wasSpec = false;
-        this.lower = false;
+        this.lower = true;
         this.delta = () -> 0;
     }
 
@@ -158,10 +158,10 @@ public class Outtake extends SubsystemBase {
     // Wrapper function for getting height based on basket substate
     public double getTargetHeight() {
         if (this.useHighBasket){
-            if (this.lower) return PositionalBounds.SlidePositions.OuttakePositions.highBasket * 0.95;
+            if (this.lower) return PositionalBounds.SlidePositions.OuttakePositions.highBasket * 0.88;
             else return PositionalBounds.SlidePositions.OuttakePositions.highBasket;
         }
-        if (this.lower) return PositionalBounds.SlidePositions.OuttakePositions.lowBasket * 0.9;
+        if (this.lower) return PositionalBounds.SlidePositions.OuttakePositions.lowBasket * 0.88;
         return PositionalBounds.SlidePositions.OuttakePositions.lowBasket;
     }
 
@@ -246,7 +246,7 @@ public class Outtake extends SubsystemBase {
                 if (this.slides.atTarget() && this.wasSpec) this.wasSpec = false;
 
                 if (!this.transferComplete) {
-                    this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armDown);
+                    this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armDown - 0.03);
                     this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleTransfer);
                 } else {
                     this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armSample);
@@ -258,7 +258,10 @@ public class Outtake extends SubsystemBase {
                 this.slides.setTarget(this.getTargetHeight() + offset);
                 this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armSample);
                 if (!this.slides.nearlyAtTarget()) this.pitchServo.setPosition(0.28);
-                else this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleOuttake);
+                else {
+                    if (this.lower) this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleOuttake + 0.13);
+                    else this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleOuttake);
+                }
                 this.claw.setState(Subsystems.ClawState.StrongGripClosed);
                 this.hasCycleOccured = true;
                 break;
@@ -267,7 +270,8 @@ public class Outtake extends SubsystemBase {
                 this.slides.setTarget(this.getTargetHeight() + offset);
                 this.claw.setState(Subsystems.ClawState.Open);
                 this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armSample);
-                this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleOuttake);
+                if (this.lower) this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleOuttake + 0.13);
+                else this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleOuttake);
 
                 // Automatically retract outtake when the sample has been dropped
                 if (this.claw.hasClawPhysicallyOpened()) this.nextState();

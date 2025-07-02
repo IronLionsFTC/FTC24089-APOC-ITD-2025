@@ -84,9 +84,8 @@ public class LinearSlides extends SubsystemBase {
     }
 
     public void setTarget(double relative) {
-        this.target = Utility.clamp(relative, 0, 1);
+        this.target = Utility.clamp(relative, 0, 2);
     }
-
     public void zeroEncoder() {
         motors.resetEncoder();
     }
