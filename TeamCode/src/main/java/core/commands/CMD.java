@@ -620,18 +620,14 @@ public class CMD {
                 // Perform the second raise and dump whilst driving to intake the second preplaced sample, then dump the second
                 CMD.followPath(follower, EightSampleAuto.stage3()).alongWith(
                         CMD.raiseSlidesForSampleDump(outtakeSubsystem).andThen(
-                                CMD.sleep(300).andThen(
-                                        CMD.slamDunkSample(outtakeSubsystem)
-                                )
+                                CMD.slamDunkSample(outtakeSubsystem)
                         )
                 ).alongWith(
                         CMD.extendIntake(intakeSubsystem, 0.5, 620).andThen(
                                 CMD.waitAndGrabSample(intakeSubsystem).andThen(
                                         CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem).andThen(
                                                 CMD.raiseSlidesForSampleDump(outtakeSubsystem).andThen(
-                                                        CMD.sleep(300).andThen(
-                                                                CMD.slamDunkSample(outtakeSubsystem)
-                                                        )
+                                                        CMD.slamDunkSample(outtakeSubsystem)
                                                 )
                                         )
                                 )
@@ -649,9 +645,7 @@ public class CMD {
                 CMD.followPath(follower, EightSampleAuto.stage5()).alongWith(
                         CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem).andThen(
                                 CMD.raiseSlidesForSampleDump(outtakeSubsystem).andThen(
-                                        CMD.sleep(300).andThen(
-                                                CMD.slamDunkSample(outtakeSubsystem)
-                                        )
+                                        CMD.slamDunkSample(outtakeSubsystem)
                                 )
                         )
                 ),
