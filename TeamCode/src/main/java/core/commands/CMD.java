@@ -609,7 +609,7 @@ public class CMD {
                         CMD.followPath(follower, EightSampleAuto.stage2()).alongWith()
                 )).alongWith(
                         CMD.waitForProgress(follower, 0.5).andThen(
-                                CMD.extendIntake(intakeSubsystem, 0.55, 680).andThen(
+                                CMD.extendIntake(intakeSubsystem, 0.55, 700).andThen(
                                         CMD.waitAndGrabSample(intakeSubsystem).andThen(
                                                 CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem)
                                         )
