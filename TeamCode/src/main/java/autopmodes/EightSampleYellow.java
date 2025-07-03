@@ -19,8 +19,8 @@ import core.subsystems.Outtake;
 import pedroPathing.constants.FConstants;
 import pedroPathing.constants.LConstants;
 
-@Autonomous ( name = "- 7 Sample [RED] -" )
-public class SevenSampleRed extends CommandOpMode {
+@Autonomous ( name = "- 8 Sample [YELLOW] -" )
+public class EightSampleYellow extends CommandOpMode {
 
     private Intake intakeSubsystem;
     private Outtake outtakeSubsystem;
@@ -46,7 +46,6 @@ public class SevenSampleRed extends CommandOpMode {
         Constants.setConstants(FConstants.class, LConstants.class);
         this.follower = new Follower(hardwareMap);
         this.follower.setStartingPose(Vector.cartesian(-2, 0).pose(0));
-
         this.limelight = new Limelight(hardwareMap, Limelight.Targets.RedAndYellow);
         this.buffer = new Limelight.SampleState();
         this.cache = new Limelight.SampleState();
@@ -58,7 +57,7 @@ public class SevenSampleRed extends CommandOpMode {
         schedule(
                 new RunCommand(follower::update),
                 new RunCommand(telemetry::update),
-                CMD.sampleAuto(
+                CMD.eightSampleAuto(
                         intakeSubsystem,
                         outtakeSubsystem,
                         follower,

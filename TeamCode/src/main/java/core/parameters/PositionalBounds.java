@@ -37,7 +37,7 @@ public final class PositionalBounds {
 
             public static final double pitchSampleOuttake = 0;
             public static final double pitchSpecimenIntake = 1;
-            public static final double pitchSampleTransfer = 0.735;
+            public static final double pitchSampleTransfer = 0.73;
             public static final double pitchSpecimenEntry = 0.45;
         }
     }

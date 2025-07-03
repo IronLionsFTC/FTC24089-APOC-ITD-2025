@@ -60,7 +60,6 @@ public class SampleAutonomousV5 {
     }
 
     public static Point start = point(0, 0);
-
     public static Point stageOne = point(17, 7.6);
     public static Point lastDump = point(18.5, 5.5);
     public static Point cvDump = point(17, 13.5);
