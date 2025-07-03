@@ -246,7 +246,7 @@ public class Outtake extends SubsystemBase {
                 if (this.slides.atTarget() && this.wasSpec) this.wasSpec = false;
 
                 if (!this.transferComplete) {
-                    this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armDown - 0.03);
+                    this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armDown - 0.05);
                     this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleTransfer);
                 } else {
                     this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armSample);
