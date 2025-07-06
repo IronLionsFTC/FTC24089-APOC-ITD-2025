@@ -259,8 +259,8 @@ public class Outtake extends SubsystemBase {
                 this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armSample);
                 if (!this.slides.nearlyAtTarget()) this.pitchServo.setPosition(0.28);
                 else {
-                    if (this.lower) this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleOuttake + 0.13);
-                    else this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleOuttake);
+                    if (this.lower) this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleOuttake);
+                    else this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleOuttake - 0.1);
                 }
                 this.claw.setState(Subsystems.ClawState.StrongGripClosed);
                 this.hasCycleOccured = true;
@@ -270,8 +270,8 @@ public class Outtake extends SubsystemBase {
                 this.slides.setTarget(this.getTargetHeight() + offset);
                 this.claw.setState(Subsystems.ClawState.Open);
                 this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armSample);
-                if (this.lower) this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleOuttake + 0.13);
-                else this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleOuttake);
+                if (this.lower) this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleOuttake);
+                else this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleOuttake - 0.1);
 
                 // Automatically retract outtake when the sample has been dropped
                 if (this.claw.hasClawPhysicallyOpened()) this.nextState();

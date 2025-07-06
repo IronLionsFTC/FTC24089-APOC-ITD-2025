@@ -26,7 +26,7 @@ public class RetractIntakeAndTransfer extends CommandBase {
         // Ensure the intake state is grabbing, and if so bring it in for transfer
         if (this.intakeSubsystem.state == Subsystems.IntakeState.ExtendedClawGrabbing) this.intakeSubsystem.nextState();
         // If outtake is not ready for transfer, abort
-        // this.outtakeSubsystem.state = Subsystems.OuttakeState.DownClawOpen;
+        this.outtakeSubsystem.state = Subsystems.OuttakeState.DownClawOpen;
         this.outtakeSubsystem.transferComplete = false;
         this.deadMan.resetTimer();
         this.total.resetTimer();
@@ -36,7 +36,7 @@ public class RetractIntakeAndTransfer extends CommandBase {
     public void execute() {
 
         // If the intake slides have been in for a certain period of time
-        if (this.intakeSubsystem.isSlideLatched() && this.outtakeSubsystem.areSlidesDown()) {
+        if (this.intakeSubsystem.isSlideLatched()) {
             // Grab with the outtake claw
             if (this.outtakeSubsystem.state != Subsystems.OuttakeState.DownClawClosed) this.outtakeSubsystem.state = Subsystems.OuttakeState.DownClawClosed;
             // If the outtake claw has closed, release the intake claw

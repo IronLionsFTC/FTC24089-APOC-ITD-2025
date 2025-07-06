@@ -26,14 +26,16 @@ public class PathMaker {
 
     public void calculate(Follower follower) {
         Path currentToCV = currentToCV(follower);
-        Point basket = point(18 + this.offset * 0.3, 10 + this.offset * 0.3);
+        Point basket = point(18 + this.offset * 0.3, 11 + this.offset * 0.3);
         Path CVToBasket = simpleLine(testCVDumpStart, basket, -30).getPath(0);
 
         PathBuilder builder = new PathBuilder();
-        currentToCV.setConstantHeadingInterpolation(Math.toRadians(-30));
-        CVToBasket.setConstantHeadingInterpolation(Math.toRadians(-30));
+        currentToCV.setConstantHeadingInterpolation(Math.toRadians(-20));
+        CVToBasket.setReversed(true);
+        CVToBasket.setTangentHeadingInterpolation();
         builder.addPath(currentToCV);
         builder.addPath(CVToBasket);
+        builder.setReversed(true);
 
         this.result = builder.build();
     }

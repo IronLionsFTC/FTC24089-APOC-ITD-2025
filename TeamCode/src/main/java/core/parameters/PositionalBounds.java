@@ -31,13 +31,13 @@ public final class PositionalBounds {
         }
 
         public static final class Outtake {
-            public static final double armDown = 0.41;
+            public static final double armDown = 0.42;
             public static final double armSample = 0.63;
             public static final double armSpecimen = 0;
 
-            public static final double pitchSampleOuttake = 0;
+            public static final double pitchSampleOuttake = 0.15;
             public static final double pitchSpecimenIntake = 1;
-            public static final double pitchSampleTransfer = 0.73;
+            public static final double pitchSampleTransfer = 0.72;
             public static final double pitchSpecimenEntry = 0.45;
         }
     }
@@ -48,7 +48,7 @@ public final class PositionalBounds {
         // Positions expressed as relative 0-1 so that they are consistent
         // Across motors and ratios
 
-        public static final double outtakeMaximumExtension = 800;
+        public static final double outtakeMaximumExtension = 840;
 
         public static final class OuttakePositions {
             public static final double highBasket = 1;
