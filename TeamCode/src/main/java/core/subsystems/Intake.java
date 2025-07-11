@@ -124,7 +124,7 @@ public class Intake extends SubsystemBase {
 
         // Claw and gimble do not need to be scheduled as they are servo abstractions and need no update
         this.claw = new Claw(hwmp, HardwareParameters.Motors.HardwareMapNames.intakeClawServo);
-        this.claw.setOffset(0.025);
+        this.claw.setOffset(0.03);
         this.claw.setReversed(true);
         this.claw.setState(Subsystems.ClawState.WideOpen);
 
@@ -155,7 +155,7 @@ public class Intake extends SubsystemBase {
 
         // Claw and gimble do not need to be scheduled as they are servo abstractions and need no update
         this.claw = new Claw(hwmp, HardwareParameters.Motors.HardwareMapNames.intakeClawServo);
-        this.claw.setOffset(0.025);
+        this.claw.setOffset(0.03);
         this.claw.setReversed(true);
         this.claw.setState(Subsystems.ClawState.WideOpen);
 

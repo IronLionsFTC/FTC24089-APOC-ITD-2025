@@ -28,6 +28,16 @@ public class SampleAutonomousV5 {
         return pathBuilder.build();
     }
 
+    public static PathChain simpleTangentLine(Point a, Point b) {
+        Path path = new Path(
+                new BezierLine(a, b)
+        );
+        path.setTangentHeadingInterpolation();
+        PathBuilder pathBuilder = new PathBuilder();
+        pathBuilder.addPath(path);
+        return pathBuilder.build();
+    }
+
     public static PathChain constantCurve(Point a, Point c, Point b, double h) {
         Path path = new Path(
                 new BezierCurve(a, c, b)
@@ -173,6 +183,44 @@ public class SampleAutonomousV5 {
         }
     }
 
+    public static PathChain cachedStraightBasketToSub(Point current, Limelight.SampleState cached) {
+        double endX = 0;
+        double endY;
+
+        if (cached.angle != 0 && cached.angle != 90) {
+            Kinematics kinematics = new Kinematics(cached);
+            if (kinematics.absoluteRobotTarget.position.x >= 50) {
+                endY = kinematics.absoluteRobotTarget.position.x;
+            } else {
+                endY = 53;
+            }
+        } else {
+            endY = 53;
+        }
+
+        double avgX = (current.getY() + endX) * 0.6;
+        double avgY = (current.getX() + endY) * 0.6;
+
+        Path s1 = simpleTangentLine(current, point(avgX, avgY)).getPath(0);
+        Path s2 = simpleLine(point(avgX, avgY), point(endX, endY), -90).getPath(0);
+        Path s3 = simpleLine(point(endX, endY), point(-13, endY), -90).getPath(0);
+
+        PathBuilder builder = new PathBuilder();
+        //builder.addPath(s1);
+        //builder.addPath(s2);
+
+        Path test = new Path(
+                new BezierLine(
+                        current, point(endX, endY)
+                )
+        );
+        test.setLinearHeadingInterpolation(Math.toRadians(-20), Math.toRadians(-90));
+
+        builder.addPath(test);
+        builder.addPath(s3);
+        return builder.build();
+    }
+
     public static PathChain subToCV() {
         return simpleLine(submersible, cvStart, -90);
     }
@@ -190,15 +238,32 @@ public class SampleAutonomousV5 {
             Kinematics kinematics = new Kinematics(cached);
             if (kinematics.absoluteRobotTarget.position.x >= 50) {
                 return simpleLine(
-                        point(-10, kinematics.absoluteRobotTarget.position.x),
+                        point(-8, kinematics.absoluteRobotTarget.position.x),
                         point(-13, kinematics.absoluteRobotTarget.position.x),
                         -90
                 );
             } else {
-                return subToCV();
+                return simpleLine(point(-8, 53), point(-13, 53), -90);
             }
         } else {
-            return subToCV();
+            return simpleLine(point(-8, 53), point(-13, 53), -90);
+        }
+    }
+
+    public static PathChain cachedStraightSubToCv(Point current, Limelight.SampleState cached) {
+        if (cached.angle != 0 && cached.angle != 90) {
+            Kinematics kinematics = new Kinematics(cached);
+            if (kinematics.absoluteRobotTarget.position.x >= 50) {
+                return simpleLine(
+                        current,
+                        point(-13, kinematics.absoluteRobotTarget.position.x),
+                        -90
+                );
+            } else {
+                return simpleLine(current, point(-13, 53), -90);
+            }
+        } else {
+            return simpleLine(current, point(-13, 53), -90);
         }
     }
 }

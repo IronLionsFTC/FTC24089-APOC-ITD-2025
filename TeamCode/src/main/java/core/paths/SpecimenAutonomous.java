@@ -46,9 +46,9 @@ public class SpecimenAutonomous {
     public static Point start = point(0, 0);
     public static Point firstDump = point(30.8, 7);
 
-    public static Point spikeOne = point(26.6, -14.0);
-    public static Point spikeTwo = point(26.5, -23.7);
-    public static Point spikeThree = point(32, -35.6);
+    public static Point spikeOne = point(26.6, -14.6);
+    public static Point spikeTwo = point(26.5, -24.7);
+    public static Point spikeThree = point(32, -36.6);
 
     /*
     public static Point hpOne = point(17.2, -14.3);
@@ -56,23 +56,23 @@ public class SpecimenAutonomous {
     public static Point hpThree = point(16.6, -26.2);
     */
 
-    public static Point hpOne = point(25, -14);
+    public static Point hpOne = point(26, -20);
     public static Point hpTwo = point(30, -35);
     public static Point hpThree = point(15, -25);
 
-    public static Point pickupA = point(4, -32);
-    public static Point pickupB = point(4, -32);
-    public static Point pickupC = point(4, -32);
-    public static Point pickupD = point(4, -32);
+    public static Point pickupA = point(6, -32);
+    public static Point pickupB = point(6, -32);
+    public static Point pickupC = point(6, -32);
+    public static Point pickupD = point(6, -32);
 
     public static Point park = point(2, -25);
     public static Point intermediary = point(20, 5);
 
     public static Point dumpPath = point(25, -3);
-    public static Point dumpA = point(30, 0.36);
-    public static Point dumpB = point(30.2, 0.36);
-    public static Point dumpC = point(30.5, 0.36);
-    public static Point dumpD = point(30.5, 0.36);
+    public static Point dumpA = point(32, 7);
+    public static Point dumpB = point(32, 7);
+    public static Point dumpC = point(32, 7);
+    public static Point dumpD = point(32, 7);
 
     public static Point dumpTurn = point(25, -2);
     public static Point hpTurn = point(10, -25);

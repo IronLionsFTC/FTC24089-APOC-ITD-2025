@@ -5,19 +5,19 @@ public final class PositionalBounds {
     // Servo positions, 0-1.
     public static final class ServoPositions {
 
-        public static final double limelightDown = 0;
-        public static final double limelightUp = 0.93;
+        public static final double limelightDown = 0.05;
+        public static final double limelightUp = 0.96;
 
         public static final class ClawPositions {
 
             // Claw positions
             public static final double strongGripPosition = 0;
-            public static final double weakGripPosition = 0.015;
+            public static final double weakGripPosition = 0;
             public static final double openPosition = 0.5;
-            public static final double wideOpenPosition = 0.3;
+            public static final double wideOpenPosition = 0.24;
 
             // Gimble positions
-            public static final double pitchRest = 0.007;
+            public static final double pitchRest = 0.005;
             public static final double pitchExtended = 0.50;
             public static final double yawRest = 0.465;
             // How far in each direction can the servo turn from the
@@ -31,14 +31,14 @@ public final class PositionalBounds {
         }
 
         public static final class Outtake {
-            public static final double armDown = 0.42;
+            public static final double armDown = 0.43;
             public static final double armSample = 0.63;
             public static final double armSpecimen = 0;
 
-            public static final double pitchSampleOuttake = 0.15;
+            public static final double pitchSampleOuttake = 0.1;
             public static final double pitchSpecimenIntake = 1;
-            public static final double pitchSampleTransfer = 0.72;
-            public static final double pitchSpecimenEntry = 0.45;
+            public static final double pitchSampleTransfer = 0.68;
+            public static final double pitchSpecimenEntry = 0.40;
         }
     }
 
@@ -53,7 +53,7 @@ public final class PositionalBounds {
         public static final class OuttakePositions {
             public static final double highBasket = 1;
             public static final double lowBasket = 0.2;
-            public static final double specimenOuttake = 0.37;
+            public static final double specimenOuttake = 0.27;
         }
 
         public static final class IntakePositions {

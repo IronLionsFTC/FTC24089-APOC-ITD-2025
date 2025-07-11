@@ -90,7 +90,7 @@ public class YellowTeleop extends CommandOpMode {
                         new InstantCommand(limelight::disable)
                 ).andThen(
                         new InstantCommand(limelight::enable).andThen(
-                                CMD.target(limelight, Limelight.Targets.BlueAndYellow)
+                                CMD.target(limelight, Limelight.Targets.YellowOnly)
                         )
                 ).andThen(
                 new IronLionsInterrupt(
@@ -125,7 +125,7 @@ public class YellowTeleop extends CommandOpMode {
                         drivebaseSubsystem,
                         telemetry,
                         this.buttons::interruptCV,
-                        Limelight.Targets.BlueOnly
+                        Limelight.Targets.YellowOnly
                 )
         );
 

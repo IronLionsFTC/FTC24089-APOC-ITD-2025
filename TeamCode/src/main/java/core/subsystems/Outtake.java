@@ -262,6 +262,9 @@ public class Outtake extends SubsystemBase {
                     if (this.lower) this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleOuttake);
                     else this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleOuttake - 0.1);
                 }
+                if (this.delta.getAsDouble() > 0) {
+                    this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleOuttake + 0.05);
+                }
                 this.claw.setState(Subsystems.ClawState.StrongGripClosed);
                 this.hasCycleOccured = true;
                 break;
@@ -272,6 +275,7 @@ public class Outtake extends SubsystemBase {
                 this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armSample);
                 if (this.lower) this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleOuttake);
                 else this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleOuttake - 0.1);
+                this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleOuttake + 0.05);
 
                 // Automatically retract outtake when the sample has been dropped
                 if (this.claw.hasClawPhysicallyOpened()) this.nextState();
@@ -321,15 +325,12 @@ public class Outtake extends SubsystemBase {
                 break;
 
             case SpecimenOuttakeExit:
-                this.slides.setTarget(PositionalBounds.SlidePositions.OuttakePositions.specimenOuttake + 0.5);
+                this.slides.setTarget(PositionalBounds.SlidePositions.OuttakePositions.specimenOuttake * 3);
                 this.claw.setState(Subsystems.ClawState.StrongGripClosed);
                 this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armDown);
                 this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSpecimenEntry);
                 this.hasCycleOccured = false;
                 this.wasSpec = false;
-                if (this.slides.atTarget()) {
-                    this.nextState();
-                }
                 break;
         }
     }
