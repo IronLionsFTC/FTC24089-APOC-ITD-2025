@@ -37,7 +37,7 @@ public class SevenSampleRed extends CommandOpMode {
     public void initialize() {
         this.telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         this.intakeSubsystem = new Intake(hardwareMap, this.telemetry);
-        this.outtakeSubsystem = new Outtake(hardwareMap, this.telemetry, this.intakeSubsystem::forceDown);
+        this.outtakeSubsystem = new Outtake(hardwareMap, this.telemetry, this.intakeSubsystem::forceDown, () -> false, () -> 0);
         this.light = new IndicatorLight(hardwareMap, "light");
 
         CommandScheduler.getInstance().registerSubsystem(intakeSubsystem);

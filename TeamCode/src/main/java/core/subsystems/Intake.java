@@ -124,7 +124,7 @@ public class Intake extends SubsystemBase {
 
         // Claw and gimble do not need to be scheduled as they are servo abstractions and need no update
         this.claw = new Claw(hwmp, HardwareParameters.Motors.HardwareMapNames.intakeClawServo);
-        this.claw.setOffset(0.03);
+        this.claw.setOffset(0.02);
         this.claw.setReversed(true);
         this.claw.setState(Subsystems.ClawState.WideOpen);
 
@@ -155,7 +155,7 @@ public class Intake extends SubsystemBase {
 
         // Claw and gimble do not need to be scheduled as they are servo abstractions and need no update
         this.claw = new Claw(hwmp, HardwareParameters.Motors.HardwareMapNames.intakeClawServo);
-        this.claw.setOffset(0.03);
+        this.claw.setOffset(0.02);
         this.claw.setReversed(true);
         this.claw.setState(Subsystems.ClawState.WideOpen);
 
@@ -273,8 +273,9 @@ public class Intake extends SubsystemBase {
                 }
                 break;
             case RetractedClawClosed:
+                this.gimble.resetPosition(this.halfRaise);
 
-                if (this.isSlidesRetracted()) {
+                if (this.isSlidesRetracted() || !this.gimble.foldedUp()) {
                     claw.setState(Subsystems.ClawState.StrongGripClosed);
                 } else {
                     claw.setState(Subsystems.ClawState.WeakGripClosed);
@@ -284,7 +285,6 @@ public class Intake extends SubsystemBase {
                     this.slides.setPosition(PositionalBounds.SlidePositions.IntakePositions.retracted);
                 }
 
-                this.gimble.resetPosition(this.halfRaise);
                 break;
         }
 

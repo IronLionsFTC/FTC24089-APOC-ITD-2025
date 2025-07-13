@@ -60,7 +60,7 @@ public class DriveToSampleUseSlides extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return follower.getCurrentTValue() > 0.98 && this.intakeSubsystem.isSlidesExtended();
+        return follower.getCurrentTValue() > 0.95 && this.intakeSubsystem.isSlidesExtended();
     }
 
     @Override

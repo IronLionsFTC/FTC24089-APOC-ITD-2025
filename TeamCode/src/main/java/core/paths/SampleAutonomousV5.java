@@ -3,7 +3,6 @@ package core.paths;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.localization.Pose;
 import com.pedropathing.pathgen.BezierCurve;
-import com.pedropathing.pathgen.BezierCurveCoefficients;
 import com.pedropathing.pathgen.BezierLine;
 import com.pedropathing.pathgen.Path;
 import com.pedropathing.pathgen.PathBuilder;
@@ -77,7 +76,7 @@ public class SampleAutonomousV5 {
     public static Point stageTwo = point(20.5, 9);
     public static Point stageTwoDump = point(17.5, 7);
     public static Point stageThree = point(20.69, 9);
-    public static Point submersible = point(-10, 53);
+    public static Point submersible = point(-7, 53);
     public static Point basketToSubControl = point(15, 50);
     public static Point subToBasketControl = point(11, 17);
     public static Point cvStart = point(-13, 53);
@@ -173,7 +172,7 @@ public class SampleAutonomousV5 {
             Kinematics kinematics = new Kinematics(cached);
             if (kinematics.absoluteRobotTarget.position.x >= 50) {
                 return simpleCurve(stageOne, basketToSubControl,
-                    point(-10, kinematics.absoluteRobotTarget.position.x)
+                    point(-7, kinematics.absoluteRobotTarget.position.x)
                 );
             } else {
                 return basketToSub();
@@ -238,15 +237,15 @@ public class SampleAutonomousV5 {
             Kinematics kinematics = new Kinematics(cached);
             if (kinematics.absoluteRobotTarget.position.x >= 50) {
                 return simpleLine(
-                        point(-8, kinematics.absoluteRobotTarget.position.x),
-                        point(-13, kinematics.absoluteRobotTarget.position.x),
+                        point(-7, kinematics.absoluteRobotTarget.position.x),
+                        point(-10, kinematics.absoluteRobotTarget.position.x),
                         -90
                 );
             } else {
-                return simpleLine(point(-8, 53), point(-13, 53), -90);
+                return simpleLine(point(-7, 53), point(-10, 53), -90);
             }
         } else {
-            return simpleLine(point(-8, 53), point(-13, 53), -90);
+            return simpleLine(point(-7, 53), point(-10, 53), -90);
         }
     }
 
@@ -256,14 +255,14 @@ public class SampleAutonomousV5 {
             if (kinematics.absoluteRobotTarget.position.x >= 50) {
                 return simpleLine(
                         current,
-                        point(-13, kinematics.absoluteRobotTarget.position.x),
+                        point(-10, kinematics.absoluteRobotTarget.position.x),
                         -90
                 );
             } else {
-                return simpleLine(current, point(-13, 53), -90);
+                return simpleLine(current, point(-10, 53), -90);
             }
         } else {
-            return simpleLine(current, point(-13, 53), -90);
+            return simpleLine(current, point(-10, 53), -90);
         }
     }
 }

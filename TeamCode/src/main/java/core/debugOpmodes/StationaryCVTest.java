@@ -61,32 +61,18 @@ public class StationaryCVTest extends CommandOpMode {
 
                         CMD.waitForStartWithPreloadWarning(light, intakeSubsystem, this::opModeIsActive),
 
-                        CMD.sleep(1000),
-
                         CMD.raiseLimelight(limelight),
-
-                        CMD.sleep(1000),
+                        CMD.sleep(200),
 
                         CMD.scanForSample(limelight, buffer, telemetry, follower, intakeSubsystem, false),
                         CMD.driveToSampleUseSlides(follower, intakeSubsystem, buffer, telemetry).alongWith(
                                 CMD.alignClaw(intakeSubsystem, buffer)
                         ),
 
-                        CMD.sleep(500),
-                        CMD.grabSample(intakeSubsystem),
-                        CMD.sleep(200),
-                        CMD.retractIntakeSlightly(intakeSubsystem),
-                        CMD.grabSampleAbortIfEmpty(
-                                intakeSubsystem,
-                                outtakeSubsystem,
-                                limelight,
-                                buffer,
-                                telemetry,
-                                follower
-                        ),
-
-                        CMD.retractIntakeAndTransferHalf(intakeSubsystem, outtakeSubsystem),
-                        CMD.moveAbsolute(follower, Vector.cartesian(0, 0), true)
+                        CMD.waitAndInstantlyGrabSample(intakeSubsystem),
+                        CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem).alongWith(
+                                CMD.moveAbsolute(follower, Vector.cartesian(0, 0), true)
+                        )
                 )
         );
     }
