@@ -12,14 +12,13 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import core.commands.CMD;
 import core.math.Vector;
-import core.paths.SampleAutonomousV2;
 import core.subsystems.Intake;
 import core.subsystems.Outtake;
 import pedroPathing.constants.FConstants;
 import pedroPathing.constants.LConstants;
 
-@Autonomous(name = "AutonomousPickupTest")
-public class AutonomousPickupTest extends CommandOpMode {
+@Autonomous(name = "Full Extension Transfer Test")
+public class LongTransferTest extends CommandOpMode {
     private Follower follower;
     private Intake intakeSubsystem;
     private Outtake outtakeSubsystem;
@@ -41,13 +40,10 @@ public class AutonomousPickupTest extends CommandOpMode {
                 new RunCommand(follower::update),
                 new SequentialCommandGroup(
                         CMD.sleepUntil(this::opModeIsActive),
-                        CMD.followPath(follower, SampleAutonomousV2.firstDumpAndPickup()).alongWith(
-                                CMD.extendIntake(intakeSubsystem)
-                        ),
-                        CMD.sleep(5000),
-                        CMD.followPath(follower, SampleAutonomousV2.secondDumpAndPickup()),
-                        CMD.sleep(5000),
-                        CMD.followPath(follower, SampleAutonomousV2.thirdDumpAndPickup())
+                        CMD.extendIntake(intakeSubsystem),
+                        CMD.sleep(1000),
+                        CMD.waitAndGrabSample(intakeSubsystem),
+                        CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem)
                 )
         );
     }
