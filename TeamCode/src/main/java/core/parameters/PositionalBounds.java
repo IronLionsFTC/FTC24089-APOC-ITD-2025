@@ -14,7 +14,7 @@ public final class PositionalBounds {
             public static final double strongGripPosition = 0;
             public static final double weakGripPosition = 0.03;
             public static final double openPosition = 0.5;
-            public static final double wideOpenPosition = 0.25;
+            public static final double wideOpenPosition = 0.24;
 
             // Gimble positions
             public static final double pitchRest = 0.005;
@@ -37,7 +37,7 @@ public final class PositionalBounds {
 
             public static final double pitchSampleOuttake = 0.1;
             public static final double pitchSpecimenIntake = 1;
-            public static final double pitchSampleTransfer = 0.68;
+            public static final double pitchSampleTransfer = 0.705;
             public static final double pitchSpecimenEntry = 0.40;
         }
     }
