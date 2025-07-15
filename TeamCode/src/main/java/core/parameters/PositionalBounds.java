@@ -63,7 +63,7 @@ public final class PositionalBounds {
     }
 
     public static final class Sensors {
-        public static final double transferThreshold = 65;
+        public static final double transferThreshold = 50;
         public static final double intakeThreshold = 15;
         public static final double intakeHovering = 28;
     }
