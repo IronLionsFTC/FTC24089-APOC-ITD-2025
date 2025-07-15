@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import core.hardware.CachedMotor;
 import core.hardware.CachedServo;
 import core.hardware.MasterSlaveMotorPair;
 import core.parameters.HardwareParameters;
@@ -24,7 +25,8 @@ public class Outtake extends SubsystemBase {
     // Subsystems
     private LinearSlides slides;
     private Claw claw;
-    private MasterSlaveMotorPair slideMotors;
+    private CachedMotor leftSlideMotor;
+    private CachedMotor rightSlideMotor;
     private CachedServo pitchServo;
 
     // Arm handler - this COULD be a subsystem, for now it is not.
@@ -35,7 +37,8 @@ public class Outtake extends SubsystemBase {
     private Telemetry telemetry;
 
     // PID
-    private PIDController slideController;
+    private PIDController leftSlideController;
+    private PIDController rightSlideController;
 
     // State
     public OuttakeState state;
@@ -59,13 +62,18 @@ public class Outtake extends SubsystemBase {
         this.useHighBasket = true;
 
         this.telemetry = telemetry;
-        this.slideMotors = new MasterSlaveMotorPair(hwmp,
-                HardwareParameters.Motors.HardwareMapNames.rightOuttakeSlide,
-                HardwareParameters.Motors.Reversed.rightOuttakeSlide,
-                HardwareParameters.Motors.HardwareMapNames.leftOuttakeSlide,
-                HardwareParameters.Motors.Reversed.leftOuttakeSlide);
+        this.leftSlideMotor = new CachedMotor(hwmp, HardwareParameters.Motors.HardwareMapNames.leftOuttakeSlide);
+        this.leftSlideMotor.setReversed(HardwareParameters.Motors.Reversed.leftOuttakeSlide);
+        this.rightSlideMotor = new CachedMotor(hwmp, HardwareParameters.Motors.HardwareMapNames.rightOuttakeSlide);
+        this.rightSlideMotor.setReversed(HardwareParameters.Motors.Reversed.rightOuttakeSlide);
 
-        this.slideController = new PIDController(
+        this.leftSlideController = new PIDController(
+                pidfCoefficients.OuttakeSlides.p,
+                pidfCoefficients.OuttakeSlides.i,
+                pidfCoefficients.OuttakeSlides.d
+        );
+
+        this.rightSlideController = new PIDController(
                 pidfCoefficients.OuttakeSlides.p,
                 pidfCoefficients.OuttakeSlides.i,
                 pidfCoefficients.OuttakeSlides.d
@@ -73,7 +81,7 @@ public class Outtake extends SubsystemBase {
 
         VoltageSensor voltageSensor = hwmp.voltageSensor.get("Control Hub");
 
-        this.slides = new LinearSlides(this.slideMotors, this.slideController, telemetry, voltageSensor,
+        this.slides = new LinearSlides(this.leftSlideMotor, this.rightSlideMotor, this.leftSlideController, this.rightSlideController, telemetry, voltageSensor,
                 pidfCoefficients.OuttakeSlides.feedforward, pidfCoefficients.OuttakeSlides.feedbackward,
                 PositionalBounds.SlidePositions.outtakeMaximumExtension, forceDown, () -> false);
         this.slides.setZeroPowerOnRetraction();
@@ -100,13 +108,18 @@ public class Outtake extends SubsystemBase {
         this.useHighBasket = true;
 
         this.telemetry = telemetry;
-        this.slideMotors = new MasterSlaveMotorPair(hwmp,
-                HardwareParameters.Motors.HardwareMapNames.rightOuttakeSlide,
-                HardwareParameters.Motors.Reversed.rightOuttakeSlide,
-                HardwareParameters.Motors.HardwareMapNames.leftOuttakeSlide,
-                HardwareParameters.Motors.Reversed.leftOuttakeSlide);
+        this.leftSlideMotor = new CachedMotor(hwmp, HardwareParameters.Motors.HardwareMapNames.leftOuttakeSlide);
+        this.leftSlideMotor.setReversed(HardwareParameters.Motors.Reversed.leftOuttakeSlide);
+        this.rightSlideMotor = new CachedMotor(hwmp, HardwareParameters.Motors.HardwareMapNames.rightOuttakeSlide);
+        this.rightSlideMotor.setReversed(HardwareParameters.Motors.Reversed.rightOuttakeSlide);
 
-        this.slideController = new PIDController(
+        this.leftSlideController = new PIDController(
+                pidfCoefficients.OuttakeSlides.p,
+                pidfCoefficients.OuttakeSlides.i,
+                pidfCoefficients.OuttakeSlides.d
+        );
+
+        this.rightSlideController = new PIDController(
                 pidfCoefficients.OuttakeSlides.p,
                 pidfCoefficients.OuttakeSlides.i,
                 pidfCoefficients.OuttakeSlides.d
@@ -114,7 +127,7 @@ public class Outtake extends SubsystemBase {
 
         VoltageSensor voltageSensor = hwmp.voltageSensor.get("Control Hub");
 
-        this.slides = new LinearSlides(this.slideMotors, this.slideController, telemetry, voltageSensor,
+        this.slides = new LinearSlides(this.leftSlideMotor, this.rightSlideMotor, this.leftSlideController, this.rightSlideController, telemetry, voltageSensor,
                 pidfCoefficients.OuttakeSlides.feedforward, pidfCoefficients.OuttakeSlides.feedbackward,
                 PositionalBounds.SlidePositions.outtakeMaximumExtension, forceDown, zeroing);
         this.slides.setZeroPowerOnRetraction();
@@ -204,7 +217,13 @@ public class Outtake extends SubsystemBase {
 
         // Set the PIDF coefficients constantly for tuning purposes
         if (pidfCoefficients.OuttakeSlides.tuning) {
-            this.slideController.setPID(
+            this.leftSlideController.setPID(
+                    pidfCoefficients.OuttakeSlides.p,
+                    pidfCoefficients.OuttakeSlides.i,
+                    pidfCoefficients.OuttakeSlides.d
+            );
+
+            this.rightSlideController.setPID(
                     pidfCoefficients.OuttakeSlides.p,
                     pidfCoefficients.OuttakeSlides.i,
                     pidfCoefficients.OuttakeSlides.d
