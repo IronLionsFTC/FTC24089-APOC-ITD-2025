@@ -48,7 +48,7 @@ public final class PositionalBounds {
         // Positions expressed as relative 0-1 so that they are consistent
         // Across motors and ratios
 
-        public static final double outtakeMaximumExtension = 840;
+        public static final double outtakeMaximumExtension = 800;
 
         public static final class OuttakePositions {
             public static final double highBasket = 1;
