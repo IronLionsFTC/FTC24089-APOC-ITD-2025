@@ -40,7 +40,7 @@ public class LongTransferTest extends CommandOpMode {
                 new RunCommand(follower::update),
                 new SequentialCommandGroup(
                         CMD.sleepUntil(this::opModeIsActive),
-                        CMD.extendIntake(intakeSubsystem),
+                        CMD.extendIntake(intakeSubsystem, 0.175, 700),
                         CMD.sleep(1000),
                         CMD.waitAndGrabSample(intakeSubsystem),
                         CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem)

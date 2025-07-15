@@ -40,7 +40,7 @@ public class MediumTransferTest extends CommandOpMode {
                 new RunCommand(follower::update),
                 new SequentialCommandGroup(
                         CMD.sleepUntil(this::opModeIsActive),
-                        CMD.extendIntake(intakeSubsystem, 0.475, 500),
+                        CMD.extendIntake(intakeSubsystem, 0.175, 500),
                         CMD.sleep(1000),
                         CMD.waitAndGrabSample(intakeSubsystem),
                         CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem)

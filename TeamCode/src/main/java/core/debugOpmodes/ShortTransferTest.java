@@ -40,7 +40,7 @@ public class ShortTransferTest extends CommandOpMode {
                 new RunCommand(follower::update),
                 new SequentialCommandGroup(
                         CMD.sleepUntil(this::opModeIsActive),
-                        CMD.extendIntake(intakeSubsystem, 0.475, 200),
+                        CMD.extendIntake(intakeSubsystem, 0.175, 200),
                         CMD.sleep(1000),
                         CMD.waitAndGrabSample(intakeSubsystem),
                         CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem)
