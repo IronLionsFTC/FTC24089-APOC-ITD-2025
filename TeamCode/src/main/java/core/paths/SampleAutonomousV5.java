@@ -255,14 +255,14 @@ public class SampleAutonomousV5 {
             if (kinematics.absoluteRobotTarget.position.x >= 50) {
                 return simpleLine(
                         current,
-                        point(-10, kinematics.absoluteRobotTarget.position.x),
+                        point(-13, kinematics.absoluteRobotTarget.position.x),
                         -90
                 );
             } else {
-                return simpleLine(current, point(-10, 53), -90);
+                return simpleLine(current, point(-13, 53), -90);
             }
         } else {
-            return simpleLine(current, point(-10, 53), -90);
+            return simpleLine(current, point(-13, 53), -90);
         }
     }
 }

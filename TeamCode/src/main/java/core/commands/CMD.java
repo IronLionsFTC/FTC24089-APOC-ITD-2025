@@ -193,7 +193,7 @@ public class CMD {
         return new SequentialCommandGroup(
                 //CMD.subToCvCached(follower, cached),
                 CMD.straightSubToCvCached(follower, cached),
-                CMD.sleep(200).alongWith(
+                CMD.sleep(400).alongWith(
                     CMD.resetCV(cached),
                     CMD.resetCV(buffer)
                 ),
@@ -201,8 +201,7 @@ public class CMD {
                 CMD.driveToSampleUseSlides(follower, intakeSubsystem, buffer, telemetry).alongWith(
                         CMD.alignClaw(intakeSubsystem, buffer)
                 ),
-                CMD.sleep(500),
-                CMD.grabSample(intakeSubsystem),
+                CMD.shortWaitAndGrabSample(intakeSubsystem),
                 CMD.sleep(300),
                 CMD.grabSampleAbortIfEmpty(intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, follower),
                 CMD.goToBasketForSubCycles(follower, intakeSubsystem, outtakeSubsystem, pathMaker)
