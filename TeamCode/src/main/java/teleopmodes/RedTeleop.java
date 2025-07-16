@@ -116,7 +116,7 @@ public class RedTeleop extends CommandOpMode {
 
         // Specimen intaking functionality (CV + retraction)
         buttons.spec.whenActive(
-                CMD.teleOpSpecButton(
+                CMD.teleOpHangButton(
                         intakeSubsystem,
                         outtakeSubsystem,
                         limelight,

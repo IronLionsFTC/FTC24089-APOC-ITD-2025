@@ -6,7 +6,6 @@ import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
-import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
@@ -23,8 +22,8 @@ import core.subsystems.Outtake;
 import pedroPathing.constants.FConstants;
 import pedroPathing.constants.LConstants;
 
-@Autonomous(name = "Stationary CV test")
-public class StationaryCVTest extends CommandOpMode {
+@Autonomous(name = "Stationary CV test NO WAIT")
+public class StationaryCVTestNoWait extends CommandOpMode {
     private Follower follower;
     private Intake intakeSubsystem;
     private Outtake outtakeSubsystem;
@@ -69,9 +68,7 @@ public class StationaryCVTest extends CommandOpMode {
                                 CMD.alignClaw(intakeSubsystem, buffer)
                         ),
 
-                        CMD.sleep(500),
                         CMD.grabSample(intakeSubsystem),
-                        CMD.sleep(300),
                         CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem).alongWith(
                                 CMD.moveAbsolute(follower, Vector.cartesian(0, 0), true)
                         )

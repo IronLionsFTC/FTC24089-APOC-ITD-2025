@@ -34,7 +34,7 @@ public class pidfCoefficients {
     public static class OuttakeSlides {
         public static double p = 0.008;
         public static double i = 0;
-        public static double d = 0;
+        public static double d = 0.0008;
         public static double feedforward = 0;
         public static double feedbackward = 0;
         public static boolean tuning = false;

@@ -9,8 +9,8 @@ public class Timings {
     public static final double clawClosingTime = 0.15;
 
     // Time to flip the claw down and up again
-    public static final double clawFoldDownTime = 0.5;
-    public static final double clawFoldUpTime = 0.3;
+    public static final double clawFoldDownTime = 0.2;
+    public static final double clawFoldUpTime = 0.2;
 
     // Time to flip the arm
     public static final double armFoldUpTime = 0.5;

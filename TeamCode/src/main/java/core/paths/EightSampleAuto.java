@@ -12,8 +12,8 @@ import com.pedropathing.pathgen.Point;
 public class EightSampleAuto {
     public static Point start = point(0, 0);
     public static Point grab1 = point(17, 7.6);
-    public static Point grab2 = point(22.5, 10);
-    public static Point grab3 = point(20.69, 9.3);
+    public static Point grab2 = point(22.5, 9);
+    public static Point grab3 = point(20.69, 8.5);
     public static Point dump4 = point(17.5, 7);
 
     public static PathChain stage1() {

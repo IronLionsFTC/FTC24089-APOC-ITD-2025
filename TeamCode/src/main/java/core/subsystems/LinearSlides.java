@@ -33,6 +33,7 @@ public class LinearSlides extends SubsystemBase {
     private double maximumExtension;
     private boolean powerOnRetraction = true;
     private double target = 0;
+    private boolean disabled;
 
     private CachedMotor leftMotor;
     private CachedMotor rightMotor;
@@ -66,6 +67,7 @@ public class LinearSlides extends SubsystemBase {
         this.maximumExtension = maximumExtension;
         this.forceDown = forceDown;
         this.zeroing = zeroing;
+        this.disabled = false;
     }
 
     public void setTarget(double relative) {
@@ -119,9 +121,15 @@ public class LinearSlides extends SubsystemBase {
             this.zeroEncoder();
         }
 
-        // Set the master-slave paradigm to use the power
-        leftMotor.setPower(leftResponse);
-        rightMotor.setPower(rightResponse);
+        if (!this.disabled) {
+
+            // Set the master-slave paradigm to use the power
+            leftMotor.setPower(leftResponse);
+            rightMotor.setPower(rightResponse);
+        } else {
+            leftMotor.setPower(0);
+            rightMotor.setPower(0);
+        }
     }
 
     // Position in range 0 to 1
@@ -137,5 +145,9 @@ public class LinearSlides extends SubsystemBase {
     }
     public boolean nearlyAtTarget() {
         return Math.abs(this.getRelative() - this.target) < 0.3;
+    }
+
+    public void disable() {
+        this.disabled = true;
     }
 }

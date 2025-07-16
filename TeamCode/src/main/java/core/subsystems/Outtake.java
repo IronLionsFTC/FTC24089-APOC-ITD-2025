@@ -2,6 +2,7 @@ package core.subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.PIDController;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
@@ -48,6 +49,11 @@ public class Outtake extends SubsystemBase {
     public boolean wasSpec;
     public boolean lower;
     private DoubleSupplier delta;
+    public boolean hasHung;
+    public boolean hasWinched;
+
+    private CachedServo hangServo;
+    private CachedMotor cachedMotor;
 
     public Outtake(HardwareMap hwmp, Telemetry telemetry, BooleanSupplier forceDown) {
         this.useHighBasket = true;
@@ -56,6 +62,12 @@ public class Outtake extends SubsystemBase {
         this.pitchServo = new CachedServo(hwmp, HardwareParameters.Motors.HardwareMapNames.outtakePitchServo);
         this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleTransfer);
         this.transferComplete = true;
+        this.hangServo = new CachedServo(hwmp, "hangServo");
+        this.hangServo.setPosition(0.5);
+        this.cachedMotor = new CachedMotor(hwmp, "hangMotor");
+        this.cachedMotor.setZeroPowerBehaviour(Motor.ZeroPowerBehavior.FLOAT);
+        this.hasHung = false;
+        this.hasWinched = false;
 
         // Currently start with claw closed for preloads, always use high basket
         this.state = OuttakeState.DownClawClosed;
@@ -100,8 +112,14 @@ public class Outtake extends SubsystemBase {
         this.claw = new Claw(hwmp, HardwareParameters.Motors.HardwareMapNames.outtakeClawServo);
         this.pitchServo = new CachedServo(hwmp, HardwareParameters.Motors.HardwareMapNames.outtakePitchServo);
         this.pitchServo.setPosition(PositionalBounds.ServoPositions.Outtake.pitchSampleTransfer);
+        this.cachedMotor = new CachedMotor(hwmp, "hangMotor");
+        this.cachedMotor.setZeroPowerBehaviour(Motor.ZeroPowerBehavior.FLOAT);
         this.transferComplete = true;
+        this.hangServo = new CachedServo(hwmp, "hangServo");
+        this.hangServo.setPosition(0.5);
         this.lower = false;
+        this.hasHung = false;
+        this.hasWinched = false;
 
         // Currently start with claw closed for preloads, always use high basket
         this.state = OuttakeState.DownClawClosed;
@@ -238,6 +256,11 @@ public class Outtake extends SubsystemBase {
         // Internal state machine
         switch (this.state) {
             case DownClawOpen:
+
+                if (this.areSlidesDown() && this.hasHung) {
+                    this.hangServo.setPosition(0.7);
+                }
+
                 this.transferComplete = false;
                 if (((this.arm.armPhysicallyDown() || !hasCycleOccured) && this.clawOpened()) || this.slides.getRelative() < 0.2) this.slides.setTarget(0);
                 else {
@@ -255,6 +278,16 @@ public class Outtake extends SubsystemBase {
                 this.claw.setState(Subsystems.ClawState.Open);
                 if (this.pitchUp) this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armDown + 0.1);
                 else this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armDown);
+
+                if (this.hasWinched) {
+                    this.slides.disable();
+                    if (this.slides.getRelative() > 0.8) {
+                        this.cachedMotor.setPower(0.8);
+                    } else {
+                        this.cachedMotor.setPower(0.5);
+                    }
+                }
+
                 break;
 
             case DownClawClosed:
@@ -274,6 +307,17 @@ public class Outtake extends SubsystemBase {
                 break;
 
             case UpClawClosed:
+
+                if (this.hasHung) {
+                    if (!this.slides.atTarget() && this.getTargetHeight() > 0.4) {
+                        this.cachedMotor.setPower(-1);
+                    } else {
+                        this.cachedMotor.setPower(0);
+                        this.hasWinched = true;
+                    }
+                    offset += 0.2;
+                }
+
                 this.slides.setTarget(this.getTargetHeight() + offset);
                 this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armSample);
                 if (!this.slides.nearlyAtTarget()) this.pitchServo.setPosition(0.28);

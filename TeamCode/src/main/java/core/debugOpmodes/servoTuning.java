@@ -10,6 +10,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
+import core.hardware.CachedMotor;
+import core.hardware.CachedServo;
 import core.hardware.IndicatorLight;
 import core.parameters.HardwareParameters;
 import core.parameters.PositionalBounds;
@@ -29,7 +31,7 @@ public class servoTuning extends LinearOpMode {
     private Servo outtakeClawServo;
     private Servo outtakeGimble;
 
-    private Servo flagServo;
+    private Servo hangServo;
     private Servo latchServo;
 
 
@@ -38,6 +40,7 @@ public class servoTuning extends LinearOpMode {
     private RevColorSensorV3 outtakeProximity;
     private RevColorSensorV3 intakeProximity;
 
+    private CachedMotor motor;
     private IndicatorLight indicator;
 
 
@@ -53,8 +56,9 @@ public class servoTuning extends LinearOpMode {
         public static double latch = 0;
         public static double outtakeGimble = 0.3;
         public static double limelightArmPos = PositionalBounds.ServoPositions.limelightUp;
-
+        public static double hangPosition = 0;
         public static double colour = 0;
+        public static double hangPower = 0;
 
         public static boolean enableLight = false;
     }
@@ -75,12 +79,15 @@ public class servoTuning extends LinearOpMode {
 
         outtakeGimble = hardwareMap.get(Servo.class, HardwareParameters.Motors.HardwareMapNames.outtakePitchServo);
         lls = hardwareMap.get(Servo.class, "limelightServo");
+        motor = new CachedMotor(hardwareMap, "hangMotor");
 
         leftOuttakePitchServo = hardwareMap.get(Servo.class, HardwareParameters.Motors.HardwareMapNames.leftArmServo);
         rightOuttakePitchServo = hardwareMap.get(Servo.class, HardwareParameters.Motors.HardwareMapNames.rightArmServo);
         outtakeClawServo = hardwareMap.get(Servo.class, HardwareParameters.Motors.HardwareMapNames.outtakeClawServo);
 
         latchServo = hardwareMap.get(Servo.class, HardwareParameters.Motors.HardwareMapNames.latchServo);
+        hangServo = hardwareMap.get(Servo.class, "hangServo");
+        motor.setPower(ServoPositions.hangPower);
 
 
         if (isStopRequested()) { return; }
@@ -108,6 +115,9 @@ public class servoTuning extends LinearOpMode {
 
             indicator.setColour(ServoPositions.colour);
             indicator.setPower(ServoPositions.enableLight);
+
+            hangServo.setPosition(ServoPositions.hangPosition);
+            motor.setPower(ServoPositions.hangPower);
 
             telemetry.addData("br", intakeProximity.red());
             telemetry.addData("cg", intakeProximity.green());

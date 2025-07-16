@@ -5,16 +5,16 @@ public final class PositionalBounds {
     // Servo positions, 0-1.
     public static final class ServoPositions {
 
-        public static final double limelightDown = 0.05;
+        public static final double limelightDown = 0.75;
         public static final double limelightUp = 0.96;
 
         public static final class ClawPositions {
 
             // Claw positions
             public static final double strongGripPosition = 0;
-            public static final double weakGripPosition = 0.01;
+            public static final double weakGripPosition = 0.027;
             public static final double openPosition = 0.5;
-            public static final double wideOpenPosition = 0.24;
+            public static final double wideOpenPosition = 0.26;
 
             // Gimble positions
             public static final double pitchRest = 0.005;
@@ -31,7 +31,7 @@ public final class PositionalBounds {
         }
 
         public static final class Outtake {
-            public static final double armDown = 0.43;
+            public static final double armDown = 0.42;
             public static final double armSample = 0.63;
             public static final double armSpecimen = 0;
 
@@ -48,7 +48,7 @@ public final class PositionalBounds {
         // Positions expressed as relative 0-1 so that they are consistent
         // Across motors and ratios
 
-        public static final double outtakeMaximumExtension = 800;
+        public static final double outtakeMaximumExtension = 765;
 
         public static final class OuttakePositions {
             public static final double highBasket = 1;
@@ -64,7 +64,7 @@ public final class PositionalBounds {
 
     public static final class Sensors {
         public static final double transferThreshold = 50;
-        public static final double intakeThreshold = 15;
-        public static final double intakeHovering = 28;
+        public static final double intakeThreshold = 20;
+        public static final double intakeHovering = 33;
     }
 }

@@ -41,7 +41,7 @@ public class RedSpecimenAutonomous extends CommandOpMode {
 
         Constants.setConstants(FConstants.class, LConstants.class);
         this.follower = new Follower(hardwareMap);
-        this.follower.setStartingPose(Vector.cartesian(0, 0).pose(0));
+        this.follower.setStartingPose(Vector.cartesian(0, 0.5).pose(0));
 
         this.limelight = new Limelight(hardwareMap, Limelight.Targets.RedOnly);
         this.limelight.raise();

@@ -6,7 +6,6 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.pedropathing.follower.Follower;
-import com.pedropathing.pathgen.Path;
 import com.pedropathing.pathgen.PathChain;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import java.util.function.BooleanSupplier;
@@ -174,8 +173,9 @@ public class CMD {
                 CMD.driveToSampleUseSlides(follower, intakeSubsystem, buffer, telemetry).alongWith(
                         CMD.alignClaw(intakeSubsystem, buffer)
                 ),
-                CMD.shortWaitAndGrabSample(intakeSubsystem),
-                CMD.retractIntakeSlightly(intakeSubsystem),
+                //CMD.sleep(500),
+                CMD.grabSample(intakeSubsystem),
+                //CMD.retractIntakeSlightly(intakeSubsystem),
                 CMD.goToBasketForSubCycles(follower, intakeSubsystem, outtakeSubsystem, pathMaker)
         );
     }
@@ -201,9 +201,9 @@ public class CMD {
                 CMD.driveToSampleUseSlides(follower, intakeSubsystem, buffer, telemetry).alongWith(
                         CMD.alignClaw(intakeSubsystem, buffer)
                 ),
-                CMD.sleep(300),
-                CMD.grabSample(intakeSubsystem),
                 CMD.sleep(500),
+                CMD.grabSample(intakeSubsystem),
+                CMD.sleep(300),
                 CMD.grabSampleAbortIfEmpty(intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, follower),
                 CMD.goToBasketForSubCycles(follower, intakeSubsystem, outtakeSubsystem, pathMaker)
         );
@@ -408,7 +408,7 @@ public class CMD {
                         CMD.followPath(follower, SampleAutonomousV5.testFirstPickup()).setSpeed(1.0)
                 )).alongWith(
                         CMD.waitForProgress(follower, 0.5).andThen(
-                                CMD.extendIntake(intakeSubsystem, 0.55, 680)
+                                CMD.extendIntake(intakeSubsystem, 0.55, 660)
                         )
                 ),
 
@@ -433,7 +433,7 @@ public class CMD {
 
                 CMD.sleep(300).andThen(CMD.slamDunkSample(outtakeSubsystem)),
                 CMD.followPath(follower, SampleAutonomousV5.testSecond()).alongWith(
-                        CMD.extendIntake(intakeSubsystem, 0.5, 620)
+                        CMD.extendIntake(intakeSubsystem, 0.5, 590)
                 ),
 
                 CMD.sleep(300),
@@ -448,7 +448,7 @@ public class CMD {
 
                 CMD.followPath(follower, core.paths.SampleAutonomousV5.thirdDumpAndPickup()).alongWith(
                         CMD.sleep(300).andThen(
-                                CMD.extendIntake(intakeSubsystem, 0.43, 670)
+                                CMD.extendIntake(intakeSubsystem, 0.43, 640)
                         )
                 ),
 
@@ -490,7 +490,7 @@ public class CMD {
         return new InstantCommand(() -> outtakeSubsystem.state = Subsystems.OuttakeState.DownClawOpen);
     }
 
-    public static TeleOpSpecButton teleOpSpecButton(
+    public static TeleOpHangButton teleOpHangButton(
             Intake intakeSubsystem,
             Outtake outtakeSubsystem,
             Limelight limelight,
@@ -501,16 +501,8 @@ public class CMD {
             BooleanSupplier interupt,
             Limelight.Targets targets
     ) {
-        return new TeleOpSpecButton(
-                intakeSubsystem,
-                outtakeSubsystem,
-                limelight,
-                buffer,
-                follower,
-                drivebase,
-                telemetry,
-                interupt,
-                targets
+        return new TeleOpHangButton(
+                outtakeSubsystem
         );
     }
 
@@ -648,15 +640,13 @@ public class CMD {
                         )
                 ).alongWith(
                         CMD.waitForProgress(follower, 0.9).andThen(
-                                CMD.extendIntake(intakeSubsystem, 0.5, 590).andThen(
+                                CMD.extendIntake(intakeSubsystem, 0.5, 610).andThen(
                                         CMD.waitAndGrabSample(intakeSubsystem).andThen(
                                                 CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem).andThen(
                                                         CMD.raiseSlidesForSampleDump(outtakeSubsystem).andThen(
                                                                 CMD.sleep(100).andThen(
                                                                         CMD.slamDunkSample(outtakeSubsystem)
                                                                 )
-                                                        ).alongWith(
-                                                                CMD.extendIntake(intakeSubsystem, 0.43, 670)
                                                         )
                                                 )
                                         )
@@ -665,7 +655,9 @@ public class CMD {
                 ),
 
                 // Drive to and intake the third preplaced sample
-                CMD.followPath(follower, EightSampleAuto.stage3()),
+                CMD.followPath(follower, EightSampleAuto.stage3()).alongWith(
+                        CMD.extendIntake(intakeSubsystem, 0.43, 670)
+                ),
 
                 CMD.sleep(300),
                 CMD.grabSample(intakeSubsystem),

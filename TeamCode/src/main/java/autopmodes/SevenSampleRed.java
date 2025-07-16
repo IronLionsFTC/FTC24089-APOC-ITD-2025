@@ -45,7 +45,7 @@ public class SevenSampleRed extends CommandOpMode {
 
         Constants.setConstants(FConstants.class, LConstants.class);
         this.follower = new Follower(hardwareMap);
-        this.follower.setStartingPose(Vector.cartesian(-2, 0).pose(0));
+        this.follower.setStartingPose(Vector.cartesian(-2.5, 0).pose(0));
 
         this.limelight = new Limelight(hardwareMap, Limelight.Targets.RedAndYellow);
         this.buffer = new Limelight.SampleState();
