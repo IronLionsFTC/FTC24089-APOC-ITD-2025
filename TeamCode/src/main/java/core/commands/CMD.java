@@ -430,7 +430,7 @@ public class CMD {
                         )
                 ),
 
-                CMD.sleep(300).andThen(CMD.slamDunkSample(outtakeSubsystem)),
+                CMD.sleep(200).andThen(CMD.slamDunkSample(outtakeSubsystem)),
                 CMD.followPath(follower, SampleAutonomousV5.testSecond()).alongWith(
                         CMD.sleep(300).andThen(CMD.extendIntake(intakeSubsystem, 0.5, 590))
                 ),
@@ -442,7 +442,7 @@ public class CMD {
                                 CMD.raiseSlidesForSampleDump(outtakeSubsystem)
                         )
                 ),
-                CMD.sleep(100),
+                CMD.sleep(200),
                 CMD.slamDunkSample(outtakeSubsystem),
 
                 CMD.followPath(follower, core.paths.SampleAutonomousV5.thirdDumpAndPickup()).alongWith(
@@ -459,7 +459,7 @@ public class CMD {
                                 CMD.raiseSlidesForSampleDump(outtakeSubsystem)
                         )
                 ),
-                CMD.sleep(100),
+                CMD.sleep(200),
                 CMD.slamDunkSample(outtakeSubsystem),
 
                 CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cache, telemetry, pathMaker),
