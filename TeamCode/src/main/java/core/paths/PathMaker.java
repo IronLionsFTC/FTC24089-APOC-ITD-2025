@@ -29,9 +29,11 @@ public class PathMaker {
         Path CVToBasket = simpleLine(testCVDumpStart, basket, -30).getPath(0);
 
         PathBuilder builder = new PathBuilder();
-        currentToCV.setConstantHeadingInterpolation(Math.toRadians(-20));
-        CVToBasket.setReversed(true);
+        // currentToCV.setConstantHeadingInterpolation(Math.toRadians(-20));
+        currentToCV.setTangentHeadingInterpolation();
+        currentToCV.setReversed(true);
         CVToBasket.setTangentHeadingInterpolation();
+        CVToBasket.setReversed(true);
         builder.addPath(currentToCV);
         builder.addPath(CVToBasket);
         builder.setReversed(true);
