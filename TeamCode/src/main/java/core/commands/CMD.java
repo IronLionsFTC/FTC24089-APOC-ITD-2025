@@ -433,7 +433,7 @@ public class CMD {
 
                 CMD.sleep(300).andThen(CMD.slamDunkSample(outtakeSubsystem)),
                 CMD.followPath(follower, SampleAutonomousV5.testSecond()).alongWith(
-                        CMD.extendIntake(intakeSubsystem, 0.5, 590)
+                        CMD.sleep(300).andThen(CMD.extendIntake(intakeSubsystem, 0.5, 590))
                 ),
 
                 CMD.sleep(300),
