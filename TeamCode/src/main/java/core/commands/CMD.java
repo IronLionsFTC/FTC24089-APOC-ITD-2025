@@ -399,14 +399,14 @@ public class CMD {
 
                 (CMD.followPath(follower, core.paths.SampleAutonomousV5.testFirstDump()).setSpeed(1).alongWith(
                         CMD.raiseSlidesForSampleDump(outtakeSubsystem).andThen(
-                                CMD.waitForProgress(follower, 0.76).andThen(
+                                CMD.waitForProgress(follower, 0.86).andThen(
                                         CMD.slamDunkSample(outtakeSubsystem)
                                 )
                         )
                 ).andThen(
                         CMD.followPath(follower, SampleAutonomousV5.testFirstPickup()).setSpeed(1.0)
                 )).alongWith(
-                        CMD.waitForProgress(follower, 0.5).andThen(
+                        CMD.waitForProgress(follower, 0.7).andThen(
                                 CMD.extendIntake(intakeSubsystem, 0.55, 660)
                         )
                 ),
