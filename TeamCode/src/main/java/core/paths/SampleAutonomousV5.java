@@ -133,7 +133,7 @@ public class SampleAutonomousV5 {
     public static Path currentToCV(Follower follower) {
         Pose current = follower.getPose();
         Point currentPoint = point(current.getY(), current.getX());
-        return simpleLine(currentPoint, point(-6, current.getX()), -30).getPath(0);
+        return simpleLine(currentPoint, point(-6, current.getX() - 3), -30).getPath(0);
     }
 
     public static PathChain testFirstDump() {

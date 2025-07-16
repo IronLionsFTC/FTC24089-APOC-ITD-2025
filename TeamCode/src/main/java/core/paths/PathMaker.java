@@ -3,7 +3,6 @@ package core.paths;
 import static core.paths.SampleAutonomousV5.currentToCV;
 import static core.paths.SampleAutonomousV5.point;
 import static core.paths.SampleAutonomousV5.simpleLine;
-import static core.paths.SampleAutonomousV5.testCVDump;
 import static core.paths.SampleAutonomousV5.testCVDumpStart;
 
 import com.pedropathing.follower.Follower;
