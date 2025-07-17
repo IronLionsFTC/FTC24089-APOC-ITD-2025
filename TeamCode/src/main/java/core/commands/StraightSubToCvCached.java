@@ -22,7 +22,7 @@ public class StraightSubToCvCached extends CommandBase {
     public StraightSubToCvCached(Follower follower, Limelight.SampleState cached) {
         this.follower = follower;
         this.cached = cached;
-        this.holdEnd = true;
+        this.holdEnd = false;
         this.speed = 1;
     }
 
@@ -48,6 +48,6 @@ public class StraightSubToCvCached extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return this.follower.getCurrentTValue() > 0.95;
+        return this.follower.getCurrentTValue() > 0.98;
     }
 }

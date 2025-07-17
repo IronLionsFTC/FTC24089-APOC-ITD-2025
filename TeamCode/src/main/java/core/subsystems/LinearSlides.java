@@ -134,7 +134,7 @@ public class LinearSlides extends SubsystemBase {
 
     // Position in range 0 to 1
     public double getRelative() {
-        return ((this.leftMotor.getPosition() + this.rightMotor.getPosition()) / 2.0) / this.maximumExtension;
+        return this.getPosition() / this.maximumExtension;
     }
 
     public void setFeedForward(double feedForward) { this.positiveFeedForward = feedForward; }
@@ -147,7 +147,22 @@ public class LinearSlides extends SubsystemBase {
         return Math.abs(this.getRelative() - this.target) < 0.3;
     }
 
+    public void enable() {
+        this.disabled = false;
+    }
+
     public void disable() {
         this.disabled = true;
+    }
+    public double getPosition() {
+        return (this.leftMotor.getPosition() + this.rightMotor.getPosition()) / 2.0;
+    }
+
+    public boolean isDisabled() {
+        return disabled;
+    }
+
+    public boolean isForcedDown() {
+        return this.forceDown.getAsBoolean();
     }
 }

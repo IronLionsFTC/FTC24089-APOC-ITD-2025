@@ -165,7 +165,7 @@ public class CMD {
         return new SequentialCommandGroup(
                 CMD.basketToSubCached(follower, cached),
                 CMD.straightSubToCvCached(follower, cached),
-                CMD.sleep(400).alongWith(
+                CMD.sleep(100).alongWith(
                         CMD.resetCV(buffer),
                         CMD.resetCV(cached)
                 ),
@@ -193,7 +193,7 @@ public class CMD {
         return new SequentialCommandGroup(
                 //CMD.subToCvCached(follower, cached),
                 CMD.straightSubToCvCached(follower, cached),
-                CMD.sleep(400).alongWith(
+                CMD.sleep(100).alongWith(
                     CMD.resetCV(cached),
                     CMD.resetCV(buffer)
                 ),

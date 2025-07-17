@@ -90,7 +90,7 @@ public class Intake extends SubsystemBase {
             }
 
             double power = this.controller.calculate(this.getPosition(), this.target);
-            if (this.target < 10 && this.getPosition() < 5) power = 0;
+            if (this.target < 10 && this.getPosition() < 10) power = 0;
             if (state == IntakeState.RetractedClawClosed && this.getPosition() < 10) power = -0.3;
             this.motor.setPower(power);
         }
