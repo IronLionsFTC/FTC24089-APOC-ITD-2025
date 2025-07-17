@@ -13,6 +13,10 @@ import com.pedropathing.pathgen.BezierLine;
 import com.pedropathing.pathgen.Path;
 import com.pedropathing.pathgen.Point;
 
+import core.computerVision.Limelight;
+import core.hardware.IndicatorLight;
+import core.subsystems.Intake;
+import core.subsystems.Outtake;
 import pedroPathing.constants.FConstants;
 import pedroPathing.constants.LConstants;
 
@@ -39,6 +43,14 @@ public class StraightBackAndForth extends OpMode {
     private boolean forward = true;
 
     private Follower follower;
+    private Intake intakeSubsystem;
+    private Outtake outtakeSubsystem;
+
+    private Limelight limelight;
+    private Limelight.SampleState buffer;
+    private Limelight.SampleState cache;
+
+    private IndicatorLight light;
 
     private Path forwards;
     private Path backwards;

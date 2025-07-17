@@ -48,6 +48,11 @@ public class StraightSubToCvCached extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return this.follower.getCurrentTValue() > 0.98;
+        return this.follower.getCurrentTValue() > 0.95;
+    }
+
+    @Override
+    public void end(boolean i) {
+        this.follower.breakFollowing();
     }
 }

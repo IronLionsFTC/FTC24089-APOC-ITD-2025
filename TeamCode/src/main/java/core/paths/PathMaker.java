@@ -2,7 +2,7 @@ package core.paths;
 
 import static core.paths.SampleAutonomousV5.currentToCV;
 import static core.paths.SampleAutonomousV5.point;
-import static core.paths.SampleAutonomousV5.simpleLine;
+import static core.paths.SampleAutonomousV5.simpleTangentLine;
 import static core.paths.SampleAutonomousV5.testCVDumpStart;
 
 import com.pedropathing.follower.Follower;
@@ -26,12 +26,9 @@ public class PathMaker {
     public void calculate(Follower follower) {
         Path currentToCV = currentToCV(follower);
         Point basket = point(18 + this.offset * 0.3, 11 + this.offset * 0.3);
-        Path CVToBasket = simpleLine(testCVDumpStart, basket, -30).getPath(0);
+        Path CVToBasket = simpleTangentLine(testCVDumpStart, basket).getPath(0);
 
         PathBuilder builder = new PathBuilder();
-        currentToCV.setConstantHeadingInterpolation(Math.toRadians(-20));
-        CVToBasket.setTangentHeadingInterpolation();
-        CVToBasket.setReversed(true);
         builder.addPath(currentToCV);
         builder.addPath(CVToBasket);
         builder.setReversed(true);

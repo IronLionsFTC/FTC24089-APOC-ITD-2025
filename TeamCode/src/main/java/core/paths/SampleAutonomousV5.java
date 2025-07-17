@@ -133,7 +133,8 @@ public class SampleAutonomousV5 {
     public static Path currentToCV(Follower follower) {
         Pose current = follower.getPose();
         Point currentPoint = point(current.getY(), current.getX());
-        return simpleLine(currentPoint, point(-6, current.getX()), -30).getPath(0);
+        Point endPoint = point(-6, current.getX());
+        return simpleLine(currentPoint, endPoint, -30).getPath(0);
     }
 
     public static PathChain testFirstDump() {
@@ -255,14 +256,14 @@ public class SampleAutonomousV5 {
             if (kinematics.absoluteRobotTarget.position.x >= 50) {
                 return simpleLine(
                         current,
-                        point(-13, kinematics.absoluteRobotTarget.position.x),
+                        point(-15, kinematics.absoluteRobotTarget.position.x),
                         -90
                 );
             } else {
-                return simpleLine(current, point(-13, 53), -90);
+                return simpleLine(current, point(-15, 53), -90);
             }
         } else {
-            return simpleLine(current, point(-13, 53), -90);
+            return simpleLine(current, point(-15, 53), -90);
         }
     }
 }

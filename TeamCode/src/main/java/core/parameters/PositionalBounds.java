@@ -12,7 +12,7 @@ public final class PositionalBounds {
 
             // Claw positions
             public static final double strongGripPosition = 0;
-            public static final double weakGripPosition = 0.027;
+            public static final double weakGripPosition = 0.029;
             public static final double openPosition = 0.5;
             public static final double wideOpenPosition = 0.26;
 
@@ -64,7 +64,7 @@ public final class PositionalBounds {
 
     public static final class Sensors {
         public static final double transferThreshold = 50;
-        public static final double intakeThreshold = 20;
-        public static final double intakeHovering = 33;
+        public static final double intakeThreshold = 25;
+        public static final double intakeHovering = 38;
     }
 }
