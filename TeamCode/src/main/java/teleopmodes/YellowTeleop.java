@@ -11,8 +11,10 @@ import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.util.Constants;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import java.util.List;
 import java.util.function.BooleanSupplier;
 
 import core.commands.CMD;
@@ -46,6 +48,10 @@ public class YellowTeleop extends CommandOpMode {
 
     @Override
     public void initialize() {
+        List<LynxModule> hubs = hardwareMap.getAll(LynxModule.class);
+        for (LynxModule hub : hubs) {
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
+        }
 
         // Load pedro tune
         Constants.setConstants(FConstants.class, LConstants.class);
@@ -137,7 +143,7 @@ public class YellowTeleop extends CommandOpMode {
         // Schedule the command based opmode
         schedule(
                 CMD.sleepUntil(this::opModeIsActive),
-                new RunCommand(telemetry::update),
+                //new RunCommand(telemetry::update),
                 new ParallelCommandGroup(
                         CMD.updateFollowerWhenDrivebaseDisabled(drivebaseSubsystem, follower, this.buttons::interruptCV),
 

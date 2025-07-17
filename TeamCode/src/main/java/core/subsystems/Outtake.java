@@ -341,7 +341,10 @@ public class Outtake extends SubsystemBase {
                 }
 
                 this.slides.setTarget(this.getTargetHeight() + offset);
-                this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armSample);
+
+                if (this.hasHung) this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armDown + 0.1);
+                else this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armSample);
+
                 double deltaOffset = 0;
                 if (this.delta.getAsDouble() > 0) {
                     deltaOffset = 0.05;
@@ -360,7 +363,8 @@ public class Outtake extends SubsystemBase {
                 this.slides.enable();
                 this.slides.setTarget(this.getTargetHeight() + offset);
                 this.claw.setState(Subsystems.ClawState.Open);
-                this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armSample);
+                if (this.hasHung) this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armDown + 0.1);
+                else this.arm.setArmPosition(PositionalBounds.ServoPositions.Outtake.armSample);
                 double adeltaOffset = 0;
                 if (this.delta.getAsDouble() > 0) {
                     adeltaOffset = 0.05;

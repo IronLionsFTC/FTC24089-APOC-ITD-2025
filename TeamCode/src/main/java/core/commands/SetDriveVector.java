@@ -30,8 +30,8 @@ public class SetDriveVector extends CommandBase {
         double yVal = this.y.getAsDouble();
 
         this.driveVector = Vector.cartesian(
-                Math.pow(xVal, 3) * 1.1,
-                Math.pow(yVal, 3) * -1.1
+                Math.pow(xVal, 1) * 1.1,
+                Math.pow(yVal, 1) * -1.1
         );
     }
 
@@ -47,7 +47,7 @@ public class SetDriveVector extends CommandBase {
 
         this.calculateDriveVector();
         this.drivebaseSubsystem.setDriveVector(this.driveVector.mul(this.power));
-        this.drivebaseSubsystem.setYawInput(Math.pow(this.r.getAsDouble(), 3));
+        this.drivebaseSubsystem.setYawInput(Math.pow(this.r.getAsDouble(), 1));
     }
 
     @Override

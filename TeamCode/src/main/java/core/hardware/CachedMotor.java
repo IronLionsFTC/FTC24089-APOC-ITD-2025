@@ -21,7 +21,7 @@ public class CachedMotor {
 
     public boolean setPower(double power) {
         double error = Math.abs(power - this.power);
-        if (error > 0.001 || power == 0) {
+        if (error > 0.05 || power == 0) {
             this.power = power;
             this.motor.set(this.power);
             return true;

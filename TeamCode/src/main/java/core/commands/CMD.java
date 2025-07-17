@@ -122,12 +122,6 @@ public class CMD {
         return new ConstantlyUpdateFollower(follower, drivebaseSubsystem);
     }
 
-    public static Command goToSubForCycles(Follower follower, Limelight.SampleState buffer, Limelight.SampleState cached) {
-        return new SequentialCommandGroup(
-                CMD.basketToSubCached(follower, cached)
-        );
-    }
-
     public static Command subCycle(
             Follower follower,
             Intake intakeSubsystem,
@@ -140,17 +134,19 @@ public class CMD {
     ) {
         return new SequentialCommandGroup(
                 CMD.basketToSubCached(follower, cached),
-                //CMD.straightBasketToSub(follower, cached),
-                CMD.grabSampleForSubCycles(
-                        follower,
-                        intakeSubsystem,
-                        outtakeSubsystem,
-                        limelight,
-                        buffer,
-                        cached,
-                        telemetry,
-                        pathMaker
-                )
+                CMD.straightSubToCvCached(follower, cached),
+                CMD.sleep(300).alongWith(
+                        CMD.resetCV(buffer),
+                        CMD.resetCV(cached)
+                ),
+                CMD.scanForTwoSamples(limelight, telemetry, follower, buffer, cached, intakeSubsystem),
+                CMD.driveToSampleUseSlides(follower, intakeSubsystem, buffer, telemetry).alongWith(
+                        CMD.alignClaw(intakeSubsystem, buffer)
+                ),
+                CMD.grabSample(intakeSubsystem),
+                CMD.sleep(300),
+                CMD.grabSampleAbortIfEmpty(intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, follower),
+                CMD.goToBasketForSubCycles(follower, intakeSubsystem, outtakeSubsystem, pathMaker)
         );
     }
 
@@ -167,7 +163,7 @@ public class CMD {
         return new SequentialCommandGroup(
                 CMD.basketToSubCached(follower, cached),
                 CMD.straightSubToCvCached(follower, cached),
-                CMD.sleep(200).alongWith(
+                CMD.sleep(300).alongWith(
                         CMD.resetCV(buffer),
                         CMD.resetCV(cached)
                 ),
@@ -381,17 +377,21 @@ public class CMD {
             PathMaker pathMaker
     ) {
         return new SequentialCommandGroup(
-                CMD.waitForStartWithPreloadWarning(light, intakeSubsystem, opModeIsActive),
+
+                CMD.sleepUntil(opModeIsActive),
 
                 /*
-                CMD.followPath(follower, core.paths.SampleAutonomousV5.firstDumpAndPickup()).setSpeed(0.7).alongWith(
-                        CMD.raiseSlidesForSampleDump(outtakeSubsystem).andThen(
-                                CMD.waitForProgress(follower, 0.72).andThen(CMD.slamDunkSample(outtakeSubsystem))
-                        )
-                ).alongWith(
-                        CMD.sleep(800).andThen(CMD.extendIntake(intakeSubsystem, 0.55, 700).andThen(
-                                CMD.shortWaitAndGrabSample(intakeSubsystem).andThen(
-                                        CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem)
+                // Preloaded sample dump at 72% path completion, start extending intake at 20% path completion
+                CMD.followPath(follower, EightSampleAuto.stage1(), true).setSpeed(1).alongWith(
+                        CMD.waitForProgress(follower, 0.1).andThen(CMD.raiseSlidesForSampleDump(outtakeSubsystem).andThen(
+                                CMD.waitForProgress(follower, 0.85).andThen(
+                                        CMD.slamDunkSample(outtakeSubsystem).alongWith(
+                                                new SequentialCommandGroup(
+                                                        CMD.extendIntake(intakeSubsystem, 0.55, 700),
+                                                        CMD.waitAndGrabSample(intakeSubsystem),
+                                                        CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem)
+                                                )
+                                        )
                                 )
                         ))
                 ),
@@ -412,58 +412,50 @@ public class CMD {
                 ),
 
                 CMD.waitAndInstantlyGrabSample(intakeSubsystem),
-
-                /*
-                CMD.followPath(follower, core.paths.SampleAutonomousV5.testFirstPickup()).setSpeed(1).alongWith(
-                        CMD.extendIntake(intakeSubsystem, 0.55, 697).andThen(
-                                CMD.shortWaitAndGrabSample(intakeSubsystem).andThen(
-                                        CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem)
+                CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem),
+                // Perform the second raise and dump whilst driving to intake the second preplaced sample, then dump the second
+                CMD.followPath(follower, simpleLine(SampleAutonomousV5.stageOne, EightSampleAuto.grab2, -12)).alongWith(//EightSampleAuto.stage2()).alongWith(
+                        CMD.raiseSlidesForSampleDump(outtakeSubsystem).andThen(
+                                // --------------------------------
+                                CMD.sleep(150).andThen(CMD.slamDunkSample(outtakeSubsystem))
+                        )
+                ).alongWith(
+                        CMD.waitForProgress(follower, 0.9).andThen(
+                                CMD.extendIntake(intakeSubsystem, 0.5, 660).andThen(
+                                        CMD.waitAndGrabSample(intakeSubsystem).andThen(
+                                                CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem).andThen(
+                                                        CMD.raiseSlidesForSampleDump(outtakeSubsystem).andThen(
+                                                                // --------------------------------
+                                                                CMD.sleep(150).andThen(CMD.slamDunkSample(outtakeSubsystem))
+                                                        )
+                                                )
+                                        )
                                 )
                         )
                 ),
-                */
 
-                CMD.followPath(follower, core.paths.SampleAutonomousV5.dumpFromFirst()).alongWith(
+                // Drive to and intake the third preplaced sample
+                CMD.followPath(follower, EightSampleAuto.stage3()).alongWith(
+                        CMD.waitForProgress(follower, 0.5).andThen(CMD.extendIntake(intakeSubsystem, 0.43, 670))
+                ),
+
+                CMD.sleep(400),
+                CMD.grabSample(intakeSubsystem),
+
+                // Transfer and dump the third preplaced sample
+                CMD.followPath(follower, EightSampleAuto.stage4()).alongWith(
                         CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem).andThen(
-                                CMD.raiseSlidesForSampleDump(outtakeSubsystem)
+                                CMD.raiseSlidesForSampleDump(outtakeSubsystem).andThen(
+                                        // --------------------------------
+                                        CMD.sleep(150).andThen(CMD.slamDunkSample(outtakeSubsystem))
+                                )
                         )
                 ),
-
-                CMD.sleep(200).andThen(CMD.slamDunkSample(outtakeSubsystem)),
-                CMD.followPath(follower, SampleAutonomousV5.testSecond()).alongWith(
-                        CMD.sleep(300).andThen(CMD.extendIntake(intakeSubsystem, 0.5, 590))
-                ),
-
-                CMD.waitAndInstantlyGrabSample(intakeSubsystem),
-
-                CMD.followPath(follower, SampleAutonomousV5.dumpFromSecond()).alongWith(
-                        CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem).andThen(
-                                CMD.raiseSlidesForSampleDump(outtakeSubsystem)
-                        )
-                ),
-                CMD.sleep(200),
-                CMD.slamDunkSample(outtakeSubsystem),
-
-                CMD.followPath(follower, core.paths.SampleAutonomousV5.thirdDumpAndPickup()).alongWith(
-                        CMD.sleep(300).andThen(
-                                CMD.extendIntake(intakeSubsystem, 0.43, 670)
-                        )
-                ),
-
-                CMD.waitAndInstantlyGrabSample(intakeSubsystem),
-
-                CMD.followPath(follower, core.paths.SampleAutonomousV5.lastDump()).alongWith(
-                        CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem).andThen(
-                                CMD.raiseSlidesForSampleDump(outtakeSubsystem)
-                        )
-                ),
-                CMD.sleep(200),
-                CMD.slamDunkSample(outtakeSubsystem),
 
                 CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cache, telemetry, pathMaker),
                 CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cache, telemetry, pathMaker),
                 CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cache, telemetry, pathMaker),
-                CMD.goToSubForCycles(follower, buffer, cache)
+                CMD.subCycle(follower, intakeSubsystem, outtakeSubsystem, limelight, buffer, cache, telemetry, pathMaker)
         );
     }
 

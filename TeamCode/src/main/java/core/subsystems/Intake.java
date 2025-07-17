@@ -273,6 +273,7 @@ public class Intake extends SubsystemBase {
                 }
                 break;
             case RetractedClawClosed:
+                //if (this.slides.getPosition() < 650) this.gimble.resetPosition(this.halfRaise);
                 this.gimble.resetPosition(this.halfRaise);
 
                 if (this.isSlidesRetracted() || !this.gimble.foldedUp()) {

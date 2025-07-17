@@ -25,7 +25,7 @@ public class PathMaker {
 
     public void calculate(Follower follower) {
         Path currentToCV = currentToCV(follower);
-        Point basket = point(18 + this.offset * 0.3, 11 + this.offset * 0.3);
+        Point basket = point(18 + this.offset * 0.3, 10 + this.offset * 0.3);
         Path CVToBasket = simpleTangentLine(testCVDumpStart, basket).getPath(0);
 
         PathBuilder builder = new PathBuilder();

@@ -137,7 +137,7 @@ public class RedTeleop extends CommandOpMode {
         // Schedule the command based opmode
         schedule(
                 CMD.sleepUntil(this::opModeIsActive),
-                new RunCommand(telemetry::update),
+                //new RunCommand(telemetry::update),
                 new ParallelCommandGroup(
                         CMD.updateFollowerWhenDrivebaseDisabled(drivebaseSubsystem, follower, this.buttons::interruptCV),
 
