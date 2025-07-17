@@ -11,8 +11,10 @@ import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.util.Constants;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import java.util.List;
 import java.util.function.BooleanSupplier;
 
 import core.commands.CMD;
@@ -41,11 +43,16 @@ public class RedTeleop extends CommandOpMode {
     // CV handler and buffer for results
     private Limelight limelight;
     private Limelight.SampleState sampleState;
-
     private IndicatorLight light;
 
     @Override
     public void initialize() {
+
+        // Bulk hardware operations
+        List<LynxModule> hubs = hardwareMap.getAll(LynxModule.class);
+        for (LynxModule hub : hubs) {
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.OFF);
+        }
 
         // Load pedro tune
         Constants.setConstants(FConstants.class, LConstants.class);

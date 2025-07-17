@@ -10,9 +10,11 @@ import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.util.Constants;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 // Packages from within TeamCode
+import java.util.List;
 import java.util.function.BooleanSupplier;
 
 import core.commands.IronLionsInterrupt;
@@ -46,6 +48,12 @@ public class BlueTeleop extends CommandOpMode {
 
     @Override
     public void initialize() {
+
+        // Bulk hardware operations
+        List<LynxModule> hubs = hardwareMap.getAll(LynxModule.class);
+        for (LynxModule hub : hubs) {
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+        }
 
         // Load pedro tune
         Constants.setConstants(FConstants.class, LConstants.class);

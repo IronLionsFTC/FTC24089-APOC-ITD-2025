@@ -48,9 +48,11 @@ public class YellowTeleop extends CommandOpMode {
 
     @Override
     public void initialize() {
+
+        // Bulk hardware operations
         List<LynxModule> hubs = hardwareMap.getAll(LynxModule.class);
         for (LynxModule hub : hubs) {
-            hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
 
         // Load pedro tune
@@ -179,5 +181,13 @@ public class YellowTeleop extends CommandOpMode {
                         // CMD.autoRejectionRunCommand(intakeSubsystem, telemetry)
                 )
         );
+    }
+
+    @Override
+    public void run() {
+        // Bulk hardware operations
+        List<LynxModule> hubs = hardwareMap.getAll(LynxModule.class);
+        for (LynxModule hub : hubs) { hub.clearBulkCache(); }
+        CommandScheduler.getInstance().run();
     }
 }
