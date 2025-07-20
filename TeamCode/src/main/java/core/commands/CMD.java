@@ -143,6 +143,7 @@ public class CMD {
                 CMD.driveToSampleUseSlides(follower, intakeSubsystem, buffer, telemetry).alongWith(
                         CMD.alignClaw(intakeSubsystem, buffer)
                 ),
+                CMD.sleep(500),
                 CMD.grabSample(intakeSubsystem),
                 CMD.sleep(300),
                 CMD.grabSampleAbortIfEmpty(intakeSubsystem, outtakeSubsystem, limelight, buffer, telemetry, follower),
@@ -209,7 +210,7 @@ public class CMD {
     ) {
         return new SequentialCommandGroup(
                 CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem).andThen(
-                        CMD.sleep(300).andThen(CMD.raiseSlidesForSampleDump(outtakeSubsystem).andThen(
+                        CMD.sleep(200).andThen(CMD.raiseSlidesForSampleDump(outtakeSubsystem).andThen(
                                 CMD.waitForProgress(follower, 0.9).andThen(
                                         CMD.slamDunkSample(outtakeSubsystem)
                                 ))
@@ -411,7 +412,8 @@ public class CMD {
                         )
                 ),
 
-                CMD.waitAndInstantlyGrabSample(intakeSubsystem),
+                CMD.sleep(400),
+                CMD.grabSample(intakeSubsystem),
                 CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem),
                 // Perform the second raise and dump whilst driving to intake the second preplaced sample, then dump the second
                 CMD.followPath(follower, simpleLine(SampleAutonomousV5.stageOne, EightSampleAuto.grab2, -12)).alongWith(//EightSampleAuto.stage2()).alongWith(
@@ -606,20 +608,22 @@ public class CMD {
                 CMD.sleepUntil(opModeIsActive),
 
                 /*
-                // Preloaded sample dump at 72% path completion, start extending intake at 20% path completion
-                CMD.followPath(follower, EightSampleAuto.stage1(), true).setSpeed(1).alongWith(
-                        CMD.waitForProgress(follower, 0.1).andThen(CMD.raiseSlidesForSampleDump(outtakeSubsystem).andThen(
-                                CMD.waitForProgress(follower, 0.85).andThen(
-                                        CMD.slamDunkSample(outtakeSubsystem).alongWith(
-                                                new SequentialCommandGroup(
-                                                        CMD.extendIntake(intakeSubsystem, 0.55, 700),
-                                                        CMD.waitAndGrabSample(intakeSubsystem),
-                                                        CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem)
-                                                )
-                                        )
-                                )
-                        ))
-                ),
+            // Preloaded sample dump at 72% path completion, start extending intake at 20% path completion
+            CMD.followPath(follower, EightSampleAuto.stage1()).setSpeed(0.7).alongWith(
+                    CMD.waitForProgress(follower, 0.1).andThen(CMD.raiseSlidesForSampleDump(outtakeSubsystem).andThen(
+                            CMD.waitForProgress(follower, 0.75).andThen(
+                                    CMD.slamDunkSample(outtakeSubsystem)
+                            )
+                    ))
+            ).alongWith(
+                    CMD.waitForProgress(follower, 0.4).andThen(
+                            CMD.extendIntake(intakeSubsystem, 0.55, 700).andThen(
+                                    CMD.waitAndGrabSample(intakeSubsystem).andThen(
+                                            CMD.retractIntakeAndTransfer(intakeSubsystem, outtakeSubsystem)
+                                    )
+                            )
+                    )
+            ),
                 */
 
         (CMD.followPath(follower, core.paths.SampleAutonomousV5.testFirstDump()).setSpeed(1).alongWith(

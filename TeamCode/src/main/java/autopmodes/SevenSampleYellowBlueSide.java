@@ -5,7 +5,6 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.RunCommand;
-import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.util.Constants;
 import com.qualcomm.hardware.lynx.LynxModule;
@@ -23,8 +22,8 @@ import core.subsystems.Outtake;
 import pedroPathing.constants.FConstants;
 import pedroPathing.constants.LConstants;
 
-@Autonomous ( name = "- 7 Sample [BLUE] -" )
-public class SevenSampleBlue extends CommandOpMode {
+@Autonomous ( name = "- 7 Sample [YELLOW ONLY (BLUE SIDE (CLOSE TO SCREEN))] -" )
+public class SevenSampleYellowBlueSide extends CommandOpMode {
 
     private Intake intakeSubsystem;
     private Outtake outtakeSubsystem;
@@ -39,13 +38,6 @@ public class SevenSampleBlue extends CommandOpMode {
 
     @Override
     public void initialize() {
-
-        // Bulk hardware operations
-        List<LynxModule> hubs = hardwareMap.getAll(LynxModule.class);
-        for (LynxModule hub : hubs) {
-            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-        }
-
         this.telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         this.intakeSubsystem = new Intake(hardwareMap, this.telemetry);
         this.outtakeSubsystem = new Outtake(hardwareMap, this.telemetry, this.intakeSubsystem::forceDown, () -> false, () -> 0);
@@ -58,7 +50,7 @@ public class SevenSampleBlue extends CommandOpMode {
         this.follower = new Follower(hardwareMap);
         this.follower.setStartingPose(Vector.cartesian(-1.5, 0).pose(0));
 
-        this.limelight = new Limelight(hardwareMap, Limelight.Targets.BlueAndYellow);
+        this.limelight = new Limelight(hardwareMap, Limelight.Targets.YellowOnly);
         this.buffer = new Limelight.SampleState();
         this.cache = new Limelight.SampleState();
         this.makeDump = new PathMaker();
@@ -82,6 +74,14 @@ public class SevenSampleBlue extends CommandOpMode {
                         makeDump
                 )
         );
+
+        // Bulk hardware operations
+        List<LynxModule> hubs = hardwareMap.getAll(LynxModule.class);
+        for (LynxModule hub : hubs) {
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+            hub.clearBulkCache();
+        }
+
     }
 
     @Override

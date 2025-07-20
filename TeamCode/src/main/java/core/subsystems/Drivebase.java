@@ -24,6 +24,7 @@ public class Drivebase extends SubsystemBase {
     private double driveScalar;
     private double yaw = 0;
     private boolean active;
+    public BooleanSupplier hasHung;
 
     // This is the yaw value to HOLD until either:
     //      the user presses BUMPERS for -45/45 change
@@ -84,7 +85,8 @@ public class Drivebase extends SubsystemBase {
         }
     }
 
-    public Drivebase(HardwareMap hwmp, Telemetry telemetry, BooleanSupplier shouldSlow) {
+    public Drivebase(HardwareMap hwmp, Telemetry telemetry, BooleanSupplier shouldSlow, BooleanSupplier hasHung) {
+        this.hasHung = hasHung;
         this.telemetry = telemetry;
         this.shouldSlow = shouldSlow;
 
@@ -172,13 +174,18 @@ public class Drivebase extends SubsystemBase {
         double r = this.yawInput;
 
         if (this.lastYawActionWasManual) { this.targetYaw = this.yaw; }
-        else { r = this.yawCorrectionController.calculate(this.yaw, this.targetYaw); }
+        else {
+            r = this.yawCorrectionController.calculate(this.yaw, this.targetYaw);
+            if (this.hasHung.getAsBoolean()) {
+                r = 0;
+            }
+        }
 
         if (Math.abs(r) < 0.1) r = 0;
 
         double pow = 1;
 
-        if (this.shouldSlow.getAsBoolean()) pow = 0.6;
+        if (this.shouldSlow.getAsBoolean()) pow = 0.4;
 
         this.frontLeft.setPower((driveVector.x - driveVector.y) * driveScalar * pow + r);
         this.frontRight.setPower((-driveVector.x - driveVector.y) * driveScalar * pow - r);

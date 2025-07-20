@@ -6,7 +6,6 @@ import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
-import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
@@ -23,8 +22,8 @@ import core.subsystems.Outtake;
 import pedroPathing.constants.FConstants;
 import pedroPathing.constants.LConstants;
 
-@Autonomous(name = "Stationary CV test")
-public class StationaryCVTest extends CommandOpMode {
+@Autonomous(name = "Stationary CV test blue side")
+public class StationaryCVTestBlueSide extends CommandOpMode {
     private Follower follower;
     private Intake intakeSubsystem;
     private Outtake outtakeSubsystem;
@@ -45,7 +44,7 @@ public class StationaryCVTest extends CommandOpMode {
         follower = new Follower(hardwareMap);
         follower.setStartingPose(Vector.cartesian(0, 0).pose(0));
 
-        this.limelight = new Limelight(hardwareMap, Limelight.Targets.YellowOnly);
+        this.limelight = new Limelight(hardwareMap, Limelight.Targets.BlueSideYellow);
         this.buffer = new Limelight.SampleState();
 
         IndicatorLight light = new IndicatorLight(hardwareMap, "light");

@@ -8,9 +8,11 @@ import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.util.Constants;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import java.nio.file.Path;
+import java.util.List;
 
 import core.commands.CMD;
 import core.computerVision.Limelight;
@@ -23,7 +25,7 @@ import core.subsystems.Outtake;
 import pedroPathing.constants.FConstants;
 import pedroPathing.constants.LConstants;
 
-@Autonomous ( name = "- 7 Sample [YELLOW ONLY] -" )
+@Autonomous ( name = "- 7 Sample [YELLOW ONLY, AUDIENCE SIDE] -" )
 public class SevenSampleYellow extends CommandOpMode {
 
     private Intake intakeSubsystem;
@@ -51,7 +53,7 @@ public class SevenSampleYellow extends CommandOpMode {
         this.follower = new Follower(hardwareMap);
         this.follower.setStartingPose(Vector.cartesian(-1.5, 0).pose(0));
 
-        this.limelight = new Limelight(hardwareMap, Limelight.Targets.YellowOnly);
+        this.limelight = new Limelight(hardwareMap, Limelight.Targets.BlueSideYellow);
         this.buffer = new Limelight.SampleState();
         this.cache = new Limelight.SampleState();
         this.makeDump = new PathMaker();
@@ -75,5 +77,21 @@ public class SevenSampleYellow extends CommandOpMode {
                         makeDump
                 )
         );
+
+        // Bulk hardware operations
+        List<LynxModule> hubs = hardwareMap.getAll(LynxModule.class);
+        for (LynxModule hub : hubs) {
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+            hub.clearBulkCache();
+        }
+
+    }
+
+    @Override
+    public void run() {
+        // Bulk hardware operations
+        List<LynxModule> hubs = hardwareMap.getAll(LynxModule.class);
+        for (LynxModule hub : hubs) { hub.clearBulkCache(); }
+        CommandScheduler.getInstance().run();
     }
 }

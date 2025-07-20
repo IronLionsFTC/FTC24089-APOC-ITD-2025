@@ -7,7 +7,10 @@ import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.util.Constants;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
+import java.util.List;
 
 import core.commands.CMD;
 import core.computerVision.Limelight;
@@ -35,6 +38,13 @@ public class SevenSampleRed extends CommandOpMode {
 
     @Override
     public void initialize() {
+
+        // Bulk hardware operations
+        List<LynxModule> hubs = hardwareMap.getAll(LynxModule.class);
+        for (LynxModule hub : hubs) {
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+        }
+
         this.telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         this.intakeSubsystem = new Intake(hardwareMap, this.telemetry);
         this.outtakeSubsystem = new Outtake(hardwareMap, this.telemetry, this.intakeSubsystem::forceDown, () -> false, () -> 0);
@@ -71,5 +81,13 @@ public class SevenSampleRed extends CommandOpMode {
                         makeDump
                 )
         );
+    }
+
+    @Override
+    public void run() {
+        // Bulk hardware operations
+        List<LynxModule> hubs = hardwareMap.getAll(LynxModule.class);
+        for (LynxModule hub : hubs) { hub.clearBulkCache(); }
+        CommandScheduler.getInstance().run();
     }
 }

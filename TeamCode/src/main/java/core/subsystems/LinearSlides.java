@@ -107,21 +107,26 @@ public class LinearSlides extends SubsystemBase {
             rightResponse += rightFeedforward;
         }
 
-        if (this.target == 0 && getRelative() < 0.07) {
+        boolean needsForce = false;
+
+        if (this.target == 0 && getRelative() < 0.2) {
             if (this.forceDown.getAsBoolean()) {
-                leftResponse = -0.7;
-                rightResponse = -0.7;
+                leftResponse = -0.8;
+                rightResponse = -0.8;
+                needsForce = true;
+                this.zeroEncoder();
             }
         }
 
         if (this.zeroing.getAsBoolean()) {
-            leftResponse = -0.7;
-            rightResponse = -0.7;
+            leftResponse = -1;
+            rightResponse = -1;
+            needsForce = true;
 
             this.zeroEncoder();
         }
 
-        if (!this.disabled) {
+        if ((!this.disabled) || needsForce) {
 
             // Set the master-slave paradigm to use the power
             leftMotor.setPower(leftResponse);

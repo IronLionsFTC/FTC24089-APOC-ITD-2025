@@ -48,13 +48,6 @@ public class BlueTeleop extends CommandOpMode {
 
     @Override
     public void initialize() {
-
-        // Bulk hardware operations
-        List<LynxModule> hubs = hardwareMap.getAll(LynxModule.class);
-        for (LynxModule hub : hubs) {
-            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-        }
-
         // Load pedro tune
         Constants.setConstants(FConstants.class, LConstants.class);
 
@@ -69,7 +62,7 @@ public class BlueTeleop extends CommandOpMode {
         BooleanSupplier zeroSlides = this.buttons.zeroSlides::get;
         this.intakeSubsystem = new Intake(hardwareMap, this.telemetry, this.light, zeroSlides);
         this.outtakeSubsystem = new Outtake(hardwareMap, this.telemetry, this.intakeSubsystem::forceDown, zeroSlides, buttons.slideOffset);
-        this.drivebaseSubsystem = new Drivebase(hardwareMap, this.telemetry, this.intakeSubsystem::isSlidesExtended);
+        this.drivebaseSubsystem = new Drivebase(hardwareMap, this.telemetry, this.intakeSubsystem::isSlidesExtended, () -> outtakeSubsystem.hasWinched);
 
         this.limelight = new Limelight(hardwareMap, Limelight.Targets.BlueAndYellow);
         this.limelight.raise();
@@ -142,6 +135,13 @@ public class BlueTeleop extends CommandOpMode {
                 CMD.retractIntake(intakeSubsystem)
         );
 
+        // Bulk hardware operations
+        List<LynxModule> hubs = hardwareMap.getAll(LynxModule.class);
+        for (LynxModule hub : hubs) {
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+            hub.clearBulkCache();
+        }
+
         // Schedule the command based opmode
         schedule(
                 CMD.sleepUntil(this::opModeIsActive),
@@ -181,5 +181,13 @@ public class BlueTeleop extends CommandOpMode {
                         // CMD.autoRejectionRunCommand(intakeSubsystem, telemetry)
                 )
         );
+    }
+
+    @Override
+    public void run() {
+        // Bulk hardware operations
+        List<LynxModule> hubs = hardwareMap.getAll(LynxModule.class);
+        for (LynxModule hub : hubs) { hub.clearBulkCache(); }
+        CommandScheduler.getInstance().run();
     }
 }
