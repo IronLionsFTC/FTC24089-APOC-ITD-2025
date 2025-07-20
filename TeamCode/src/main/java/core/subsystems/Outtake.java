@@ -51,6 +51,7 @@ public class Outtake extends SubsystemBase {
     private DoubleSupplier delta;
     public boolean hasHung;
     public boolean hasWinched;
+    public boolean needsToBeDown;
 
     private CachedServo hangServo;
     private CachedMotor cachedMotor;
@@ -59,6 +60,7 @@ public class Outtake extends SubsystemBase {
     private boolean hasFlipped;
 
     public Outtake(HardwareMap hwmp, Telemetry telemetry, BooleanSupplier forceDown) {
+        this.needsToBeDown = true;
         this.useHighBasket = true;
         this.arm = new Arm(hwmp);
         this.claw = new Claw(hwmp, HardwareParameters.Motors.HardwareMapNames.outtakeClawServo);
@@ -114,6 +116,7 @@ public class Outtake extends SubsystemBase {
     }
 
     public Outtake(HardwareMap hwmp, Telemetry telemetry, BooleanSupplier forceDown, BooleanSupplier zeroing, DoubleSupplier delta) {
+        this.needsToBeDown = true;
         this.delta = delta;
         this.useHighBasket = true;
         this.arm = new Arm(hwmp);
@@ -181,7 +184,7 @@ public class Outtake extends SubsystemBase {
             // Load the servos directly
             this.leftArmServo = new CachedServo(hwmp, HardwareParameters.Motors.HardwareMapNames.leftArmServo);
             this.rightArmServo = new CachedServo(hwmp, HardwareParameters.Motors.HardwareMapNames.rightArmServo);
-            this.setArmPosition(PositionalBounds.ServoPositions.Outtake.armDown);
+            this.setArmPosition(PositionalBounds.ServoPositions.Outtake.armDown - 0.05);
         }
 
         public void setArmPosition(double position) {
@@ -262,7 +265,7 @@ public class Outtake extends SubsystemBase {
         }
         this.telemetry.addData("ext", this.slides.getPosition());
 
-        double offset = delta.getAsDouble() / 10;
+        double offset = delta.getAsDouble() / 5;
 
         // Internal state machine
         switch (this.state) {
@@ -296,16 +299,14 @@ public class Outtake extends SubsystemBase {
                 if (this.hasWinched) {
                     this.slides.disable();
                     if (this.slides.getRelative() > 0.8) {
-                        this.cachedMotor.setPower(0.8);
+                        this.cachedMotor.setPower(1);
                     } else {
                         this.cachedMotor.setPower(0.5);
                     }
                 }
 
-                if (this.atTargetHeight() && !this.slides.isForcedDown()) {
+                if (this.areSlidesDown()) {
                     this.slides.disable();
-                } else {
-                    this.slides.enable();
                 }
 
                 break;
@@ -331,12 +332,8 @@ public class Outtake extends SubsystemBase {
             case UpClawClosed:
                 this.slides.enable();
                 if (this.hasHung) {
-                    if (!this.slides.atTarget() && this.getTargetHeight() > 0.4) {
-                        this.cachedMotor.setPower(-1);
-                    } else {
-                        this.cachedMotor.setPower(0);
-                        this.hasWinched = true;
-                    }
+                    this.cachedMotor.setPower(0);
+                    this.hasWinched = true;
                     offset += 0.2;
                 }
 

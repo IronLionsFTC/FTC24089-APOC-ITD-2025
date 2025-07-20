@@ -134,7 +134,9 @@ public class SampleAutonomousV5 {
         Pose current = follower.getPose();
         Point currentPoint = point(current.getY(), current.getX());
         Point endPoint = point(-6, current.getX());
-        return simpleLine(currentPoint, endPoint, -30).getPath(0);
+        Path path = new Path(new BezierLine(currentPoint, endPoint));
+        path.setLinearHeadingInterpolation(current.getHeading(), Math.toRadians(-20));
+        return path;
     }
 
     public static PathChain testFirstDump() {

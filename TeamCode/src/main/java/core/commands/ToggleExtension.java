@@ -2,6 +2,7 @@ package core.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 
+import core.parameters.PositionalBounds;
 import core.subsystems.Intake;
 
 public class ToggleExtension extends CommandBase {
@@ -13,7 +14,9 @@ public class ToggleExtension extends CommandBase {
 
     @Override
     public void initialize() {
-        if (this.intakeSubsystem.getExtension() < 500) this.intakeSubsystem.setExtension(700);
+        if (this.intakeSubsystem.getExtension() < 500) this.intakeSubsystem.setExtension(
+                PositionalBounds.SlidePositions.IntakePositions.extended
+        );
         else this.intakeSubsystem.setExtension(450);
     }
 

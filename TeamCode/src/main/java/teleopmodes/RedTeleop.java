@@ -11,8 +11,10 @@ import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.util.Constants;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import java.util.List;
 import java.util.function.BooleanSupplier;
 
 import core.commands.CMD;
@@ -41,12 +43,10 @@ public class RedTeleop extends CommandOpMode {
     // CV handler and buffer for results
     private Limelight limelight;
     private Limelight.SampleState sampleState;
-
     private IndicatorLight light;
 
     @Override
     public void initialize() {
-
         // Load pedro tune
         Constants.setConstants(FConstants.class, LConstants.class);
 
@@ -61,7 +61,7 @@ public class RedTeleop extends CommandOpMode {
         BooleanSupplier zeroSlides = this.buttons.zeroSlides::get;
         this.intakeSubsystem = new Intake(hardwareMap, this.telemetry, this.light, zeroSlides);
         this.outtakeSubsystem = new Outtake(hardwareMap, this.telemetry, this.intakeSubsystem::forceDown, zeroSlides, buttons.slideOffset);
-        this.drivebaseSubsystem = new Drivebase(hardwareMap, this.telemetry, this.intakeSubsystem::isSlidesExtended);
+        this.drivebaseSubsystem = new Drivebase(hardwareMap, this.telemetry, this.intakeSubsystem::isSlidesExtended, () -> outtakeSubsystem.hasWinched);
 
         this.limelight = new Limelight(hardwareMap, Limelight.Targets.RedAndYellow);
         this.limelight.raise();
@@ -134,6 +134,14 @@ public class RedTeleop extends CommandOpMode {
                 CMD.retractIntake(intakeSubsystem)
         );
 
+        // Bulk hardware operations
+        List<LynxModule> hubs = hardwareMap.getAll(LynxModule.class);
+        for (LynxModule hub : hubs) {
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+            hub.clearBulkCache();
+        }
+
+
         // Schedule the command based opmode
         schedule(
                 CMD.sleepUntil(this::opModeIsActive),
@@ -173,5 +181,13 @@ public class RedTeleop extends CommandOpMode {
                         // CMD.autoRejectionRunCommand(intakeSubsystem, telemetry)
                 )
         );
+    }
+
+    @Override
+    public void run() {
+        // Bulk hardware operations
+        List<LynxModule> hubs = hardwareMap.getAll(LynxModule.class);
+        for (LynxModule hub : hubs) { hub.clearBulkCache(); }
+        CommandScheduler.getInstance().run();
     }
 }

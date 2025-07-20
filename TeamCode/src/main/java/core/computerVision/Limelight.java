@@ -27,7 +27,10 @@ public class Limelight {
         RedAndYellow,
         BlueAndYellow,
         RedOnly,
-        BlueOnly
+        BlueOnly,
+        BlueSideYellow,
+
+        HotelYellow
     }
 
     public Limelight(HardwareMap hwmp, Targets targets) {
@@ -54,6 +57,12 @@ public class Limelight {
                 break;
             case BlueOnly:
                 this.hardware.pipelineSwitch(5);
+                break;
+            case HotelYellow:
+                this.hardware.pipelineSwitch(6);
+                break;
+            case BlueSideYellow:
+                this.hardware.pipelineSwitch(7);
                 break;
         }
     }

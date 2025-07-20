@@ -69,13 +69,7 @@ public class Intake extends SubsystemBase {
 
         private void update(IntakeState state) {
 
-            if (this.target > 20 && this.target < 500) {
-                this.controller.setPID(
-                        pidfCoefficients.IntakeExtension.p * 0.7,
-                        pidfCoefficients.IntakeExtension.i,
-                        pidfCoefficients.IntakeExtension.d * 0.6
-                );
-            } else if (this.target > 10) {
+            if (this.target > 50) {
                 this.controller.setPID(
                         pidfCoefficients.IntakeExtension.p,
                         pidfCoefficients.IntakeExtension.i,

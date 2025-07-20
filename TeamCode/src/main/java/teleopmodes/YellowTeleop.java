@@ -48,11 +48,6 @@ public class YellowTeleop extends CommandOpMode {
 
     @Override
     public void initialize() {
-        List<LynxModule> hubs = hardwareMap.getAll(LynxModule.class);
-        for (LynxModule hub : hubs) {
-            hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
-        }
-
         // Load pedro tune
         Constants.setConstants(FConstants.class, LConstants.class);
 
@@ -67,7 +62,7 @@ public class YellowTeleop extends CommandOpMode {
         BooleanSupplier zeroSlides = this.buttons.zeroSlides::get;
         this.intakeSubsystem = new Intake(hardwareMap, this.telemetry, this.light, zeroSlides);
         this.outtakeSubsystem = new Outtake(hardwareMap, this.telemetry, this.intakeSubsystem::forceDown, zeroSlides, buttons.slideOffset);
-        this.drivebaseSubsystem = new Drivebase(hardwareMap, this.telemetry, this.intakeSubsystem::isSlidesExtended);
+        this.drivebaseSubsystem = new Drivebase(hardwareMap, this.telemetry, this.intakeSubsystem::isSlidesExtended, () -> outtakeSubsystem.hasWinched);
 
         this.limelight = new Limelight(hardwareMap, Limelight.Targets.YellowOnly);
         this.limelight.raise();
@@ -106,8 +101,6 @@ public class YellowTeleop extends CommandOpMode {
                                             CMD.alignClaw(intakeSubsystem, sampleState)
                                     )).andThen(
                                             CMD.resetCV(sampleState)
-                                    ).andThen(
-                                            CMD.shortWaitAndGrabSample(intakeSubsystem)
                                     )
                             )
                     ),
@@ -139,7 +132,6 @@ public class YellowTeleop extends CommandOpMode {
         buttons.emergencyIntakeRetract.whenPressed(
                 CMD.retractIntake(intakeSubsystem)
         );
-
         // Schedule the command based opmode
         schedule(
                 CMD.sleepUntil(this::opModeIsActive),
@@ -179,5 +171,20 @@ public class YellowTeleop extends CommandOpMode {
                         // CMD.autoRejectionRunCommand(intakeSubsystem, telemetry)
                 )
         );
+
+        // Bulk hardware operations
+        List<LynxModule> hubs = hardwareMap.getAll(LynxModule.class);
+        for (LynxModule hub : hubs) {
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+            hub.clearBulkCache();
+        }
+    }
+
+    @Override
+    public void run() {
+        // Bulk hardware operations
+        List<LynxModule> hubs = hardwareMap.getAll(LynxModule.class);
+        for (LynxModule hub : hubs) { hub.clearBulkCache(); }
+        CommandScheduler.getInstance().run();
     }
 }

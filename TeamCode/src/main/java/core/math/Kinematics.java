@@ -56,7 +56,7 @@ public class Kinematics {
                         lateralCM / 2.54, ty
                 )
         );
-        this.absoluteSlidePosition = slideExtension;
+        this.absoluteSlidePosition = slideExtension - 25;
         this.absoluteClawRotation = buffer.angle;
     }
 

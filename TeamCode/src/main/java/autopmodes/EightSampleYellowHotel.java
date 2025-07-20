@@ -5,7 +5,6 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.RunCommand;
-import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.util.Constants;
 import com.qualcomm.hardware.lynx.LynxModule;
@@ -23,8 +22,8 @@ import core.subsystems.Outtake;
 import pedroPathing.constants.FConstants;
 import pedroPathing.constants.LConstants;
 
-@Autonomous ( name = "- 7 Sample [BLUE] -" )
-public class SevenSampleBlue extends CommandOpMode {
+@Autonomous ( name = "- 8 Sample [YELLOW HOTEL] -" )
+public class EightSampleYellowHotel extends CommandOpMode {
 
     private Intake intakeSubsystem;
     private Outtake outtakeSubsystem;
@@ -57,8 +56,7 @@ public class SevenSampleBlue extends CommandOpMode {
         Constants.setConstants(FConstants.class, LConstants.class);
         this.follower = new Follower(hardwareMap);
         this.follower.setStartingPose(Vector.cartesian(-1.5, 0).pose(0));
-
-        this.limelight = new Limelight(hardwareMap, Limelight.Targets.BlueAndYellow);
+        this.limelight = new Limelight(hardwareMap, Limelight.Targets.HotelYellow);
         this.buffer = new Limelight.SampleState();
         this.cache = new Limelight.SampleState();
         this.makeDump = new PathMaker();
@@ -69,7 +67,7 @@ public class SevenSampleBlue extends CommandOpMode {
         schedule(
                 new RunCommand(follower::update),
                 new RunCommand(telemetry::update),
-                CMD.sampleAuto(
+                CMD.eightSampleAuto(
                         intakeSubsystem,
                         outtakeSubsystem,
                         follower,
